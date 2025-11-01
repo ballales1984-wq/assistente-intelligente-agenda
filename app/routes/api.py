@@ -33,6 +33,18 @@ def about_en():
     return render_template('about_en.html')
 
 
+@bp.route('/privacy')
+def privacy():
+    """Privacy Policy"""
+    return render_template('privacy.html')
+
+
+@bp.route('/terms')
+def terms():
+    """Termini di Servizio"""
+    return render_template('terms.html')
+
+
 @bp.route('/manifest.json')
 def manifest():
     """Serve manifest.json per PWA"""

@@ -25,5 +25,21 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://assistente-intelligente-agenda.onrender.com/privacy</loc>
+    <lastmod>2025-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Terms of Service -->
+  <url>
+    <loc>https://assistente-intelligente-agenda.onrender.com/terms</loc>
+    <lastmod>2025-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
 </urlset>
 

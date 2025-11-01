@@ -990,3 +990,58 @@ def top_spese():
     
     return jsonify(top)
 
+
+# ═══════════════════════════════════════════════════════════════
+# EXPORT/IMPORT DATI - Backup e Sincronizzazione
+# ═══════════════════════════════════════════════════════════════
+
+@bp.route('/api/export/tutto', methods=['GET'])
+def export_tutto():
+    """Export completo di tutti i dati in JSON"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    # Raccogli tutti i dati
+    export_data = {
+        'profilo': profilo.to_dict(),
+        'obiettivi': [o.to_dict() for o in profilo.obiettivi.all()],
+        'impegni': [i.to_dict() for i in profilo.impegni.all()],
+        'spese': [s.to_dict() for s in profilo.spese.all()],
+        'diario': [d.to_dict() for d in profilo.diario_entries.all()],
+        'export_date': datetime.now().isoformat(),
+        'versione': '1.2.0'
+    }
+    
+    return jsonify(export_data)
+
+
+@bp.route('/api/export/impegni', methods=['GET'])
+def export_impegni():
+    """Export solo impegni in formato CSV-friendly"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    impegni = profilo.impegni.order_by(Impegno.data_inizio.desc()).all()
+    
+    return jsonify({
+        'impegni': [i.to_dict() for i in impegni],
+        'count': len(impegni)
+    })
+
+
+@bp.route('/api/export/spese', methods=['GET'])
+def export_spese():
+    """Export solo spese in formato CSV-friendly"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    spese = profilo.spese.order_by(Spesa.data.desc()).all()
+    
+    return jsonify({
+        'spese': [s.to_dict() for s in spese],
+        'count': len(spese)
+    })
+

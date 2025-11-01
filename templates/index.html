@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🧠 Assistente Intelligente</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -343,9 +344,90 @@
             background: #fff3cd !important;
             border-left: 3px solid #ffc107;
         }
+
+        /* ============================================
+           DARK MODE
+           ============================================ */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.dark-mode .card {
+            background: #0f3460;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .chat-messages {
+            background: #1a1a2e;
+        }
+
+        body.dark-mode .message.assistant {
+            background: #16213e;
+            border-color: #0f3460;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .chat-input {
+            background: #16213e;
+            border-color: #0f3460;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .obiettivo-item,
+        body.dark-mode .piano-item {
+            background: #16213e;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .quick-action {
+            background: #16213e;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .quick-action:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        body.dark-mode .calendario-cell {
+            background: #16213e;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .calendario-cell.time-cell {
+            background: #1a1a2e;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        body.dark-mode .theme-toggle {
+            background: #0f3460;
+        }
     </style>
 </head>
 <body>
+    <!-- Toggle Dark Mode -->
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Cambia tema">
+        <span id="themeIcon">🌙</span>
+    </button>
     <div class="container">
         <div class="header">
             <h1>🧠 Assistente Intelligente</h1>
@@ -435,6 +517,18 @@
                     </button>
                     <button class="quick-action" onclick="stopLettura()">
                         ⏹️ Stop
+                    </button>
+                </div>
+                <div class="quick-actions" style="margin-top: 10px;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💾 Backup & Export:</strong>
+                    <button class="quick-action" onclick="exportaTutto()">
+                        📦 Export Tutto
+                    </button>
+                    <button class="quick-action" onclick="exportaImpegni()">
+                        📅 Export Impegni
+                    </button>
+                    <button class="quick-action" onclick="exportaSpese()">
+                        💰 Export Spese
                     </button>
                 </div>
             </div>
@@ -539,6 +633,24 @@
                     <div id="calendarioGrid"></div>
                 </div>
             </div>
+
+            <!-- Grafici Visuali -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>📊 Grafici & Analisi</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">💰 Spese per Categoria (Mese)</h3>
+                        <canvas id="graficoSpese" style="max-height: 300px;"></canvas>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">⏰ Tempo per Obiettivo (Settimana)</h3>
+                        <canvas id="graficoObiettivi" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="aggiornaGrafici()">
+                    🔄 Aggiorna Grafici
+                </button>
+            </div>
         </div>
     </div>
 
@@ -548,6 +660,13 @@
 
         // Carica dati all'avvio
         window.addEventListener('DOMContentLoaded', () => {
+            // Carica tema salvato
+            const temaSalvato = localStorage.getItem('tema') || 'light';
+            if (temaSalvato === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeIcon').textContent = '☀️';
+            }
+            
             caricaObiettivi();
             caricaStatistiche();
             caricaDiario();
@@ -561,6 +680,20 @@
                     console.log('🔊 Voci disponibili:', voci.filter(v => v.lang.startsWith('it')).map(v => v.name));
                 };
             }
+            
+            // ============================================
+            // SISTEMA NOTIFICHE
+            // ============================================
+            inizializzaNotifiche();
+            controllaImpegniImminenti();
+            controllaBudgetGiornaliero();
+            svegliaMattutina();
+            
+            // Controlla impegni ogni 5 minuti
+            setInterval(controllaImpegniImminenti, 5 * 60 * 1000);
+            
+            // Controlla budget ogni 30 minuti
+            setInterval(controllaBudgetGiornaliero, 30 * 60 * 1000);
         });
 
         function handleKeyPress(event) {
@@ -1484,6 +1617,386 @@
                 
                 leggiImpegniGiorno(dataFormattata);
             }
+        }
+
+        // ============================================
+        // SISTEMA NOTIFICHE BROWSER
+        // ============================================
+        let impegniNotificati = new Set(); // Evita notifiche duplicate
+
+        function inizializzaNotifiche() {
+            // Chiedi permesso per notifiche browser
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('✅ Notifiche abilitate');
+                        mostraNotifica('🔔 Notifiche Attive', 'Riceverai promemoria per i tuoi impegni!');
+                    }
+                });
+            }
+        }
+
+        function mostraNotifica(titolo, messaggio, icona = '🔔') {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const notifica = new Notification(titolo, {
+                    body: messaggio,
+                    icon: '/static/icon.png', // Fallback a icona se esiste
+                    badge: '/static/badge.png',
+                    requireInteraction: false,
+                    silent: false
+                });
+                
+                // Leggi anche con voce
+                parla(messaggio);
+                
+                notifica.onclick = () => {
+                    window.focus();
+                    notifica.close();
+                };
+                
+                // Auto-chiudi dopo 10 secondi
+                setTimeout(() => notifica.close(), 10000);
+            }
+        }
+
+        async function controllaImpegniImminenti() {
+            try {
+                const oggi = new Date();
+                const dataISO = oggi.toISOString().split('T')[0];
+                
+                const response = await fetch(`/api/impegni/giorno/${dataISO}`);
+                const impegni = await response.json();
+                
+                const ora_corrente = new Date();
+                const tra_15_min = new Date(ora_corrente.getTime() + 15 * 60 * 1000);
+                
+                impegni.forEach(imp => {
+                    const inizio = new Date(imp.data_inizio);
+                    
+                    // Se impegno inizia tra 10-20 minuti
+                    if (inizio > ora_corrente && inizio <= tra_15_min) {
+                        const chiave = `${imp.id}-${imp.data_inizio}`;
+                        
+                        if (!impegniNotificati.has(chiave)) {
+                            const minuti = Math.round((inizio - ora_corrente) / 60000);
+                            mostraNotifica(
+                                `⏰ Impegno tra ${minuti} minuti`,
+                                `${imp.nome} alle ${inizio.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}`
+                            );
+                            impegniNotificati.add(chiave);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Errore controllo impegni:', error);
+            }
+        }
+
+        async function controllaBudgetGiornaliero() {
+            try {
+                const response = await fetch('/api/spese/oggi');
+                const data = await response.json();
+                
+                // Alert se superi 100 euro al giorno
+                const LIMITE_GIORNO = 100;
+                
+                if (data.totale > LIMITE_GIORNO) {
+                    const percentuale = ((data.totale / LIMITE_GIORNO) * 100).toFixed(0);
+                    
+                    mostraNotifica(
+                        '💰 Alert Budget',
+                        `Hai speso €${data.totale.toFixed(2)} oggi (${percentuale}% del limite giornaliero)`
+                    );
+                }
+            } catch (error) {
+                console.error('Errore controllo budget:', error);
+            }
+        }
+
+        async function svegliaMattutina() {
+            const ora = new Date().getHours();
+            
+            // Mostra riepilogo tra le 7:00 e 8:00
+            if (ora === 7 || ora === 8) {
+                const chiave = `sveglia-${new Date().toDateString()}`;
+                
+                if (!impegniNotificati.has(chiave)) {
+                    try {
+                        const response = await fetch('/api/presente/oggi');
+                        const data = await response.json();
+                        
+                        const piano = data.piano_completo;
+                        const messaggioSveglia = `Buongiorno! Oggi hai ${piano.impegni_count || 0} impegni. ` +
+                                                 `Ore occupate: ${piano.ore_occupate}h. ` +
+                                                 `Carico: ${piano.stato_giornata}`;
+                        
+                        mostraNotifica('🌅 Buongiorno!', messaggioSveglia);
+                        impegniNotificati.add(chiave);
+                    } catch (error) {
+                        console.error('Errore sveglia mattutina:', error);
+                    }
+                }
+            }
+        }
+
+        // ============================================
+        // GRAFICI VISUALI - Chart.js
+        // ============================================
+        let graficoSpese = null;
+        let graficoObiettivi = null;
+
+        async function aggiornaGrafici() {
+            await creaGraficoSpese();
+            await creaGraficoObiettivi();
+        }
+
+        async function creaGraficoSpese() {
+            try {
+                const response = await fetch('/api/spese/mese');
+                const data = await response.json();
+                
+                // Prepara dati per grafico
+                const categorie = Object.keys(data.per_categoria || {});
+                const importi = Object.values(data.per_categoria || {});
+                
+                // Colori vivaci per categorie
+                const colori = [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+                    '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                ];
+                
+                const ctx = document.getElementById('graficoSpese');
+                
+                // Distruggi grafico precedente se esiste
+                if (graficoSpese) {
+                    graficoSpese.destroy();
+                }
+                
+                graficoSpese = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categorie.map(c => c.charAt(0).toUpperCase() + c.slice(1)),
+                        datasets: [{
+                            data: importi,
+                            backgroundColor: colori.slice(0, categorie.length),
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    font: { size: 12 },
+                                    padding: 10
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${label}: €${value.toFixed(2)} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Errore creazione grafico spese:', error);
+            }
+        }
+
+        async function creaGraficoObiettivi() {
+            try {
+                const response = await fetch('/api/obiettivi');
+                const obiettivi = await response.json();
+                
+                const nomi = obiettivi.map(o => o.nome);
+                const durate = obiettivi.map(o => o.durata_settimanale);
+                const completate = obiettivi.map(o => o.ore_completate || 0);
+                
+                const ctx = document.getElementById('graficoObiettivi');
+                
+                // Distruggi grafico precedente
+                if (graficoObiettivi) {
+                    graficoObiettivi.destroy();
+                }
+                
+                graficoObiettivi = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: nomi,
+                        datasets: [
+                            {
+                                label: 'Obiettivo (h/sett)',
+                                data: durate,
+                                backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                                borderColor: 'rgba(102, 126, 234, 1)',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Completate (h)',
+                                data: completate,
+                                backgroundColor: 'rgba(40, 167, 69, 0.6)',
+                                borderColor: 'rgba(40, 167, 69, 1)',
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Ore'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Errore creazione grafico obiettivi:', error);
+            }
+        }
+
+        // Carica grafici all'avvio (dopo caricamento Chart.js)
+        window.addEventListener('load', () => {
+            setTimeout(aggiornaGrafici, 1000);
+        });
+
+        // ============================================
+        // DARK MODE TOGGLE
+        // ============================================
+        function toggleDarkMode() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                icon.textContent = '☀️';
+                localStorage.setItem('tema', 'dark');
+            } else {
+                icon.textContent = '🌙';
+                localStorage.setItem('tema', 'light');
+            }
+            
+            // Ricarica grafici per aggiornare colori
+            setTimeout(aggiornaGrafici, 300);
+        }
+
+        // ============================================
+        // EXPORT/IMPORT DATI
+        // ============================================
+        async function exportaTutto() {
+            try {
+                const response = await fetch('/api/export/tutto');
+                const data = await response.json();
+                
+                // Crea file JSON
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                // Download automatico
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `agenda-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                aggiungiMessaggio(`📦 Export completato! ${data.impegni.length} impegni, ${data.spese.length} spese, ${data.obiettivi.length} obiettivi.`, 'assistant');
+            } catch (error) {
+                console.error('Errore export:', error);
+                aggiungiMessaggio('❌ Errore durante l\'export', 'assistant');
+            }
+        }
+
+        async function exportaImpegni() {
+            try {
+                const response = await fetch('/api/export/impegni');
+                const data = await response.json();
+                
+                // Converti in CSV
+                const csv = convertiInCSV(data.impegni, ['nome', 'data_inizio', 'data_fine', 'tipo']);
+                const blob = new Blob([csv], { type: 'text/csv' });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `impegni-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                aggiungiMessaggio(`📅 Export ${data.count} impegni completato!`, 'assistant');
+            } catch (error) {
+                console.error('Errore export impegni:', error);
+            }
+        }
+
+        async function exportaSpese() {
+            try {
+                const response = await fetch('/api/export/spese');
+                const data = await response.json();
+                
+                // Converti in CSV
+                const csv = convertiInCSV(data.spese, ['data', 'descrizione', 'importo', 'categoria']);
+                const blob = new Blob([csv], { type: 'text/csv' });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `spese-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                aggiungiMessaggio(`💰 Export ${data.count} spese completato!`, 'assistant');
+            } catch (error) {
+                console.error('Errore export spese:', error);
+            }
+        }
+
+        function convertiInCSV(oggetti, campi) {
+            if (!oggetti || oggetti.length === 0) return '';
+            
+            // Header
+            let csv = campi.join(',') + '\n';
+            
+            // Righe
+            oggetti.forEach(obj => {
+                const riga = campi.map(campo => {
+                    let valore = obj[campo] || '';
+                    // Escape virgole e apici
+                    if (typeof valore === 'string' && (valore.includes(',') || valore.includes('"'))) {
+                        valore = `"${valore.replace(/"/g, '""')}"`;
+                    }
+                    return valore;
+                }).join(',');
+                csv += riga + '\n';
+            });
+            
+            return csv;
         }
     </script>
 </body>

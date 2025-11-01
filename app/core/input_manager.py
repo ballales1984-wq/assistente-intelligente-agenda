@@ -73,6 +73,47 @@ class InputManager:
             }
             return risultato
         
+        # Riconosci impegno con data completa (formato flessibile)
+        # Cerca pattern con data + ora
+        match_data_ora = re.search(
+            r'(luned[ìi]|marted[ìi]|mercoled[ìi]|gioved[ìi]|venerd[ìi]|sabato|domenica)\s+(\d{1,2})\s+(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)(?:\s+(\d{4}))?.+?(?:ore|alle|dalle)\s+(\d{1,2})',
+            testo, re.IGNORECASE
+        )
+        
+        if match_data_ora:
+            giorno_settimana = match_data_ora.group(1)
+            giorno_numero = int(match_data_ora.group(2))
+            mese_nome = match_data_ora.group(3).lower()
+            anno = int(match_data_ora.group(4)) if match_data_ora.group(4) else datetime.now().year
+            ora = int(match_data_ora.group(5))
+            
+            # Estrai nome impegno (prima della data o tra data e ora)
+            # Cerca tutto prima del giorno della settimana
+            nome_match = re.search(rf'(.+?)\s+{giorno_settimana}', testo, re.IGNORECASE)
+            if nome_match:
+                nome_impegno = nome_match.group(1).strip().title()
+            else:
+                # Fallback: estrai tra mese e "alle/ore"
+                nome_match = re.search(rf'{mese_nome}.+?(\w+(?:\s+\w+)*)\s+(?:ore|alle|dalle)', testo, re.IGNORECASE)
+                nome_impegno = nome_match.group(1).strip().title() if nome_match else 'Impegno'
+            
+            # Converti mese
+            mesi = {
+                'gennaio': 1, 'febbraio': 2, 'marzo': 3, 'aprile': 4,
+                'maggio': 5, 'giugno': 6, 'luglio': 7, 'agosto': 8,
+                'settembre': 9, 'ottobre': 10, 'novembre': 11, 'dicembre': 12
+            }
+            mese_num = mesi.get(mese_nome, 1)
+            
+            risultato['tipo'] = 'impegno'
+            risultato['dati'] = {
+                'nome': nome_impegno,
+                'ora_inizio': f"{ora}:00",
+                'ora_fine': f"{ora+1}:00",
+                'data_specifica': f"{anno}-{mese_num:02d}-{giorno_numero:02d}"
+            }
+            return risultato
+        
         # Riconosci impegno oggi/domani con formato "ore XX" o "XX-XX"
         match_ore = re.search(r'(?:oggi|domani)\s+(.+?)\s+ore\s+(\d{1,2})', testo, re.IGNORECASE)
         if match_ore:

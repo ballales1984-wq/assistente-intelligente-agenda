@@ -83,7 +83,7 @@ def chat():
     # ============================================
     # AUTO-FALLBACK: Se regex non capisce → Ollama AI!
     # ============================================
-    if risultato['tipo'] in ['sconosciuto', 'domanda', 'aiuto'] and data.get('enable_ai_fallback', True):
+    if risultato['tipo'] in ['sconosciuto', 'domanda', 'aiuto'] and data.get('enable_ai_fallback', False):
         current_app.logger.info(f"🤖 Auto-fallback to AI for: {messaggio}")
         
         try:
@@ -110,147 +110,16 @@ def chat():
                 assistant = OllamaAssistant(model='gemma3:1b')  # Veloce!
                 risposta_ai = assistant.chat(messaggio, context)
                 
-                # ============================================
-                # NOVITÀ: ESTRAZIONE & SALVATAGGIO DATI
-                # Usa regex per estrarre informazioni (veloce!)
-                # ============================================
-                dati_salvati = None
-                tipo_dato_salvato = None
-                
-                # Prova a estrarre dati strutturati dal messaggio con REGEX
-                try:
-                    import re
-                    msg_lower = messaggio.lower()
-                    
-                    # 1. Prova OBIETTIVO
-                    match = re.search(r'(?:voglio|devo|vorrei|mi piacerebbe)?\s*(?:studiare|fare|imparare|dedicare)\s+(.+?)\s+(?:per\s+)?(\d+)\s*ore?\s*(?:a|alla|per)?\s*settimana', msg_lower)
-                    if match:
-                        nome = match.group(1).strip().title()
-                        ore = float(match.group(2))
-                        tipo_attivita = InputManager._identifica_tipo_attivita(nome)
-                        
-                        obiettivo = Obiettivo(
-                            user_id=profilo.id,
-                            nome=nome,
-                            tipo=tipo_attivita,
-                            durata_settimanale=ore,
-                            intensita='media'
-                        )
-                        db.session.add(obiettivo)
-                        db.session.commit()
-                        
-                        dati_salvati = obiettivo.to_dict()
-                        tipo_dato_salvato = 'obiettivo'
-                        current_app.logger.info(f"✅ Obiettivo salvato: {nome}")
-                    
-                    # 2. Prova IMPEGNO
-                    if not tipo_dato_salvato:
-                        # Pattern migliorato per impegni
-                        match = re.search(r'(oggi|domani)\s+(.+?)\s+(?:alle|dalle|ore)\s+(\d{1,2})(?::(\d{2}))?', msg_lower)
-                        if not match:
-                            match = re.search(r'(lunedì|martedì|mercoledì|giovedì|venerdì|sabato|domenica)\s+(.+?)\s+(?:alle|dalle|ore)\s+(\d{1,2})(?::(\d{2}))?', msg_lower)
-                        
-                        if match:
-                            giorno_str = match.group(1)
-                            nome = match.group(2).strip().title()
-                            ora = int(match.group(3))
-                            minuti = int(match.group(4)) if match.group(4) else 0
-                            
-                            # Calcola data
-                            data_impegno = datetime.now()
-                            if giorno_str == 'domani':
-                                data_impegno += timedelta(days=1)
-                            
-                            data_inizio = datetime.combine(data_impegno.date(), datetime.min.time().replace(hour=ora, minute=minuti))
-                            data_fine = data_inizio + timedelta(hours=1)
-                            
-                            impegno = Impegno(
-                                user_id=profilo.id,
-                                nome=nome,
-                                data_inizio=data_inizio,
-                                data_fine=data_fine,
-                                tipo='personale'
-                            )
-                            db.session.add(impegno)
-                            db.session.commit()
-                            
-                            dati_salvati = impegno.to_dict()
-                            tipo_dato_salvato = 'impegno'
-                            current_app.logger.info(f"✅ Impegno salvato: {nome}")
-                    
-                    # 3. Prova SPESA
-                    if not tipo_dato_salvato:
-                        match = re.search(r'(?:speso|spesa|pagato|costo|comprato)\s+(\d+(?:[.,]\d+)?)\s*(?:euro|€|eur)?', msg_lower)
-                        if not match:
-                            match = re.search(r'(\d+(?:[.,]\d+)?)\s*(?:euro|€|eur)\s+(?:per|di|in)\s+(.+)', msg_lower)
-                        
-                        if match:
-                            importo_str = match.group(1).replace(',', '.')
-                            importo = float(importo_str)
-                            
-                            # Descrizione: tutto tranne l'importo
-                            descrizione = re.sub(r'\d+(?:[.,]\d+)?\s*(?:euro|€|eur)?', '', messaggio).strip()
-                            descrizione = re.sub(r'(?:speso|spesa|pagato|costo|comprato|per|di|in)', '', descrizione, flags=re.IGNORECASE).strip()
-                            descrizione = descrizione if descrizione else 'Spesa generica'
-                            
-                            spese_mgr = SpeseManager(profilo)
-                            categoria = spese_mgr.categorizza_spesa(descrizione)
-                            
-                            spesa = Spesa(
-                                user_id=profilo.id,
-                                importo=importo,
-                                descrizione=descrizione.title(),
-                                categoria=categoria,
-                                data=date.today(),
-                                ora=datetime.now().time()
-                            )
-                            db.session.add(spesa)
-                            db.session.commit()
-                            
-                            dati_salvati = spesa.to_dict()
-                            tipo_dato_salvato = 'spesa'
-                            current_app.logger.info(f"✅ Spesa salvata: €{importo}")
-                    
-                    # 4. Se non è niente di specifico, potrebbe essere DIARIO
-                    if not tipo_dato_salvato and len(messaggio.split()) > 8:
-                        # È una frase lunga, probabilmente riflessione
-                        analisi_diario = DiarioManager.analizza_testo(messaggio)
-                        
-                        diario_entry = DiarioGiornaliero(
-                            user_id=profilo.id,
-                            data=date.today(),
-                            testo=messaggio,
-                            sentiment=analisi_diario['sentiment']
-                        )
-                        
-                        diario_entry.set_riflessioni(analisi_diario['riflessioni'])
-                        diario_entry.parole_chiave = ','.join(analisi_diario['parole_chiave'])
-                        
-                        db.session.add(diario_entry)
-                        db.session.commit()
-                        
-                        dati_salvati = diario_entry.to_dict()
-                        tipo_dato_salvato = 'diario'
-                        current_app.logger.info(f"✅ Diario salvato")
-                        
-                except Exception as extract_error:
-                    current_app.logger.warning(f"⚠️ Estrazione dati fallita: {str(extract_error)}")
-                
-                # Costruisci risposta finale
-                risposta_finale = f"🤖 **AI Locale:**\n\n{risposta_ai}"
-                
-                if dati_salvati:
-                    risposta_finale += f"\n\n✅ **Ho salvato:** {tipo_dato_salvato.title()}"
-                
-                risposta['risposta'] = risposta_finale
-                risposta['tipo_riconosciuto'] = tipo_dato_salvato if tipo_dato_salvato else 'ai_processed'
+                # Costruisci risposta finale (AI solo per conversazione, non salva)
+                risposta['risposta'] = f"🤖 **AI Locale:**\n\n{risposta_ai}"
+                risposta['tipo_riconosciuto'] = 'ai_processed'
                 risposta['ai_used'] = True
                 risposta['ai_model'] = 'gemma3:1b'
-                risposta['dati'] = dati_salvati
+                risposta['dati'] = None
                 
                 current_app.logger.info(
-                    f"✅ AI fallback success with data extraction",
-                    extra={'input': messaggio, 'model': 'gemma3:1b', 'saved': tipo_dato_salvato}
+                    f"✅ AI fallback success (conversational only)",
+                    extra={'input': messaggio, 'model': 'gemma3:1b'}
                 )
                 
                 return jsonify(risposta)
@@ -285,7 +154,11 @@ def chat():
         
         # Determina la data (prossima occorrenza del giorno se specificato)
         data_impegno = datetime.now()
-        if 'giorno' in dati_impegno:
+        
+        # Se c'è una data specifica (es. "giovedi 6 novembre 2025"), usala
+        if 'data_specifica' in dati_impegno:
+            data_impegno = datetime.strptime(dati_impegno['data_specifica'], '%Y-%m-%d')
+        elif 'giorno' in dati_impegno:
             giorno_str = dati_impegno['giorno'].lower()
             
             # Gestisci "oggi" e "domani"

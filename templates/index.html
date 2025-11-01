@@ -30,20 +30,258 @@
             margin: 0 auto;
         }
 
-        .header {
+        /* Hero Section */
+        .hero {
             text-align: center;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            padding: 60px 20px;
+            position: relative;
         }
 
-        .header h1 {
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            animation: pulse 2s infinite;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 800;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .hero .subtitle {
+            font-size: 1.4em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: none;
+            margin-bottom: 40px;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 40px;
+        }
+
+        .hero-feature {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+
+        .hero-feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .hero-feature-icon {
             font-size: 2.5em;
             margin-bottom: 10px;
         }
 
-        .header p {
+        .hero-feature-title {
             font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .hero-feature-desc {
+            font-size: 0.9em;
             opacity: 0.9;
+        }
+
+        /* Onboarding Modal */
+        .onboarding-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .onboarding-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.5s;
+        }
+
+        .onboarding-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .onboarding-close:hover {
+            color: #333;
+        }
+
+        .onboarding-step {
+            display: none;
+        }
+
+        .onboarding-step.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .onboarding-step h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .onboarding-step p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .onboarding-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .onboarding-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .onboarding-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .onboarding-btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .onboarding-btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .onboarding-btn-secondary {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .onboarding-btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .onboarding-dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .onboarding-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s;
+        }
+
+        .onboarding-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2em;
+            }
+            .hero .subtitle {
+                font-size: 1.1em;
+            }
+            .hero-cta {
+                font-size: 1em;
+                padding: 15px 35px;
+            }
         }
 
         .main-content {
@@ -468,10 +706,104 @@
         <span id="langIcon">🇮🇹 IT</span>
     </button>
     
+    <!-- Onboarding Modal -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+        <div class="onboarding-modal">
+            <button class="onboarding-close" onclick="chiudiOnboarding()">×</button>
+            
+            <!-- Step 1 -->
+            <div class="onboarding-step active" data-step="1">
+                <h2>👋 Benvenuto!</h2>
+                <p>Ciao! Sono il tuo <strong>Assistente Intelligente</strong> personale.</p>
+                <p>Ti aiuterò a organizzare <strong>obiettivi</strong>, <strong>impegni</strong>, <strong>spese</strong> e molto altro usando l'intelligenza artificiale.</p>
+                <div class="onboarding-example">
+                    💡 <strong>Tip:</strong> Parla con me in linguaggio naturale! Non servono comandi complicati.
+                </div>
+                <div class="onboarding-buttons">
+                    <button class="onboarding-btn onboarding-btn-secondary" onclick="chiudiOnboarding()">Salta</button>
+                    <button class="onboarding-btn onboarding-btn-primary" onclick="prossimoStep()">Avanti →</button>
+                </div>
+                <div class="onboarding-dots">
+                    <div class="onboarding-dot active"></div>
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot"></div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="onboarding-step" data-step="2">
+                <h2>💬 Come Usarmi</h2>
+                <p>È semplicissimo! Scrivi nella chat cosa vuoi fare:</p>
+                <div class="onboarding-example">
+                    <strong>Esempi:</strong><br>
+                    📚 "Voglio studiare Python 3 ore a settimana"<br>
+                    📅 "Domani palestra ore 18"<br>
+                    💰 "Speso 50€ per spesa"<br>
+                    📔 "Oggi mi sento motivato!"
+                </div>
+                <p>Io capisco cosa vuoi e lo organizzo automaticamente! 🎯</p>
+                <div class="onboarding-buttons">
+                    <button class="onboarding-btn onboarding-btn-secondary" onclick="stepPrecedente()">← Indietro</button>
+                    <button class="onboarding-btn onboarding-btn-primary" onclick="prossimoStep()">Avanti →</button>
+                </div>
+                <div class="onboarding-dots">
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot active"></div>
+                    <div class="onboarding-dot"></div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="onboarding-step" data-step="3">
+                <h2>🚀 Pronto a Iniziare?</h2>
+                <p>Hai tutto sotto controllo:</p>
+                <div class="onboarding-example">
+                    ✅ <strong>Calendario</strong> - Vedi tutti i tuoi impegni<br>
+                    ✅ <strong>Obiettivi</strong> - Tracking automatico progresso<br>
+                    ✅ <strong>Budget</strong> - Controllo spese in tempo reale<br>
+                    ✅ <strong>Diario</strong> - Riflessioni e sentiment analysis<br>
+                    ✅ <strong>Analytics</strong> - Grafici e statistiche
+                </div>
+                <p><strong>Prova ora!</strong> Clicca uno degli esempi nella chat per iniziare! 🎉</p>
+                <div class="onboarding-buttons">
+                    <button class="onboarding-btn onboarding-btn-secondary" onclick="stepPrecedente()">← Indietro</button>
+                    <button class="onboarding-btn onboarding-btn-primary" onclick="inizia()">Inizia! 🚀</button>
+                </div>
+                <div class="onboarding-dots">
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot active"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="header">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-badge">✨ Gratis • Intelligente • In Italiano 🇮🇹</div>
             <h1>🧠 Assistente Intelligente</h1>
-            <p>Il tuo compagno per organizzare vita, studio e obiettivi</p>
+            <p class="subtitle">Organizza vita, studio e obiettivi con l'intelligenza artificiale. Tutto in linguaggio naturale.</p>
+            <button class="hero-cta" onclick="scrollToChat()">Inizia Subito - È Gratis!</button>
+            
+            <!-- Features -->
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">💬</div>
+                    <div class="hero-feature-title">Chat Intelligente</div>
+                    <div class="hero-feature-desc">Parla come fai con un amico, l'AI capisce tutto</div>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">📊</div>
+                    <div class="hero-feature-title">Analytics Automatiche</div>
+                    <div class="hero-feature-desc">Grafici e statistiche senza sforzo</div>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">🎯</div>
+                    <div class="hero-feature-title">Obiettivi Tracciati</div>
+                    <div class="hero-feature-desc">Raggiungi i tuoi goal passo dopo passo</div>
+                </div>
+            </div>
         </div>
 
         <div class="main-content">
@@ -2310,6 +2642,76 @@
             const seconds = String(date.getSeconds()).padStart(2, '0');
             return `${year}${month}${day}T${hours}${minutes}${seconds}`;
         }
+
+        // ============================================
+        // ONBOARDING TUTORIAL
+        // ============================================
+        
+        let currentOnboardingStep = 1;
+        
+        function mostraOnboarding() {
+            // Controlla se è la prima visita
+            const giaMostrato = localStorage.getItem('onboarding_completato');
+            if (!giaMostrato) {
+                document.getElementById('onboardingOverlay').style.display = 'flex';
+            }
+        }
+        
+        function chiudiOnboarding() {
+            document.getElementById('onboardingOverlay').style.display = 'none';
+            localStorage.setItem('onboarding_completato', 'true');
+        }
+        
+        function prossimoStep() {
+            const steps = document.querySelectorAll('.onboarding-step');
+            const dots = document.querySelectorAll('.onboarding-dot');
+            
+            if (currentOnboardingStep < steps.length) {
+                // Nascondi step corrente
+                steps[currentOnboardingStep - 1].classList.remove('active');
+                dots[currentOnboardingStep - 1].classList.remove('active');
+                
+                // Mostra prossimo step
+                currentOnboardingStep++;
+                steps[currentOnboardingStep - 1].classList.add('active');
+                dots[currentOnboardingStep - 1].classList.add('active');
+            }
+        }
+        
+        function stepPrecedente() {
+            const steps = document.querySelectorAll('.onboarding-step');
+            const dots = document.querySelectorAll('.onboarding-dot');
+            
+            if (currentOnboardingStep > 1) {
+                // Nascondi step corrente
+                steps[currentOnboardingStep - 1].classList.remove('active');
+                dots[currentOnboardingStep - 1].classList.remove('active');
+                
+                // Mostra step precedente
+                currentOnboardingStep--;
+                steps[currentOnboardingStep - 1].classList.add('active');
+                dots[currentOnboardingStep - 1].classList.add('active');
+            }
+        }
+        
+        function inizia() {
+            chiudiOnboarding();
+            scrollToChat();
+            // Focus sul campo input
+            setTimeout(() => {
+                document.querySelector('.chat-input input').focus();
+            }, 500);
+        }
+        
+        function scrollToChat() {
+            const chatElement = document.querySelector('.chat-container');
+            chatElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Mostra onboarding al caricamento (se prima visita)
+        window.addEventListener('load', () => {
+            setTimeout(mostraOnboarding, 1000);
+        });
     </script>
 </body>
 </html>

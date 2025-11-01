@@ -422,6 +422,21 @@
                         🎯 Check budget
                     </button>
                 </div>
+                <div class="quick-actions" style="margin-top: 10px;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">🔊 Lettura Vocale:</strong>
+                    <button class="quick-action" onclick="leggiImpegniGiorno('oggi')">
+                        🔊 Impegni oggi
+                    </button>
+                    <button class="quick-action" onclick="leggiImpegniGiorno('domani')">
+                        🔊 Impegni domani
+                    </button>
+                    <button class="quick-action" onclick="apriSelettoreGiorno()">
+                        📅 Scegli giorno
+                    </button>
+                    <button class="quick-action" onclick="stopLettura()">
+                        ⏹️ Stop
+                    </button>
+                </div>
             </div>
 
             <!-- Obiettivi -->
@@ -1261,6 +1276,117 @@
             } catch (error) {
                 console.error('Errore domanda spese:', error);
                 aggiungiMessaggio('Si è verificato un errore. Riprova.', 'assistant');
+            }
+        }
+
+        // ============================================
+        // LETTURA VOCALE IMPEGNI
+        // ============================================
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+
+        async function leggiImpegniGiorno(quando) {
+            let dataTarget;
+            let descrizioneGiorno;
+            
+            const oggi = new Date();
+            oggi.setHours(0, 0, 0, 0);
+            
+            if (quando === 'oggi') {
+                dataTarget = oggi;
+                descrizioneGiorno = 'oggi';
+            } else if (quando === 'domani') {
+                dataTarget = new Date(oggi);
+                dataTarget.setDate(dataTarget.getDate() + 1);
+                descrizioneGiorno = 'domani';
+            } else {
+                // Data specifica
+                dataTarget = new Date(quando);
+                descrizioneGiorno = dataTarget.toLocaleDateString('it-IT', { 
+                    weekday: 'long', 
+                    day: 'numeric', 
+                    month: 'long' 
+                });
+            }
+            
+            const dataISO = dataTarget.toISOString().split('T')[0];
+            
+            try {
+                const response = await fetch(`/api/impegni/giorno/${dataISO}`);
+                const impegni = await response.json();
+                
+                if (impegni.length === 0) {
+                    const testo = `Non ci sono impegni per ${descrizioneGiorno}`;
+                    parla(testo);
+                    aggiungiMessaggio(`🔊 ${testo}`, 'assistant');
+                    return;
+                }
+                
+                // Costruisci testo da leggere
+                let testo = `Hai ${impegni.length} impegni per ${descrizioneGiorno}. `;
+                
+                impegni.forEach((imp, index) => {
+                    const inizio = new Date(imp.data_inizio);
+                    const fine = new Date(imp.data_fine);
+                    const oraInizio = inizio.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                    const oraFine = fine.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                    
+                    testo += `${index + 1}. ${imp.nome}, dalle ${oraInizio} alle ${oraFine}. `;
+                });
+                
+                parla(testo);
+                aggiungiMessaggio(`🔊 Sto leggendo gli impegni di ${descrizioneGiorno}...`, 'assistant');
+                
+            } catch (error) {
+                console.error('Errore lettura impegni:', error);
+                aggiungiMessaggio('Errore nel recupero degli impegni.', 'assistant');
+            }
+        }
+
+        function parla(testo) {
+            // Ferma eventuali letture in corso
+            synth.cancel();
+            
+            currentUtterance = new SpeechSynthesisUtterance(testo);
+            currentUtterance.lang = 'it-IT';
+            currentUtterance.rate = 0.9; // Velocità leggermente più lenta
+            currentUtterance.pitch = 1.0;
+            
+            // Event listener per quando finisce
+            currentUtterance.onend = () => {
+                console.log('Lettura completata');
+            };
+            
+            currentUtterance.onerror = (event) => {
+                console.error('Errore lettura vocale:', event);
+            };
+            
+            synth.speak(currentUtterance);
+        }
+
+        function stopLettura() {
+            synth.cancel();
+            aggiungiMessaggio('⏹️ Lettura interrotta.', 'assistant');
+        }
+
+        function apriSelettoreGiorno() {
+            const data = prompt('Inserisci la data (formato: YYYY-MM-DD o gg/mm/aaaa):', 
+                                new Date().toISOString().split('T')[0]);
+            
+            if (data) {
+                let dataFormattata;
+                
+                // Gestisci formato italiano gg/mm/aaaa
+                if (data.includes('/')) {
+                    const parti = data.split('/');
+                    if (parti.length === 3) {
+                        dataFormattata = `${parti[2]}-${parti[1].padStart(2, '0')}-${parti[0].padStart(2, '0')}`;
+                    }
+                } else {
+                    dataFormattata = data;
+                }
+                
+                leggiImpegniGiorno(dataFormattata);
             }
         }
     </script>

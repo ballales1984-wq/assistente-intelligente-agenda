@@ -1,0 +1,253 @@
+<!-- 
+═══════════════════════════════════════════════════════════════════
+TEMPLATE CODICI GOOGLE - Copia e Incolla quando Ricevi i Tuoi Codici
+═══════════════════════════════════════════════════════════════════
+
+ISTRUZIONI:
+1. Sostituisci G-XXXXXXXXX con il TUO Google Analytics ID
+2. Sostituisci ca-pub-XXXXXXXXXXXXXXXX con il TUO AdSense Publisher ID
+3. Copia il blocco "GOOGLE ANALYTICS" nell'<head> di templates/index.html (riga 11, dopo <title>)
+4. Copia i blocchi "ADSENSE" nelle posizioni indicate
+5. Commit e push su GitHub
+6. Render deploya automaticamente in 3-5 minuti
+
+-->
+
+<!-- ========================================== -->
+<!-- GOOGLE ANALYTICS -->
+<!-- ========================================== -->
+<!-- POSIZIONE: Nell'<head> DOPO <title>, PRIMA di </head> -->
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XXXXXXXXX');
+  
+  // Eventi custom per tracking engagement
+  function trackEvent(eventName, category, label) {
+    gtag('event', eventName, {
+      'event_category': category,
+      'event_label': label
+    });
+  }
+</script>
+
+<!-- Poi aggiungi tracking eventi nelle funzioni JavaScript: -->
+<!--
+// Esempio nella funzione inviaMessaggio:
+trackEvent('chat_message', 'engagement', 'User sent message');
+
+// Esempio quando crea obiettivo:
+trackEvent('goal_created', 'conversion', 'User created goal');
+
+// Esempio export:
+trackEvent('data_export', 'engagement', 'User exported data');
+-->
+
+
+<!-- ========================================== -->
+<!-- GOOGLE ADSENSE - TAG VERIFICA -->
+<!-- ========================================== -->
+<!-- POSIZIONE: Nell'<head> DOPO Google Analytics -->
+
+<script data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+<!-- ========================================== -->
+<!-- ADSENSE AD #1: BANNER TOP -->
+<!-- ========================================== -->
+<!-- POSIZIONE: DOPO la hero section, PRIMA della main-content -->
+<!-- Copia questo blocco dopo </div> della hero (circa riga 807) -->
+
+<div style="text-align: center; margin: 30px auto; max-width: 970px;">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- Banner Top -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="1111111111"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+
+
+<!-- ========================================== -->
+<!-- ADSENSE AD #2: SIDEBAR (OPZIONALE) -->
+<!-- ========================================== -->
+<!-- POSIZIONE: Crea una terza colonna nel grid, oppure in una card vuota -->
+<!-- Per ora SKIP, aggiungi dopo se vuoi -->
+
+
+<!-- ========================================== -->
+<!-- ADSENSE AD #3: IN-FEED NATIVE -->
+<!-- ========================================== -->
+<!-- POSIZIONE: Tra le card, es. dopo "Diario" e prima di "Calendario" -->
+<!-- Copia questo circa riga 1400 (dopo card diario) -->
+
+<div class="card" style="background: #f8f9fa; border: 2px dashed #ddd;">
+    <p style="text-align: center; color: #999; font-size: 0.85em; margin-bottom: 10px;">Pubblicità</p>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- In-Feed Native -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="fluid"
+         data-ad-layout-key="-fb+5w+4e-db+86"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="2222222222"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+
+
+<!-- ========================================== -->
+<!-- ADSENSE AD #4: BOTTOM (Footer Before) -->
+<!-- ========================================== -->
+<!-- POSIZIONE: PRIMA del footer, dopo analytics -->
+
+<div style="text-align: center; margin: 40px auto; max-width: 728px;">
+    <p style="color: white; font-size: 0.9em; margin-bottom: 10px; opacity: 0.8;">Pubblicità</p>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- Banner Bottom -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="3333333333"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+
+
+<!-- ========================================== -->
+<!-- POSIZIONI CONSIGLIATE RIASSUNTO -->
+<!-- ========================================== -->
+<!--
+
+LAYOUT FINALE CON ADS:
+
+┌────────────────────────────────┐
+│  Header (Dark/Lang toggles)    │
+├────────────────────────────────┤
+│  Hero Section (nuovo!)         │
+├────────────────────────────────┤
+│  📢 AD #1: Banner Top (728x90) │ ← PRIMA POSIZIONE
+├────────────────────────────────┤
+│  Main Content:                 │
+│  ┌──────────────────────────┐  │
+│  │  Chat                    │  │
+│  │  Obiettivi               │  │
+│  │  Piano                   │  │
+│  │  Diario                  │  │
+│  ├──────────────────────────┤  │
+│  │  📢 AD #3: In-Feed       │  │ ← SECONDA POSIZIONE
+│  ├──────────────────────────┤  │
+│  │  Budget                  │  │
+│  │  Calendario              │  │
+│  │  Analytics               │  │
+│  └──────────────────────────┘  │
+├────────────────────────────────┤
+│  📢 AD #4: Banner Bottom       │ ← TERZA POSIZIONE
+├────────────────────────────────┤
+│  Footer (nuovo!)               │
+└────────────────────────────────┘
+
+3 ads = Ottimo balance (non invasivo ma redditizio)
+
+-->
+
+<!-- ========================================== -->
+<!-- REVENUE STIMATO -->
+<!-- ========================================== -->
+<!--
+
+CON 3 ADS POSIZIONATI BENE:
+
+Traffico: 1000 visite/giorno
+Pageviews: 3000/giorno (3 page per visita)
+Impressions ads: 9000/giorno (3 ads per page)
+CTR: 1% (90 click/giorno)
+CPC: €0.20-0.50 (media Italia)
+
+Revenue/Giorno: 90 × €0.35 = €31.50
+Revenue/Mese: €945
+Revenue/Anno: €11,340
+
+Scenario conservativo (500 visite/giorno): €470/mese = €5,640/anno
+Scenario ottimistico (2000 visite/giorno): €1,890/mese = €22,680/anno
+
+-->
+
+<!-- ========================================== -->
+<!-- BEST PRACTICES -->
+<!-- ========================================== -->
+<!--
+
+✅ DO:
+- Posiziona ads DOPO contenuto utile
+- Usa "Pubblicità" come label chiaro
+- Mantieni ads discrete (no pop-up!)
+- Max 3-4 ads per pagina
+- Responsive ads (data-full-width-responsive="true")
+
+❌ DON'T:
+- Troppi ads (Google penalizza)
+- Click-bait "Clicca qui"
+- Nascondere contenuto dietro ads
+- Pop-up invasivi
+- Auto-click sugli ads (BANNATO!)
+
+-->
+
+
+<!-- ========================================== -->
+<!-- PROSSIMI PASSI -->
+<!-- ========================================== -->
+<!--
+
+QUANDO RICEVI I CODICI GOOGLE:
+
+1. ✅ Apri templates/index.html
+2. ✅ Trova <head> (circa riga 3-13)
+3. ✅ Incolla blocco GOOGLE ANALYTICS dopo <title>
+4. ✅ Incolla blocco TAG VERIFICA ADSENSE dopo Analytics
+5. ✅ Trova hero section (circa riga 782)
+6. ✅ Incolla AD #1 dopo </div> hero
+7. ✅ Trova card diario (cerca "📔 Diario")
+8. ✅ Incolla AD #3 dopo card diario
+9. ✅ Trova footer (cerca <footer)
+10. ✅ Incolla AD #4 PRIMA del footer
+11. ✅ git add . && git commit -m "💰 Google Analytics + AdSense installati"
+12. ✅ git push origin main
+13. ✅ Aspetta deploy Render (3-5 min)
+14. ✅ Verifica su Google Analytics → Tempo reale
+15. ✅ Aspetta approvazione AdSense (1-7 giorni)
+
+FATTO! 🎉
+
+-->
+
+<!-- ========================================== -->
+<!-- SUPPORT -->
+<!-- ========================================== -->
+<!--
+
+Hai domande su AdSense?
+📖 Guida: https://support.google.com/adsense
+💬 Forum: https://support.google.com/adsense/community
+
+Hai domande su Analytics?
+📖 Guida: https://support.google.com/analytics
+🎓 Academy: https://analytics.google.com/analytics/academy/
+
+-->
+

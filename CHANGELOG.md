@@ -262,18 +262,102 @@ Aggiunti 3 nuovi moduli intelligenti che estendono l'assistente con analisi temp
 
 ---
 
+## [1.2.0] - 2025-11-01
+
+### 💰 Sistema Gestione Spese Completo
+
+Aggiunto modulo completo per tracking e analisi spese quotidiane con categorizzazione automatica!
+
+#### Added
+
+**💰 Modello Spesa**
+- Tracking spese con importo, descrizione, categoria
+- Data e ora automatiche
+- Campi opzionali: luogo, note, metodo pagamento
+- Classificazione necessaria/voluttuaria
+- Supporto spese ricorrenti
+
+**🧠 SpeseManager**
+- Categorizzazione automatica (10 categorie predefinite)
+- Analisi periodo con breakdown dettagliato
+- Calcolo spese oggi/settimana/mese
+- Budget tracking con proiezioni real-time
+- Alert intelligenti budget (🟢🟡🔴)
+- Statistiche per categoria
+- Top spese recenti
+- Confronto periodi
+- Export CSV
+- Insights automatici
+
+**🏷️ 10 Categorie Automatiche:**
+- Cibo, Trasporti, Svago, Salute, Casa
+- Abbigliamento, Tecnologia, Istruzione, Regali, Altro
+
+**🔌 7 Nuovi Endpoint API:**
+- `GET/POST /api/spese` - CRUD spese
+- `GET/PUT/DELETE /api/spese/<id>` - Gestione singola
+- `GET /api/spese/oggi` - Analisi giornaliera
+- `GET /api/spese/settimana` - Analisi settimanale
+- `GET /api/spese/mese` - Analisi mensile
+- `POST /api/spese/budget` - Budget check con proiezioni
+- `GET /api/spese/categoria/<cat>` - Stats categoria
+- `GET /api/spese/top` - Top spese
+
+**🎨 UI Enhancements:**
+- Nuova card "Budget & Spese" con 3 stat-box
+- Visualizzazione ultime 5 spese
+- 4 quick actions per domande budget
+- Auto-refresh dopo registrazione spesa
+- Esempio spesa nei quick actions
+
+**💡 Features Intelligenti:**
+- Proiezione fine mese basata su media
+- Calcolo budget giornaliero rimanente
+- Alert superamento budget
+- Breakdown necessarie vs voluttuarie
+- Pattern spese ricorrenti
+- Trend mensili
+
+**📚 Documentazione:**
+- SPESE_GUIDA.md completa con esempi
+
+#### Changed
+- InputManager esteso con 2 pattern spese
+- UserProfile con relationship spese
+- UI chat con esempio spesa
+- Sistema ora gestisce anche aspetto finanziario
+
+#### Statistics
+- +800 righe di codice
+- +2 file nuovi (Spesa model, SpeseManager)
+- +7 API endpoints
+- +4 UI quick actions
+- +10 categorie automatiche
+
+#### Examples
+```
+"Spesa 12 euro pranzo"       → €12, cibo
+"50 euro benzina"            → €50, trasporti
+"Ieri 25 euro cinema"        → €25, svago (ieri)
+"5,50 euro caffè"            → €5.50, cibo
+```
+
+---
+
 ## [Unreleased]
 
 ### 🚧 In Sviluppo
+- Grafici visuali spese per categoria
+- Export spese PDF
 - Notifiche push/email/Telegram
 - Export piano (PDF, iCal)
 - PWA per mobile
 - Drag & drop calendario
 - Impegni ricorrenti UI
 - Click per aggiungere su calendario
-- Grafici visuali per statistiche
 
 ### 🔮 Pianificato
+- Grafici trend spese temporali
 - Integrazione Google Calendar
 - GPT API per NLP avanzato
 - Dashboard analytics con grafici
@@ -281,6 +365,7 @@ Aggiunti 3 nuovi moduli intelligenti che estendono l'assistente con analisi temp
 - App mobile nativa
 - Dark mode
 - Internazionalizzazione (i18n)
+- Sincronizzazione bancaria
 
 ---
 

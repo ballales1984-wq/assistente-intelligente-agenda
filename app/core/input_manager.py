@@ -8,12 +8,12 @@ from app.core.diario_manager import DiarioManager
 class InputManager:
     """Gestisce e analizza l'input testuale dell'utente"""
     
-    # Pattern per riconoscere intenzioni comuni
+    # Pattern per riconoscere intenzioni comuni (migliorati!)
     PATTERNS = {
-        'obiettivo_ore': r'(?:studiare|fare|dedicare|imparare|allenarmi|esercitarmi|lavorare su|praticare)\s+(.+?)\s+(\d+)\s*(?:ore?|h)\s*(?:a|alla|per)?\s*settimana',
+        'obiettivo_ore': r'(?:studiare|fare|dedicare|imparare|allenarmi|esercitarmi|lavorare su|praticare)\s+(.+?)\s+(\d+)\s*(?:ore?|h)\s*(?:a|alla|per|ogni|alla|al)?\s*settimana',
         'obiettivo_durata': r'(?:voglio|devo|vorrei|mi piacerebbe)\s+(.+?)\s+per\s+(\d+)\s*(?:giorni|settimane|mesi)',
-        'impegno_specifico': r'(.+?)\s+(?:dalle|dal|alle|al|dalle\s+ore|alle\s+ore)\s+(\d{1,2}):?(\d{2})?\s*(?:alle|al)?\s*(\d{1,2})?:?(\d{2})?',
-        'impegno_oggi_domani': r'(?:oggi|domani)\s+(.+?)\s+(?:alle|dalle|al)\s+(\d{1,2}):?(\d{2})?',
+        'impegno_specifico': r'(.+?)\s+(?:dalle|dal|alle|al|dalle\s+ore|alle\s+ore)\s+(\d{1,2}):?(\d{2})?\s*(?:alle|al|-|–)?\s*(\d{1,2})?:?(\d{2})?',
+        'impegno_oggi_domani': r'(?:oggi|domani)\s+(.+?)\s+(?:alle|dalle|al|\s)(\d{1,2}):?(\d{2})?(?:\s*-\s*(\d{1,2}):?(\d{2})?)?',
         'stato_emotivo': r'(?:sono|mi sento|sto|mi trovo)\s+(stanco|stanca|concentrato|concentrata|rilassato|rilassata|stressato|stressata|motivato|motivata|energico|energica|esausto|esausta)',
         'preferenza_riposo': r'(?:voglio|preferisco|vorrei|ho bisogno di)\s+(?:riposare|rilassarmi|pause|più pause|pause più lunghe|dormire di più)',
         'giorno_settimana': r'(luned[ìi]|marted[ìi]|mercoled[ìi]|gioved[ìi]|venerd[ìi]|sabato|domenica|oggi|domani)',
@@ -21,8 +21,9 @@ class InputManager:
         'modifica_piano': r'(?:sposta|cambia|modifica|rimuovi|elimina)\s+(.+)',
         'richiesta_aiuto': r'(?:aiutami|aiuto|come faccio|suggeriscimi|consigliami)',
         'tempo_disponibile': r'(?:ho|dispongo di)\s+(\d+)\s*(?:ore?|h|minuti|min)\s+(?:libere?|liberi|disponibili)',
-        'spesa': r'(?:spesa|speso|pagato|costo|ho speso)\s+(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)?\s*(?:per|di)?\s*([^.!?\n]{1,100})',
-        'spesa_diretta': r'(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)\s+(?:per|di)\s+([^.!?\n]{1,100})',
+        'spesa': r'(?:spesa|speso|pagato|costo|ho speso|comprato|comprata|preso)\s+(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)?\s*(?:per|di)?\s*([^.!?\n]{1,100})',
+        'spesa_diretta': r'(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)\s+(?:per|di|per|di|in)?\s+([^.!?\n]{1,100})',
+        'spesa_solo_importo': r'^(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)\s+(.+)',
     }
     
     @staticmethod
@@ -69,6 +70,18 @@ class InputManager:
                 'nome': match.group(1).strip().title(),
                 'durata_settimanale': float(match.group(2)),
                 'tipo': InputManager._identifica_tipo_attivita(match.group(1))
+            }
+            return risultato
+        
+        # Riconosci impegno oggi/domani con formato semplice (es. "18-19")
+        match_semplice = re.search(r'(?:oggi|domani)\s+(.+?)\s+(\d{1,2})\s*-\s*(\d{1,2})', testo, re.IGNORECASE)
+        if match_semplice:
+            risultato['tipo'] = 'impegno'
+            risultato['dati'] = {
+                'nome': match_semplice.group(1).strip().title(),
+                'ora_inizio': f"{match_semplice.group(2)}:00",
+                'ora_fine': f"{match_semplice.group(3)}:00",
+                'giorno': 'oggi' if 'oggi' in testo else 'domani'
             }
             return risultato
         
@@ -148,6 +161,8 @@ class InputManager:
         match = re.search(InputManager.PATTERNS['spesa'], testo, re.IGNORECASE)
         if not match:
             match = re.search(InputManager.PATTERNS['spesa_diretta'], testo, re.IGNORECASE)
+        if not match:
+            match = re.search(InputManager.PATTERNS['spesa_solo_importo'], testo, re.IGNORECASE)
         
         if match:
             importo_str = match.group(1).replace(',', '.')
@@ -167,7 +182,35 @@ class InputManager:
             }
             return risultato
         
-        # Input non riconosciuto
+        # Riconosci domande comuni
+        domande = {
+            r'(?:cosa|che cosa|che)\s+(?:devo|dovrei|posso)\s+fare\s+(?:oggi|adesso|ora)': 'domanda_oggi',
+            r'(?:quanto|quanti)\s+(?:ho\s+)?speso': 'domanda_spese',
+            r'(?:mostra|fammi vedere|visualizza)\s+(?:i\s+)?(?:miei\s+)?obiettivi': 'domanda_obiettivi',
+            r'(?:come|qual è|qual\s+è)\s+(?:il\s+mio\s+)?piano': 'domanda_piano',
+            r'(?:cosa|che)\s+(?:ho fatto|abbiamo fatto)': 'domanda_passato'
+        }
+        
+        for pattern, tipo_domanda in domande.items():
+            if re.search(pattern, testo, re.IGNORECASE):
+                risultato['tipo'] = 'domanda'
+                risultato['dati'] = {'tipo_domanda': tipo_domanda}
+                return risultato
+        
+        # Se contiene riflessioni personali o nomi propri, è diario
+        if any(word in testo for word in ['ho parlato', 'ho incontrato', 'ho capito', 'ho imparato', 'mi è piaciuto', 'oggi', 'stamattina', 'stasera']):
+            analisi_diario = DiarioManager.analizza_testo(testo_originale)
+            risultato['tipo'] = 'diario'
+            risultato['dati'] = {
+                'testo': testo_originale,
+                'riflessioni': analisi_diario['riflessioni'],
+                'parole_chiave': analisi_diario['parole_chiave'],
+                'sentiment': analisi_diario['sentiment'],
+                'data': DiarioManager.estrai_data_da_testo(testo)
+            }
+            return risultato
+        
+        # Input non riconosciuto - fallback a diario per non perdere nulla
         risultato['tipo'] = 'sconosciuto'
         return risultato
     

@@ -341,20 +341,20 @@ class FuturoManager:
     def _calcola_densita(self, ore_occupate: float, ore_disponibili: float) -> str:
         """Calcola densità giornata"""
         if ore_disponibili == 0:
-            return 'leggera'
+            return 'Tranquilla'
         
         percentuale = (ore_occupate / ore_disponibili) * 100
         
         if percentuale >= 80:
-            return 'molto_piena'
+            return 'Molto Intensa'
         elif percentuale >= 60:
-            return 'piena'
+            return 'Intensa'
         elif percentuale >= 40:
-            return 'moderata'
+            return 'Equilibrata'
         elif percentuale >= 20:
-            return 'leggera'
+            return 'Tranquilla'
         else:
-            return 'molto_leggera'
+            return 'Molto Tranquilla'
     
     def _suggerimenti_preparazione(
         self,
@@ -374,13 +374,13 @@ class FuturoManager:
             suggerimenti.append(f"📅 Tra {giorni_mancanti} giorni - Pianifica in anticipo")
         
         # Suggerimenti basati su densità
-        if densita == 'molto_piena':
-            suggerimenti.append("🔥 Giornata molto piena - Riposa bene il giorno prima")
+        if densita == 'Molto Intensa':
+            suggerimenti.append("🔥 Giornata molto intensa - Riposa bene il giorno prima")
             suggerimenti.append("⚡ Considera di spostare qualcosa se possibile")
-        elif densita == 'piena':
+        elif densita == 'Intensa':
             suggerimenti.append("📊 Giornata intensa - Organizza bene la mattina")
-        elif densita == 'molto_leggera':
-            suggerimenti.append("🌿 Giornata leggera - Ottima per recuperare energie")
+        elif densita == 'Molto Tranquilla':
+            suggerimenti.append("🌿 Giornata tranquilla - Ottima per recuperare energie")
         
         # Suggerimenti basati su impegni
         if impegni:
@@ -533,7 +533,7 @@ class FuturoManager:
         # Trova giorni critici
         giorni_molto_pieni = [
             g for g in previsione_giorni 
-            if g['previsione']['densita'] in ['molto_piena', 'piena']
+            if g['previsione']['densita'] in ['Molto Intensa', 'Intensa']
         ]
         
         if len(giorni_molto_pieni) >= 4:
@@ -544,12 +544,12 @@ class FuturoManager:
         # Giorni leggeri
         giorni_leggeri = [
             g for g in previsione_giorni 
-            if g['previsione']['densita'] in ['leggera', 'molto_leggera']
+            if g['previsione']['densita'] in ['Tranquilla', 'Molto Tranquilla']
         ]
         
         if giorni_leggeri:
             giorni_str = ', '.join(g['giorno_settimana'] for g in giorni_leggeri[:2])
-            suggerimenti.append(f"🌿 {giorni_str}: giorni più leggeri per recuperare")
+            suggerimenti.append(f"🌿 {giorni_str}: giorni più tranquilli per recuperare")
         
         return suggerimenti
 

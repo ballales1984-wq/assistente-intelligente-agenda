@@ -553,6 +553,14 @@
             caricaDiario();
             caricaCalendario();
             caricaSpese();
+            
+            // Carica voci per text-to-speech
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => {
+                    const voci = speechSynthesis.getVoices();
+                    console.log('🔊 Voci disponibili:', voci.filter(v => v.lang.startsWith('it')).map(v => v.name));
+                };
+            }
         });
 
         function handleKeyPress(event) {
@@ -596,6 +604,17 @@
                 
                 // Aggiungi risposta assistente
                 aggiungiMessaggio(rispostaFinale, 'assistant');
+
+                // ============================================
+                // LETTURA VOCALE AUTOMATICA per impegni/obiettivi/spese
+                // ============================================
+                if (data.tipo_riconosciuto === 'impegno' || 
+                    data.tipo_riconosciuto === 'obiettivo' || 
+                    data.tipo_riconosciuto === 'spesa' ||
+                    data.tipo_riconosciuto === 'diario') {
+                    const testoVocale = pulisciTestoPerVoce(data.risposta);
+                    parla(testoVocale);
+                }
 
                 // Aggiorna liste se necessario
                 if (data.tipo_riconosciuto === 'obiettivo') {
@@ -1087,7 +1106,7 @@
                         risposta = data.messaggio || `📅 **Piano di Oggi**\n\n`;
                         risposta += `⏰ Ore occupate: ${piano.ore_occupate}h\n`;
                         risposta += `🆓 Ore libere: ${piano.ore_libere}h\n`;
-                        risposta += `📊 Densità: ${piano.stato_giornata}\n\n`;
+                        risposta += `📊 Carico giornata: ${piano.stato_giornata}\n\n`;
                         
                         if (piano.prossimo_impegno) {
                             risposta += `⏭️ Prossimo: ${piano.prossimo_impegno.nome} alle ${piano.prossimo_impegno.orario}\n`;
@@ -1105,7 +1124,7 @@
                     risposta += `📅 ${data.data} (tra ${data.giorni_mancanti} giorni)\n\n`;
                     risposta += `📌 Impegni fissi: ${data.impegni_fissi.length}\n`;
                     risposta += `🎯 Obiettivi previsti: ${data.obiettivi_previsti.length}\n`;
-                    risposta += `⏰ Densità prevista: ${data.previsione.densita}\n\n`;
+                    risposta += `⏰ Carico previsto: ${data.previsione.densita}\n\n`;
                     
                     if (data.suggerimenti_preparazione.length > 0) {
                         risposta += `💡 Preparazione:\n`;
@@ -1396,7 +1415,38 @@
             currentUtterance = new SpeechSynthesisUtterance(testo);
             currentUtterance.lang = 'it-IT';
             currentUtterance.rate = 0.9; // Velocità leggermente più lenta
-            currentUtterance.pitch = 1.0;
+            currentUtterance.pitch = 1.1; // Leggermente più acuto per voce femminile
+            
+            // ============================================
+            // Seleziona VOCE FEMMINILE ITALIANA
+            // ============================================
+            const voci = synth.getVoices();
+            
+            // Cerca voce femminile italiana
+            let voceFemminile = voci.find(v => 
+                v.lang.startsWith('it') && v.name.toLowerCase().includes('female')
+            );
+            
+            // Fallback: cerca altre voci italiane femminili
+            if (!voceFemminile) {
+                voceFemminile = voci.find(v => 
+                    v.lang.startsWith('it') && (
+                        v.name.toLowerCase().includes('alice') ||
+                        v.name.toLowerCase().includes('serena') ||
+                        v.name.toLowerCase().includes('google italiano')
+                    )
+                );
+            }
+            
+            // Ulteriore fallback: qualsiasi voce italiana
+            if (!voceFemminile) {
+                voceFemminile = voci.find(v => v.lang.startsWith('it'));
+            }
+            
+            if (voceFemminile) {
+                currentUtterance.voice = voceFemminile;
+                console.log('🔊 Voce selezionata:', voceFemminile.name);
+            }
             
             // Event listener per quando finisce
             currentUtterance.onend = () => {

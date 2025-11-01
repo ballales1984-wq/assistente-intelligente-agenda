@@ -303,20 +303,20 @@ class PresenteManager:
     def _valuta_densita_giornata(self, ore_occupate: float, ore_disponibili: float) -> str:
         """Valuta quanto è piena la giornata"""
         if ore_disponibili == 0:
-            return 'vuota'
+            return 'Libera'
         
         percentuale = (ore_occupate / ore_disponibili) * 100
         
         if percentuale >= 80:
-            return 'molto_piena'
+            return 'Molto Intensa'
         elif percentuale >= 60:
-            return 'piena'
+            return 'Intensa'
         elif percentuale >= 40:
-            return 'moderata'
+            return 'Equilibrata'
         elif percentuale >= 20:
-            return 'leggera'
+            return 'Tranquilla'
         else:
-            return 'molto_leggera'
+            return 'Molto Tranquilla'
     
     def _riduci_intensita(self, timeline: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Riduce intensità del piano per recupero"""

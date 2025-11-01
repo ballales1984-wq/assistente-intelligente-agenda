@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, date
 from app import db
 from app.models import UserProfile, Obiettivo, Impegno, DiarioGiornaliero
 from app.core import InputManager, AgendaDinamica, MotoreAdattivo, DiarioManager
+from app.managers import PassatoManager, PresenteManager, FuturoManager
 
 bp = Blueprint('api', __name__)
 
@@ -429,4 +430,159 @@ def cerca_diario():
     entries = query.order_by(DiarioGiornaliero.data.desc()).limit(50).all()
     
     return jsonify([entry.to_dict() for entry in entries])
+
+
+# ═══════════════════════════════════════════════════════════════
+# ENDPOINT TEMPORALI - Passato, Presente, Futuro
+# ═══════════════════════════════════════════════════════════════
+
+@bp.route('/api/passato/settimana-scorsa', methods=['GET'])
+def analizza_settimana_scorsa():
+    """Analizza cosa è stato fatto la settimana scorsa"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    passato = PassatoManager(profilo)
+    analisi = passato.cosa_ho_fatto_settimana_scorsa()
+    
+    return jsonify(analisi)
+
+
+@bp.route('/api/passato/periodo', methods=['POST'])
+def analizza_periodo_passato():
+    """Analizza un periodo specifico del passato"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    data = request.json
+    data_inizio = datetime.fromisoformat(data['data_inizio']).date()
+    data_fine = datetime.fromisoformat(data['data_fine']).date()
+    
+    passato = PassatoManager(profilo)
+    analisi = passato.analizza_passato(data_inizio, data_fine)
+    
+    return jsonify(analisi)
+
+
+@bp.route('/api/passato/pattern', methods=['POST'])
+def trova_pattern():
+    """Trova pattern ricorrenti nelle attività"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    data = request.json
+    data_inizio = datetime.fromisoformat(data.get('data_inizio', (date.today() - timedelta(days=30)).isoformat())).date()
+    data_fine = datetime.fromisoformat(data.get('data_fine', date.today().isoformat())).date()
+    
+    passato = PassatoManager(profilo)
+    pattern = passato.trova_pattern_ricorrenti(data_inizio, data_fine)
+    
+    return jsonify(pattern)
+
+
+@bp.route('/api/presente/oggi', methods=['GET'])
+def piano_oggi():
+    """Piano dettagliato di oggi"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    presente = PresenteManager(profilo)
+    piano = presente.cosa_devo_fare_oggi()
+    
+    return jsonify(piano)
+
+
+@bp.route('/api/presente/adesso', methods=['GET'])
+def cosa_fare_adesso():
+    """Cosa fare in questo momento"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    presente = PresenteManager(profilo)
+    situazione = presente.ora_corrente_cosa_fare()
+    
+    return jsonify(situazione)
+
+
+@bp.route('/api/presente/adatta', methods=['POST'])
+def adatta_piano_stato():
+    """Adatta il piano allo stato corrente"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    data = request.json
+    stato = data.get('stato', 'normale')
+    data_piano = datetime.fromisoformat(data.get('data', date.today().isoformat())).date()
+    
+    presente = PresenteManager(profilo)
+    piano_adattato = presente.adatta_piano_a_stato(stato, data_piano)
+    
+    return jsonify(piano_adattato)
+
+
+@bp.route('/api/futuro/simula/<data>', methods=['GET'])
+def simula_giorno_futuro(data):
+    """Simula una giornata futura"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    try:
+        data_simulazione = datetime.fromisoformat(data).date()
+        futuro = FuturoManager(profilo)
+        simulazione = futuro.simula_giornata(data_simulazione)
+        
+        return jsonify(simulazione)
+    except ValueError:
+        return jsonify({'errore': 'Formato data non valido'}), 400
+
+
+@bp.route('/api/futuro/giovedi', methods=['GET'])
+def come_sara_giovedi():
+    """Simula il prossimo giovedì"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    futuro = FuturoManager(profilo)
+    simulazione = futuro.come_sara_giovedi()
+    
+    return jsonify(simulazione)
+
+
+@bp.route('/api/futuro/proietta', methods=['POST'])
+def proietta_competenze():
+    """Proietta competenze future"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    data = request.json
+    obiettivo = data['obiettivo']
+    ore_settimanali = float(data.get('ore_settimanali', 3.0))
+    mesi = int(data.get('mesi', 6))
+    
+    futuro = FuturoManager(profilo)
+    proiezione = futuro.proietta_competenze(obiettivo, ore_settimanali, mesi)
+    
+    return jsonify(proiezione)
+
+
+@bp.route('/api/futuro/prossima-settimana', methods=['GET'])
+def prevedi_prossima_settimana():
+    """Previsione settimana prossima"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    futuro = FuturoManager(profilo)
+    previsione = futuro.prevedi_prossima_settimana()
+    
+    return jsonify(previsione)
 

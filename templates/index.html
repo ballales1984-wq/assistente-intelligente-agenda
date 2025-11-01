@@ -373,6 +373,24 @@
                         📔 Esempio: Diario
                     </button>
                 </div>
+                <div class="quick-actions" style="margin-top: 10px;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Domande Temporali:</strong>
+                    <button class="quick-action" onclick="domandaTemporale('passato')">
+                        ⏮️ Cosa ho fatto?
+                    </button>
+                    <button class="quick-action" onclick="domandaTemporale('oggi')">
+                        📅 Cosa faccio oggi?
+                    </button>
+                    <button class="quick-action" onclick="domandaTemporale('adesso')">
+                        ⏰ Cosa faccio adesso?
+                    </button>
+                    <button class="quick-action" onclick="domandaTemporale('giovedi')">
+                        🔮 Come sarà giovedì?
+                    </button>
+                    <button class="quick-action" onclick="domandaTemporale('proiezione')">
+                        📈 Proiezione future
+                    </button>
+                </div>
             </div>
 
             <!-- Obiettivi -->
@@ -868,6 +886,129 @@
                 grid.innerHTML = '<div class="empty-state">Errore nel caricamento del calendario</div>';
             } finally {
                 loading.style.display = 'none';
+            }
+        }
+
+        async function domandaTemporale(tipo) {
+            const chatMessages = document.getElementById('chatMessages');
+            let endpoint = '';
+            let messaggio = '';
+
+            switch(tipo) {
+                case 'passato':
+                    endpoint = '/api/passato/settimana-scorsa';
+                    messaggio = 'Cosa ho fatto la settimana scorsa?';
+                    break;
+                case 'oggi':
+                    endpoint = '/api/presente/oggi';
+                    messaggio = 'Cosa devo fare oggi?';
+                    break;
+                case 'adesso':
+                    endpoint = '/api/presente/adesso';
+                    messaggio = 'Cosa devo fare adesso?';
+                    break;
+                case 'giovedi':
+                    endpoint = '/api/futuro/giovedi';
+                    messaggio = 'Come sarà il mio giovedì?';
+                    break;
+                case 'proiezione':
+                    const obj = prompt('Su cosa vuoi la proiezione? (es. Python)');
+                    const mesi = prompt('Per quanti mesi?', '6');
+                    if (!obj) return;
+                    
+                    try {
+                        const response = await fetch('/api/futuro/proietta', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                obiettivo: obj,
+                                ore_settimanali: 3,
+                                mesi: parseInt(mesi)
+                            })
+                        });
+                        const data = await response.json();
+                        
+                        aggiungiMessaggio(`Proiezione ${obj} tra ${mesi} mesi`, 'user');
+                        
+                        let risposta = `📈 **Proiezione ${obj}**\n\n`;
+                        risposta += `⏰ Ore totali: ${data.impegno.ore_totali}h\n`;
+                        risposta += `🎯 Livello stimato: ${data.proiezione.livello_stimato}\n`;
+                        risposta += `📊 ${data.proiezione.competenza_descrizione}\n`;
+                        risposta += `💯 Progress to mastery: ${data.proiezione.percentuale_mastery}%\n\n`;
+                        
+                        if (data.milestones && data.milestones.length > 0) {
+                            risposta += `🏆 Traguardi:\n`;
+                            data.milestones.slice(0, 3).forEach(m => {
+                                risposta += `  • Mese ${m.mese}: ${m.descrizione}\n`;
+                            });
+                        }
+                        
+                        aggiungiMessaggio(risposta, 'assistant');
+                    } catch (error) {
+                        aggiungiMessaggio('Errore nella proiezione', 'assistant');
+                    }
+                    return;
+            }
+
+            // Aggiungi domanda utente
+            aggiungiMessaggio(messaggio, 'user');
+
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                let risposta = '';
+
+                // Formatta risposta in base al tipo
+                if (tipo === 'passato') {
+                    risposta = `📊 **Settimana Scorsa**\n\n`;
+                    risposta += `📅 ${data.periodo.inizio} → ${data.periodo.fine}\n\n`;
+                    risposta += `📌 Impegni: ${data.impegni_count}\n`;
+                    risposta += `⏰ Ore totali: ${Object.values(data.ore_totali).reduce((a,b) => a+b, 0).toFixed(1)}h\n`;
+                    risposta += `📔 Riflessioni: ${data.riflessioni.totali}\n`;
+                    risposta += `😊 Sentiment: ${data.riflessioni.sentiment_medio}\n\n`;
+                    
+                    if (data.insights.length > 0) {
+                        risposta += `💡 Insights:\n`;
+                        data.insights.forEach(i => risposta += `  • ${i}\n`);
+                    }
+                    
+                } else if (tipo === 'oggi' || tipo === 'adesso') {
+                    if (tipo === 'oggi') {
+                        const piano = data.piano_completo;
+                        risposta = data.messaggio || `📅 **Piano di Oggi**\n\n`;
+                        risposta += `⏰ Ore occupate: ${piano.ore_occupate}h\n`;
+                        risposta += `🆓 Ore libere: ${piano.ore_libere}h\n`;
+                        risposta += `📊 Densità: ${piano.stato_giornata}\n\n`;
+                        
+                        if (piano.prossimo_impegno) {
+                            risposta += `⏭️ Prossimo: ${piano.prossimo_impegno.nome} alle ${piano.prossimo_impegno.orario}\n`;
+                        }
+                    } else {
+                        risposta = data.messaggio;
+                        if (data.suggerimenti) {
+                            risposta += '\n\n💡 Suggerimenti:\n';
+                            data.suggerimenti.forEach(s => risposta += `  • ${s}\n`);
+                        }
+                    }
+                    
+                } else if (tipo === 'giovedi') {
+                    risposta = `🔮 **Previsione ${data.giorno_settimana}**\n\n`;
+                    risposta += `📅 ${data.data} (tra ${data.giorni_mancanti} giorni)\n\n`;
+                    risposta += `📌 Impegni fissi: ${data.impegni_fissi.length}\n`;
+                    risposta += `🎯 Obiettivi previsti: ${data.obiettivi_previsti.length}\n`;
+                    risposta += `⏰ Densità prevista: ${data.previsione.densita}\n\n`;
+                    
+                    if (data.suggerimenti_preparazione.length > 0) {
+                        risposta += `💡 Preparazione:\n`;
+                        data.suggerimenti_preparazione.forEach(s => risposta += `  • ${s}\n`);
+                    }
+                }
+
+                aggiungiMessaggio(risposta, 'assistant');
+
+            } catch (error) {
+                console.error('Errore domanda temporale:', error);
+                aggiungiMessaggio('Si è verificato un errore. Riprova.', 'assistant');
             }
         }
     </script>

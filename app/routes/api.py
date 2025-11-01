@@ -53,7 +53,8 @@ def gestisci_profilo():
 
 @bp.route('/api/chat', methods=['POST'])
 def chat():
-    """Endpoint principale per interazione testuale"""
+    """Endpoint principale per interazione testuale con auto-fallback AI"""
+    from flask import current_app
     data = request.json
     messaggio = data.get('messaggio', '').strip()
     
@@ -67,7 +68,7 @@ def chat():
         db.session.add(profilo)
         db.session.commit()
     
-    # Analizza input
+    # Analizza input con regex
     input_manager = InputManager()
     risultato = input_manager.analizza_input(messaggio)
     
@@ -75,8 +76,59 @@ def chat():
         'messaggio': messaggio,
         'tipo_riconosciuto': risultato['tipo'],
         'risposta': '',
-        'dati': None
+        'dati': None,
+        'ai_used': False
     }
+    
+    # ============================================
+    # AUTO-FALLBACK: Se regex non capisce → Ollama AI!
+    # ============================================
+    if risultato['tipo'] in ['sconosciuto', 'domanda', 'aiuto'] and data.get('enable_ai_fallback', True):
+        current_app.logger.info(f"🤖 Auto-fallback to AI for: {messaggio}")
+        
+        try:
+            from app.ai.ollama_assistant import OllamaAssistant, OllamaManager
+            
+            # Verifica Ollama disponibile
+            if OllamaManager.check_ollama_running():
+                # Build context per AI
+                oggi = date.today()
+                context = {
+                    'obiettivi': [o.to_dict() for o in profilo.obiettivi.filter_by(attivo=True).limit(5).all()],
+                    'impegni_oggi': [
+                        i.to_dict() for i in profilo.impegni.filter(
+                            Impegno.data_inizio >= oggi,
+                            Impegno.data_inizio < oggi + timedelta(days=1)
+                        ).limit(10).all()
+                    ],
+                    'spese_oggi': [
+                        s.to_dict() for s in profilo.spese.filter(Spesa.data == oggi).limit(10).all()
+                    ]
+                }
+                
+                # Usa AI locale
+                assistant = OllamaAssistant(model='gemma3:1b')  # Veloce!
+                risposta_ai = assistant.chat(messaggio, context)
+                
+                risposta['risposta'] = f"🤖 **AI Locale:**\n\n{risposta_ai}"
+                risposta['tipo_riconosciuto'] = 'ai_processed'
+                risposta['ai_used'] = True
+                risposta['ai_model'] = 'gemma3:1b'
+                
+                current_app.logger.info(
+                    f"✅ AI fallback success",
+                    extra={'input': messaggio, 'model': 'gemma3:1b'}
+                )
+                
+                return jsonify(risposta)
+                
+        except Exception as e:
+            current_app.logger.warning(
+                f"⚠️ AI fallback failed: {str(e)}",
+                extra={'input': messaggio}
+            )
+            # Continua con risposta normale se AI fallisce
+            pass
     
     # Gestisci in base al tipo
     if risultato['tipo'] == 'obiettivo':

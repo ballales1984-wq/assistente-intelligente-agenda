@@ -553,22 +553,38 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ messaggio })
+                    body: JSON.stringify({ 
+                        messaggio: messaggio,
+                        enable_ai_fallback: true  // AUTO-FALLBACK ATTIVO!
+                    })
                 });
 
                 const data = await response.json();
                 
+                // Mostra se AI è stata usata
+                let rispostaFinale = data.risposta;
+                if (data.ai_used) {
+                    rispostaFinale += `\n\n<em style="color: #4caf50; font-size: 0.85em;">🤖 AI Locale (${data.ai_model || 'gemma3:1b'}) - Zero costi!</em>`;
+                }
+                
                 // Aggiungi risposta assistente
-                aggiungiMessaggio(data.risposta, 'assistant');
+                aggiungiMessaggio(rispostaFinale, 'assistant');
 
                 // Aggiorna liste se necessario
                 if (data.tipo_riconosciuto === 'obiettivo') {
                     setTimeout(caricaObiettivi, 500);
                 } else if (data.tipo_riconosciuto === 'spesa') {
                     setTimeout(caricaSpese, 500);
+                } else if (data.tipo_riconosciuto === 'ai_processed') {
+                    // AI ha processato - refresh tutto
+                    setTimeout(() => {
+                        caricaObiettivi();
+                        caricaCalendario();
+                        caricaSpese();
+                    }, 500);
                 }
             } catch (error) {
-                aggiungiMessaggio('Ops! Si è verificato un errore. Riprova.', 'assistant');
+                aggiungiMessaggio('❌ Errore. Riprova!', 'assistant');
                 console.error(error);
             }
         }

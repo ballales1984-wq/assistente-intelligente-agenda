@@ -17,8 +17,8 @@ def index():
 
 @bp.route('/en')
 def index_en():
-    """English version"""
-    return render_template('index_en.html')
+    """English version (full interface)"""
+    return render_template('index_en_full.html')
 
 
 @bp.route('/manifest.json')

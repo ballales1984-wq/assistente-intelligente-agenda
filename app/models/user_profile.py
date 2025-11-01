@@ -25,6 +25,7 @@ class UserProfile(db.Model):
     obiettivi = db.relationship('Obiettivo', backref='utente', lazy='dynamic', cascade='all, delete-orphan')
     impegni = db.relationship('Impegno', backref='utente', lazy='dynamic', cascade='all, delete-orphan')
     diario_entries = db.relationship('DiarioGiornaliero', backref='utente', lazy='dynamic', cascade='all, delete-orphan')
+    spese = db.relationship('Spesa', backref='utente', lazy='dynamic', cascade='all, delete-orphan')
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

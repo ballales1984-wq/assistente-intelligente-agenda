@@ -1,6 +1,6 @@
 """Manager per l'analisi dell'input testuale"""
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from typing import Dict, Any, Optional
 from app.core.diario_manager import DiarioManager
 
@@ -21,6 +21,8 @@ class InputManager:
         'modifica_piano': r'(?:sposta|cambia|modifica|rimuovi|elimina)\s+(.+)',
         'richiesta_aiuto': r'(?:aiutami|aiuto|come faccio|suggeriscimi|consigliami)',
         'tempo_disponibile': r'(?:ho|dispongo di)\s+(\d+)\s*(?:ore?|h|minuti|min)\s+(?:libere?|liberi|disponibili)',
+        'spesa': r'(?:spesa|speso|pagato|costo|ho speso)\s+(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)?\s*(?:per|di)?\s*(.+)',
+        'spesa_diretta': r'(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)\s+(?:per|di)\s+(.+)',
     }
     
     @staticmethod
@@ -142,6 +144,29 @@ class InputManager:
             }
             return risultato
         
+        # Riconosci spesa
+        match = re.search(InputManager.PATTERNS['spesa'], testo, re.IGNORECASE)
+        if not match:
+            match = re.search(InputManager.PATTERNS['spesa_diretta'], testo, re.IGNORECASE)
+        
+        if match:
+            importo_str = match.group(1).replace(',', '.')
+            importo = float(importo_str)
+            descrizione = match.group(2).strip() if len(match.groups()) >= 2 else 'Spesa generica'
+            
+            # Categorizza automaticamente
+            from app.managers.spese_manager import SpeseManager
+            categoria = SpeseManager(None).categorizza_spesa(descrizione)
+            
+            risultato['tipo'] = 'spesa'
+            risultato['dati'] = {
+                'importo': importo,
+                'descrizione': descrizione.title(),
+                'categoria': categoria,
+                'data': InputManager._estrai_data_spesa(testo)
+            }
+            return risultato
+        
         # Input non riconosciuto
         risultato['tipo'] = 'sconosciuto'
         return risultato
@@ -213,4 +238,15 @@ class InputManager:
             return 'Tempo ideale per una pausa attiva, lettura leggera o breve allenamento.'
         else:
             return 'Ottimo per una pausa, stretching o meditazione breve.'
+    
+    @staticmethod
+    def _estrai_data_spesa(testo: str) -> date:
+        """Estrae data dalla spesa (oggi, ieri, o data specifica)"""
+        testo_lower = testo.lower()
+        
+        if 'ieri' in testo_lower:
+            return date.today() - timedelta(days=1)
+        
+        # Default: oggi
+        return date.today()
 

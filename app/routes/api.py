@@ -2,9 +2,9 @@
 from flask import Blueprint, request, jsonify, render_template
 from datetime import datetime, timedelta, date
 from app import db
-from app.models import UserProfile, Obiettivo, Impegno, DiarioGiornaliero
+from app.models import UserProfile, Obiettivo, Impegno, DiarioGiornaliero, Spesa
 from app.core import InputManager, AgendaDinamica, MotoreAdattivo, DiarioManager
-from app.managers import PassatoManager, PresenteManager, FuturoManager
+from app.managers import PassatoManager, PresenteManager, FuturoManager, SpeseManager
 
 bp = Blueprint('api', __name__)
 
@@ -186,6 +186,33 @@ def chat():
                                f"📌 Concetti chiave: {parole_chiave_str}\n" \
                                f"💭 Sentiment: {dati_diario['sentiment']}"
         risposta['dati'] = diario_entry.to_dict()
+    
+    elif risultato['tipo'] == 'spesa':
+        # Salva spesa
+        dati_spesa = risultato['dati']
+        
+        spesa = Spesa(
+            user_id=profilo.id,
+            importo=dati_spesa['importo'],
+            descrizione=dati_spesa['descrizione'],
+            categoria=dati_spesa['categoria'],
+            data=dati_spesa.get('data', date.today()),
+            ora=datetime.now().time()
+        )
+        
+        db.session.add(spesa)
+        db.session.commit()
+        
+        # Calcola totale giorno
+        spese_manager = SpeseManager(profilo)
+        totale_oggi = spese_manager.quanto_ho_speso_oggi()
+        
+        risposta['risposta'] = f"💰 Spesa registrata!\n\n" \
+                               f"💵 Importo: €{spesa.importo:.2f}\n" \
+                               f"📝 Descrizione: {spesa.descrizione}\n" \
+                               f"🏷️ Categoria: {spesa.categoria}\n\n" \
+                               f"📊 Totale oggi: €{totale_oggi['totale']:.2f}"
+        risposta['dati'] = spesa.to_dict()
     
     else:
         risposta['risposta'] = "🤔 Non ho capito bene. Prova a dire:\n" \
@@ -585,4 +612,160 @@ def prevedi_prossima_settimana():
     previsione = futuro.prevedi_prossima_settimana()
     
     return jsonify(previsione)
+
+
+# ═══════════════════════════════════════════════════════════════
+# ENDPOINT SPESE - Gestione Budget e Tracking
+# ═══════════════════════════════════════════════════════════════
+
+@bp.route('/api/spese', methods=['GET', 'POST'])
+def gestisci_spese():
+    """Lista o crea spese"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    if request.method == 'POST':
+        data = request.json
+        
+        # Categorizza automaticamente se non specificata
+        categoria = data.get('categoria')
+        if not categoria:
+            spese_mgr = SpeseManager(profilo)
+            categoria = spese_mgr.categorizza_spesa(data['descrizione'])
+        
+        spesa = Spesa(
+            user_id=profilo.id,
+            importo=float(data['importo']),
+            descrizione=data['descrizione'],
+            categoria=categoria,
+            data=datetime.fromisoformat(data.get('data', date.today().isoformat())).date(),
+            ora=datetime.now().time(),
+            luogo=data.get('luogo'),
+            note=data.get('note'),
+            metodo_pagamento=data.get('metodo_pagamento'),
+            necessaria=data.get('necessaria', True)
+        )
+        
+        db.session.add(spesa)
+        db.session.commit()
+        
+        return jsonify(spesa.to_dict()), 201
+    
+    # GET - spese recenti (ultimi 30 giorni)
+    data_inizio = date.today() - timedelta(days=30)
+    spese = profilo.spese.filter(
+        Spesa.data >= data_inizio
+    ).order_by(Spesa.data.desc(), Spesa.ora.desc()).limit(50).all()
+    
+    return jsonify([s.to_dict() for s in spese])
+
+
+@bp.route('/api/spese/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+def modifica_spesa(id):
+    """Recupera, modifica o elimina una spesa"""
+    spesa = Spesa.query.get_or_404(id)
+    
+    if request.method == 'GET':
+        return jsonify(spesa.to_dict())
+    
+    elif request.method == 'PUT':
+        data = request.json
+        for key, value in data.items():
+            if hasattr(spesa, key) and key not in ['id', 'user_id', 'created_at']:
+                setattr(spesa, key, value)
+        
+        db.session.commit()
+        return jsonify(spesa.to_dict())
+    
+    else:  # DELETE
+        db.session.delete(spesa)
+        db.session.commit()
+        return '', 204
+
+
+@bp.route('/api/spese/oggi', methods=['GET'])
+def spese_oggi():
+    """Spese di oggi"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    spese_mgr = SpeseManager(profilo)
+    analisi = spese_mgr.quanto_ho_speso_oggi()
+    
+    return jsonify(analisi)
+
+
+@bp.route('/api/spese/settimana', methods=['GET'])
+def spese_settimana():
+    """Spese della settimana"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    spese_mgr = SpeseManager(profilo)
+    analisi = spese_mgr.quanto_ho_speso_settimana()
+    
+    return jsonify(analisi)
+
+
+@bp.route('/api/spese/mese', methods=['GET'])
+def spese_mese():
+    """Spese del mese"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    spese_mgr = SpeseManager(profilo)
+    analisi = spese_mgr.quanto_ho_speso_mese()
+    
+    return jsonify(analisi)
+
+
+@bp.route('/api/spese/budget', methods=['POST'])
+def check_budget():
+    """Verifica stato budget"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    data = request.json
+    budget_mensile = float(data.get('budget', 1000))
+    
+    spese_mgr = SpeseManager(profilo)
+    stato_budget = spese_mgr.budget_check(budget_mensile)
+    
+    return jsonify(stato_budget)
+
+
+@bp.route('/api/spese/categoria/<categoria>', methods=['GET'])
+def statistiche_categoria(categoria):
+    """Statistiche per categoria"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    mesi = int(request.args.get('mesi', 3))
+    
+    spese_mgr = SpeseManager(profilo)
+    stats = spese_mgr.statistiche_categoria(categoria, mesi)
+    
+    return jsonify(stats)
+
+
+@bp.route('/api/spese/top', methods=['GET'])
+def top_spese():
+    """Top spese recenti"""
+    profilo = UserProfile.query.first()
+    if not profilo:
+        return jsonify({'errore': 'Nessun profilo trovato'}), 404
+    
+    limite = int(request.args.get('limite', 10))
+    giorni = int(request.args.get('giorni', 30))
+    
+    spese_mgr = SpeseManager(profilo)
+    top = spese_mgr.top_spese(limite, giorni)
+    
+    return jsonify(top)
 

@@ -372,6 +372,9 @@
                     <button class="quick-action" onclick="usaEsempio('Oggi ho parlato con Sara e ho capito i cicli for in Python. Mi sento motivato!')">
                         📔 Esempio: Diario
                     </button>
+                    <button class="quick-action" onclick="usaEsempio('Spesa 12 euro per pranzo')">
+                        💰 Esempio: Spesa
+                    </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
                     <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Domande Temporali:</strong>
@@ -389,6 +392,21 @@
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('proiezione')">
                         📈 Proiezione future
+                    </button>
+                </div>
+                <div class="quick-actions" style="margin-top: 10px;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💰 Budget & Spese:</strong>
+                    <button class="quick-action" onclick="domandaSpese('oggi')">
+                        💵 Speso oggi?
+                    </button>
+                    <button class="quick-action" onclick="domandaSpese('settimana')">
+                        📊 Speso settimana?
+                    </button>
+                    <button class="quick-action" onclick="domandaSpese('mese')">
+                        📈 Speso mese?
+                    </button>
+                    <button class="quick-action" onclick="domandaSpese('budget')">
+                        🎯 Check budget
                     </button>
                 </div>
             </div>
@@ -451,6 +469,32 @@
                 </button>
             </div>
 
+            <!-- Budget & Spese -->
+            <div class="card">
+                <h2>💰 Budget & Spese</h2>
+                <div id="budgetSummary" style="margin-bottom: 15px;">
+                    <div class="stat-box" style="margin-bottom: 10px;">
+                        <span class="number" id="speseOggi">€0</span>
+                        <span class="label">Oggi</span>
+                    </div>
+                    <div class="stat-box" style="margin-bottom: 10px;">
+                        <span class="number" id="speseSettimana">€0</span>
+                        <span class="label">Questa Settimana</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="number" id="speseMese">€0</span>
+                        <span class="label">Questo Mese</span>
+                    </div>
+                </div>
+                <div class="piano-list" id="speseList" style="max-height: 200px;">
+                    <div class="loading" id="speseLoading">Caricamento...</div>
+                    <div class="empty-state" id="speseEmpty">Nessuna spesa registrata</div>
+                </div>
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaSpese()">
+                    🔄 Aggiorna
+                </button>
+            </div>
+
             <!-- Calendario Settimanale -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2>📅 Calendario Settimanale</h2>
@@ -480,6 +524,7 @@
             caricaStatistiche();
             caricaDiario();
             caricaCalendario();
+            caricaSpese();
         });
 
         function handleKeyPress(event) {
@@ -519,6 +564,8 @@
                 // Aggiorna liste se necessario
                 if (data.tipo_riconosciuto === 'obiettivo') {
                     setTimeout(caricaObiettivi, 500);
+                } else if (data.tipo_riconosciuto === 'spesa') {
+                    setTimeout(caricaSpese, 500);
                 }
             } catch (error) {
                 aggiungiMessaggio('Ops! Si è verificato un errore. Riprova.', 'assistant');
@@ -1008,6 +1055,168 @@
 
             } catch (error) {
                 console.error('Errore domanda temporale:', error);
+                aggiungiMessaggio('Si è verificato un errore. Riprova.', 'assistant');
+            }
+        }
+
+        async function caricaSpese() {
+            const loading = document.getElementById('speseLoading');
+            const empty = document.getElementById('speseEmpty');
+            const list = document.getElementById('speseList');
+            
+            loading.classList.add('active');
+            empty.style.display = 'none';
+
+            try {
+                // Carica spese recenti
+                const response = await fetch('/api/spese');
+                const spese = await response.json();
+
+                // Carica riepiloghi
+                const [oggiResp, settResp, meseResp] = await Promise.all([
+                    fetch('/api/spese/oggi'),
+                    fetch('/api/spese/settimana'),
+                    fetch('/api/spese/mese')
+                ]);
+
+                const oggi = await oggiResp.json();
+                const settimana = await settResp.json();
+                const mese = await meseResp.json();
+
+                // Aggiorna totali
+                document.getElementById('speseOggi').textContent = `€${(oggi.totale || 0).toFixed(2)}`;
+                document.getElementById('speseSettimana').textContent = `€${(settimana.totale || 0).toFixed(2)}`;
+                document.getElementById('speseMese').textContent = `€${(mese.totale || 0).toFixed(2)}`;
+
+                // Rimuovi elementi precedenti
+                list.innerHTML = '';
+
+                if (spese.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    // Mostra ultime 5 spese
+                    spese.slice(0, 5).forEach(spesa => {
+                        const data = new Date(spesa.data);
+                        const dataStr = data.toLocaleDateString('it-IT', { 
+                            day: 'numeric', 
+                            month: 'short'
+                        });
+
+                        const div = document.createElement('div');
+                        div.className = 'piano-item';
+                        div.innerHTML = `
+                            <strong>💰 €${spesa.importo.toFixed(2)}</strong>
+                            <span>${spesa.descrizione} • ${dataStr}</span><br>
+                            <span style="color: #667eea;">🏷️ ${spesa.categoria}</span>
+                        `;
+                        list.appendChild(div);
+                    });
+
+                    if (spese.length > 5) {
+                        const moreDiv = document.createElement('div');
+                        moreDiv.style.textAlign = 'center';
+                        moreDiv.style.color = '#6c757d';
+                        moreDiv.style.marginTop = '10px';
+                        moreDiv.textContent = `...e altre ${spese.length - 5} spese`;
+                        list.appendChild(moreDiv);
+                    }
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento spese:', error);
+                empty.textContent = 'Errore nel caricamento';
+                empty.style.display = 'block';
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        async function domandaSpese(tipo) {
+            const chatMessages = document.getElementById('chatMessages');
+            let endpoint = '';
+            let messaggio = '';
+
+            switch(tipo) {
+                case 'oggi':
+                    endpoint = '/api/spese/oggi';
+                    messaggio = 'Quanto ho speso oggi?';
+                    break;
+                case 'settimana':
+                    endpoint = '/api/spese/settimana';
+                    messaggio = 'Quanto ho speso questa settimana?';
+                    break;
+                case 'mese':
+                    endpoint = '/api/spese/mese';
+                    messaggio = 'Quanto ho speso questo mese?';
+                    break;
+                case 'budget':
+                    const budget = prompt('Qual è il tuo budget mensile? (es. 1000)', '1000');
+                    if (!budget) return;
+                    
+                    try {
+                        const response = await fetch('/api/spese/budget', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ budget: parseFloat(budget) })
+                        });
+                        const data = await response.json();
+                        
+                        aggiungiMessaggio(`Budget check (€${budget}/mese)`, 'user');
+                        
+                        let risposta = `${data.emoji} **Budget Check**\n\n`;
+                        risposta += `💰 Budget: €${data.budget_mensile}\n`;
+                        risposta += `💸 Speso: €${data.speso} (${data.percentuale_usata}%)\n`;
+                        risposta += `💵 Rimanente: €${data.rimanente}\n`;
+                        risposta += `📅 Giorni rimanenti: ${data.giorni.rimanenti}\n`;
+                        risposta += `📊 Budget giornaliero: €${data.budget_giornaliero_rimanente.toFixed(2)}/giorno\n\n`;
+                        risposta += `🔮 Proiezione fine mese: €${data.proiezione_fine_mese}\n\n`;
+                        risposta += `${data.alert}`;
+                        
+                        aggiungiMessaggio(risposta, 'assistant');
+                    } catch (error) {
+                        aggiungiMessaggio('Errore nel calcolo budget', 'assistant');
+                    }
+                    return;
+            }
+
+            aggiungiMessaggio(messaggio, 'user');
+
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+
+                let risposta = '';
+
+                if (tipo === 'oggi') {
+                    risposta = `💰 **Spese di Oggi**\n\n`;
+                } else if (tipo === 'settimana') {
+                    risposta = `📊 **Spese della Settimana**\n\n`;
+                    risposta += `📅 ${data.periodo.inizio} → ${data.periodo.fine}\n\n`;
+                } else if (tipo === 'mese') {
+                    risposta = `📈 **Spese del Mese**\n\n`;
+                    risposta += `📅 ${data.periodo.inizio} → ${data.periodo.fine}\n\n`;
+                }
+
+                risposta += `💵 Totale: €${data.totale}\n`;
+                risposta += `📌 Numero spese: ${data.num_spese}\n`;
+                risposta += `📊 Media giornaliera: €${data.media_giornaliera}\n\n`;
+
+                if (data.per_categoria && Object.keys(data.per_categoria).length > 0) {
+                    risposta += `🏷️ Per categoria:\n`;
+                    Object.entries(data.per_categoria).forEach(([cat, importo]) => {
+                        risposta += `  • ${cat}: €${importo}\n`;
+                    });
+                    risposta += '\n';
+                }
+
+                if (data.insights && data.insights.length > 0) {
+                    risposta += `💡 Insights:\n`;
+                    data.insights.forEach(i => risposta += `  • ${i}\n`);
+                }
+
+                aggiungiMessaggio(risposta, 'assistant');
+
+            } catch (error) {
+                console.error('Errore domanda spese:', error);
                 aggiungiMessaggio('Si è verificato un errore. Riprova.', 'assistant');
             }
         }

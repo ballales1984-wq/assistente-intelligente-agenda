@@ -190,6 +190,78 @@ Nessuno (prima release)
 
 ---
 
+## [1.1.0] - 2025-11-01
+
+### ✨ Manager Temporali - Passato, Presente, Futuro
+
+Aggiunti 3 nuovi moduli intelligenti che estendono l'assistente con analisi temporale completa!
+
+#### Added
+
+**⏮️ PassatoManager**
+- Analisi periodi passati (settimana, mese, custom)
+- Riepilogo attività per tipo con ore totali
+- Sentiment medio e distribuzione
+- Estrazione persone, emozioni, parole chiave
+- Pattern ricorrenti (giorni/orari preferiti)
+- Trend produttività e mood
+- Insights automatici
+
+**📅 PresenteManager**
+- Piano dettagliato giornata corrente
+- Calcolo ore occupate/libere/disponibili
+- Identificazione prossimo impegno
+- "Cosa fare adesso" con tempo rimanente
+- Adattamento piano a stato emotivo
+  - Riduzione carico se stanco/stressato
+  - Aumento produttività se motivato
+- Valutazione densità giornata
+- Suggerimenti contestuali real-time
+
+**🔮 FuturoManager**
+- Simulazione giornate future
+- Analisi routine su giorni simili
+- Previsione allocazione obiettivi
+- Proiezione competenze nel tempo
+- Calcolo milestones intermedi
+- Stima livelli: principiante → master
+- Confronto con standard apprendimento
+- Suggerimenti preparazione
+
+**🔌 10 Nuovi Endpoint API:**
+- `GET /api/passato/settimana-scorsa`
+- `POST /api/passato/periodo`
+- `POST /api/passato/pattern`
+- `GET /api/presente/oggi`
+- `GET /api/presente/adesso`
+- `POST /api/presente/adatta`
+- `GET /api/futuro/simula/<data>`
+- `GET /api/futuro/giovedi`
+- `POST /api/futuro/proietta`
+- `GET /api/futuro/prossima-settimana`
+
+**🎨 UI Enhancements:**
+- 5 quick actions per domande temporali
+- Formattazione intelligente risposte
+- Supporto proiezioni interattive
+- Dialoghi per input parametri
+
+**📚 Documentazione:**
+- MANAGERS_GUIDA.md completa
+
+#### Changed
+- API routes estese con sezione temporale
+- UI chat con nuova sezione quick actions
+- Sistema più completo e predittivo
+
+#### Statistics
+- +1500 righe di codice
+- +3 moduli manager
+- +10 API endpoints
+- +5 UI quick actions
+
+---
+
 ## [Unreleased]
 
 ### 🚧 In Sviluppo
@@ -199,6 +271,7 @@ Nessuno (prima release)
 - Drag & drop calendario
 - Impegni ricorrenti UI
 - Click per aggiungere su calendario
+- Grafici visuali per statistiche
 
 ### 🔮 Pianificato
 - Integrazione Google Calendar

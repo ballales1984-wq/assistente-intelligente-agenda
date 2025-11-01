@@ -102,6 +102,19 @@
             }
         }
 
+        .message.highlight {
+            animation: slideIn 0.3s ease, pulse 1.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+        }
+
         .message.user {
             background: #667eea;
             color: white;
@@ -554,8 +567,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ 
-                        messaggio: messaggio,
-                        enable_ai_fallback: true  // AUTO-FALLBACK ATTIVO!
+                        messaggio: messaggio
                     })
                 });
 
@@ -573,14 +585,21 @@
                 // Aggiorna liste se necessario
                 if (data.tipo_riconosciuto === 'obiettivo') {
                     setTimeout(caricaObiettivi, 500);
+                    setTimeout(caricaCalendario, 500);
+                } else if (data.tipo_riconosciuto === 'impegno') {
+                    // Nuovo impegno - aggiorna calendario
+                    setTimeout(caricaCalendario, 500);
                 } else if (data.tipo_riconosciuto === 'spesa') {
                     setTimeout(caricaSpese, 500);
+                } else if (data.tipo_riconosciuto === 'diario') {
+                    setTimeout(caricaDiario, 500);
                 } else if (data.tipo_riconosciuto === 'ai_processed') {
                     // AI ha processato - refresh tutto
                     setTimeout(() => {
                         caricaObiettivi();
                         caricaCalendario();
                         caricaSpese();
+                        caricaDiario();
                     }, 500);
                 }
             } catch (error) {
@@ -593,8 +612,16 @@
             const container = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${tipo}`;
-            messageDiv.textContent = testo;
+            
+            // Aggiungi highlight per risposte assistente
+            if (tipo === 'assistant') {
+                messageDiv.classList.add('highlight');
+            }
+            
+            // Usa innerHTML per supportare formattazione (safe perché controlliamo i dati)
+            messageDiv.innerHTML = testo.replace(/\n/g, '<br>');
             container.appendChild(messageDiv);
+            // Scroll smooth per vedere la risposta
             container.scrollTop = container.scrollHeight;
         }
 

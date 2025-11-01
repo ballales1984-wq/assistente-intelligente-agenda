@@ -73,6 +73,18 @@ class InputManager:
             }
             return risultato
         
+        # Riconosci impegno oggi/domani con formato "ore XX" o "XX-XX"
+        match_ore = re.search(r'(?:oggi|domani)\s+(.+?)\s+ore\s+(\d{1,2})', testo, re.IGNORECASE)
+        if match_ore:
+            risultato['tipo'] = 'impegno'
+            risultato['dati'] = {
+                'nome': match_ore.group(1).strip().title(),
+                'ora_inizio': f"{match_ore.group(2)}:00",
+                'ora_fine': f"{int(match_ore.group(2))+1}:00",  # +1 ora di default
+                'giorno': 'oggi' if 'oggi' in testo else 'domani'
+            }
+            return risultato
+        
         # Riconosci impegno oggi/domani con formato semplice (es. "18-19")
         match_semplice = re.search(r'(?:oggi|domani)\s+(.+?)\s+(\d{1,2})\s*-\s*(\d{1,2})', testo, re.IGNORECASE)
         if match_semplice:

@@ -5,7 +5,11 @@ Logging strutturato con JSON format e file rotation
 import logging
 import os
 from logging.handlers import RotatingFileHandler
-from pythonjsonlogger import jsonlogger
+try:
+    from pythonjsonlogger import jsonlogger
+except ImportError:
+    # Fallback se pythonjsonlogger non è disponibile
+    jsonlogger = None
 
 
 def setup_logger(app):
@@ -34,9 +38,16 @@ def setup_logger(app):
     
     # JSON formatter per analisi strutturata
     # Facile da parsare con tools come ELK, Splunk, etc.
-    formatter = jsonlogger.JsonFormatter(
-        '%(asctime)s %(name)s %(levelname)s %(message)s %(pathname)s %(lineno)d'
-    )
+    if jsonlogger:
+        formatter = jsonlogger.JsonFormatter(
+            '%(asctime)s %(name)s %(levelname)s %(message)s %(pathname)s %(lineno)d'
+        )
+    else:
+        # Fallback a formatter standard
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)
     

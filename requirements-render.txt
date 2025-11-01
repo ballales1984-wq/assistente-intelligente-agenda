@@ -46,6 +46,7 @@ cryptography==46.0.3
 # Utilities
 click==8.3.0
 tqdm==4.67.1
+python-json-logger==2.0.7
 
 # WSGI Server for production
 gunicorn==21.2.0

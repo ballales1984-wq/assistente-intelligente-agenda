@@ -11,8 +11,14 @@ bp = Blueprint('api', __name__)
 
 @bp.route('/')
 def index():
-    """Pagina principale"""
+    """Pagina principale (italiano)"""
     return render_template('index.html')
+
+
+@bp.route('/en')
+def index_en():
+    """English version"""
+    return render_template('index_en.html')
 
 
 @bp.route('/manifest.json')

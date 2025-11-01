@@ -426,6 +426,34 @@
         body.dark-mode .theme-toggle {
             background: #0f3460;
         }
+
+        .lang-toggle {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            color: #667eea;
+        }
+
+        .lang-toggle:hover {
+            transform: scale(1.05);
+            background: #667eea;
+            color: white;
+        }
+
+        body.dark-mode .lang-toggle {
+            background: #0f3460;
+            color: #e9ecef;
+        }
     </style>
 </head>
 <body>
@@ -433,6 +461,12 @@
     <button class="theme-toggle" onclick="toggleDarkMode()" title="Cambia tema">
         <span id="themeIcon">🌙</span>
     </button>
+    
+    <!-- Toggle Lingua -->
+    <button class="lang-toggle" onclick="toggleLanguage()" title="Change language">
+        <span id="langIcon">🇮🇹 IT</span>
+    </button>
+    
     <div class="container">
         <div class="header">
             <h1>🧠 Assistente Intelligente</h1>
@@ -2014,6 +2048,21 @@
             
             // Ricarica grafici per aggiornare colori
             setTimeout(aggiornaGrafici, 300);
+        }
+
+        // ============================================
+        // LANGUAGE TOGGLE
+        // ============================================
+        function toggleLanguage() {
+            const currentLang = localStorage.getItem('lingua') || 'it';
+            
+            if (currentLang === 'it') {
+                localStorage.setItem('lingua', 'en');
+                window.location.href = '/en';
+            } else {
+                localStorage.setItem('lingua', 'it');
+                window.location.href = '/';
+            }
         }
 
         // ============================================

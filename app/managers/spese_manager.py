@@ -151,15 +151,14 @@ class SpeseManager:
         Returns:
             Analisi spese mese corrente
         """
+        from calendar import monthrange
+        
         oggi = date.today()
         primo_mese = oggi.replace(day=1)
         
-        # Ultimo giorno del mese
-        if oggi.month == 12:
-            ultimo_mese = oggi.replace(day=31)
-        else:
-            prossimo_mese = oggi.replace(month=oggi.month + 1, day=1)
-            ultimo_mese = prossimo_mese - timedelta(days=1)
+        # Ultimo giorno del mese (gestisce correttamente tutti i mesi)
+        ultimo_giorno = monthrange(oggi.year, oggi.month)[1]
+        ultimo_mese = oggi.replace(day=ultimo_giorno)
         
         return self.analizza_spese_periodo(primo_mese, ultimo_mese)
     

@@ -21,8 +21,8 @@ class InputManager:
         'modifica_piano': r'(?:sposta|cambia|modifica|rimuovi|elimina)\s+(.+)',
         'richiesta_aiuto': r'(?:aiutami|aiuto|come faccio|suggeriscimi|consigliami)',
         'tempo_disponibile': r'(?:ho|dispongo di)\s+(\d+)\s*(?:ore?|h|minuti|min)\s+(?:libere?|liberi|disponibili)',
-        'spesa': r'(?:spesa|speso|pagato|costo|ho speso)\s+(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)?\s*(?:per|di)?\s*(.+)',
-        'spesa_diretta': r'(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)\s+(?:per|di)\s+(.+)',
+        'spesa': r'(?:spesa|speso|pagato|costo|ho speso)\s+(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)?\s*(?:per|di)?\s*([^.!?\n]{1,100})',
+        'spesa_diretta': r'(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)\s+(?:per|di)\s+([^.!?\n]{1,100})',
     }
     
     @staticmethod

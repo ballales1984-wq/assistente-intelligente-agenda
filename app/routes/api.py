@@ -628,29 +628,48 @@ def gestisci_spese():
     if request.method == 'POST':
         data = request.json
         
+        # Validazione input
+        if not data:
+            return jsonify({'errore': 'Dati mancanti'}), 400
+        
+        if 'importo' not in data or 'descrizione' not in data:
+            return jsonify({'errore': 'Campi richiesti: importo, descrizione'}), 400
+        
+        try:
+            importo = float(data['importo'])
+            if importo <= 0:
+                return jsonify({'errore': 'Importo deve essere maggiore di 0'}), 400
+        except (ValueError, TypeError):
+            return jsonify({'errore': 'Importo non valido'}), 400
+        
         # Categorizza automaticamente se non specificata
         categoria = data.get('categoria')
         if not categoria:
             spese_mgr = SpeseManager(profilo)
             categoria = spese_mgr.categorizza_spesa(data['descrizione'])
         
-        spesa = Spesa(
-            user_id=profilo.id,
-            importo=float(data['importo']),
-            descrizione=data['descrizione'],
-            categoria=categoria,
-            data=datetime.fromisoformat(data.get('data', date.today().isoformat())).date(),
-            ora=datetime.now().time(),
-            luogo=data.get('luogo'),
-            note=data.get('note'),
-            metodo_pagamento=data.get('metodo_pagamento'),
-            necessaria=data.get('necessaria', True)
-        )
-        
-        db.session.add(spesa)
-        db.session.commit()
-        
-        return jsonify(spesa.to_dict()), 201
+        try:
+            spesa = Spesa(
+                user_id=profilo.id,
+                importo=importo,
+                descrizione=data['descrizione'],
+                categoria=categoria,
+                data=datetime.fromisoformat(data.get('data', date.today().isoformat())).date(),
+                ora=datetime.now().time(),
+                luogo=data.get('luogo'),
+                note=data.get('note'),
+                metodo_pagamento=data.get('metodo_pagamento'),
+                necessaria=data.get('necessaria', True)
+            )
+            
+            db.session.add(spesa)
+            db.session.commit()
+            
+            return jsonify(spesa.to_dict()), 201
+            
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'errore': f'Errore creazione spesa: {str(e)}'}), 500
     
     # GET - spese recenti (ultimi 30 giorni)
     data_inizio = date.today() - timedelta(days=30)

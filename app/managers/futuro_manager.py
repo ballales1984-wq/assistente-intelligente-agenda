@@ -174,11 +174,13 @@ class FuturoManager:
         Returns:
             Proiezione competenze
         """
-        # Trova obiettivo
-        obiettivo = self.user_profile.obiettivi.filter_by(
-            nome__ilike=f'%{obiettivo_nome}%',
-            attivo=True
-        ).first()
+        # Trova obiettivo (cerca per nome contenente la stringa)
+        obiettivi_attivi = self.user_profile.obiettivi.filter_by(attivo=True).all()
+        obiettivi_match = [
+            obj for obj in obiettivi_attivi
+            if obiettivo_nome.lower() in obj.nome.lower()
+        ]
+        obiettivo = obiettivi_match[0] if obiettivi_match else None
         
         if obiettivo:
             ore_settimanali = obiettivo.durata_settimanale

@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Il tuo compagno per organizzare vita, studio e obiettivi">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
     <title>🧠 Assistente Intelligente</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -522,13 +527,16 @@
                 <div class="quick-actions" style="margin-top: 10px;">
                     <strong style="color: #667eea; display: block; margin-bottom: 8px;">💾 Backup & Export:</strong>
                     <button class="quick-action" onclick="exportaTutto()">
-                        📦 Export Tutto
+                        📦 Export Tutto JSON
                     </button>
-                    <button class="quick-action" onclick="exportaImpegni()">
-                        📅 Export Impegni
+                    <button class="quick-action" onclick="exportaPianoPDF()">
+                        📄 Export Piano PDF
+                    </button>
+                    <button class="quick-action" onclick="exportaImpegniICalendar()">
+                        📅 Export iCal
                     </button>
                     <button class="quick-action" onclick="exportaSpese()">
-                        💰 Export Spese
+                        💰 Export Spese CSV
                     </button>
                 </div>
             </div>
@@ -636,19 +644,25 @@
 
             <!-- Grafici Visuali -->
             <div class="card" style="grid-column: 1 / -1;">
-                <h2>📊 Grafici & Analisi</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <h2>📊 Dashboard Analytics</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div>
                         <h3 style="color: #667eea; margin-bottom: 15px;">💰 Spese per Categoria (Mese)</h3>
                         <canvas id="graficoSpese" style="max-height: 300px;"></canvas>
                     </div>
                     <div>
-                        <h3 style="color: #667eea; margin-bottom: 15px;">⏰ Tempo per Obiettivo (Settimana)</h3>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">⏰ Tempo per Obiettivo</h3>
                         <canvas id="graficoObiettivi" style="max-height: 300px;"></canvas>
                     </div>
                 </div>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📈 Trend Spese Ultimi 30 Giorni</h3>
+                        <canvas id="graficoTrendSpese" style="max-height: 250px;"></canvas>
+                    </div>
+                </div>
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="aggiornaGrafici()">
-                    🔄 Aggiorna Grafici
+                    🔄 Aggiorna Analytics
                 </button>
             </div>
         </div>
@@ -660,6 +674,19 @@
 
         // Carica dati all'avvio
         window.addEventListener('DOMContentLoaded', () => {
+            // ============================================
+            // REGISTRA SERVICE WORKER (PWA)
+            // ============================================
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(registration => {
+                        console.log('✅ PWA: Service Worker registrato', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('⚠️ PWA: Errore registrazione SW:', error);
+                    });
+            }
+            
             // Carica tema salvato
             const temaSalvato = localStorage.getItem('tema') || 'light';
             if (temaSalvato === 'dark') {
@@ -1748,6 +1775,7 @@
         async function aggiornaGrafici() {
             await creaGraficoSpese();
             await creaGraficoObiettivi();
+            await creaGraficoTrendSpese();
         }
 
         async function creaGraficoSpese() {
@@ -1874,6 +1902,94 @@
             }
         }
 
+        async function creaGraficoTrendSpese() {
+            try {
+                const response = await fetch('/api/spese');
+                const spese = await response.json();
+                
+                // Raggruppa spese per giorno (ultimi 30 giorni)
+                const oggi = new Date();
+                const spese_per_giorno = {};
+                
+                for (let i = 29; i >= 0; i--) {
+                    const data = new Date(oggi);
+                    data.setDate(data.getDate() - i);
+                    const chiave = data.toISOString().split('T')[0];
+                    spese_per_giorno[chiave] = 0;
+                }
+                
+                spese.forEach(s => {
+                    const chiave = s.data;
+                    if (chiave in spese_per_giorno) {
+                        spese_per_giorno[chiave] += s.importo;
+                    }
+                });
+                
+                const labels = Object.keys(spese_per_giorno).map(d => {
+                    const date = new Date(d);
+                    return date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+                });
+                const valori = Object.values(spese_per_giorno);
+                
+                const ctx = document.getElementById('graficoTrendSpese');
+                
+                if (window.graficoTrendSpese) {
+                    window.graficoTrendSpese.destroy();
+                }
+                
+                window.graficoTrendSpese = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Spese Giornaliere (€)',
+                            data: valori,
+                            borderColor: '#FF6384',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Euro (€)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    maxTicksLimit: 10
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        return `€${context.parsed.y.toFixed(2)}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Errore grafico trend:', error);
+            }
+        }
+
         // Carica grafici all'avvio (dopo caricamento Chart.js)
         window.addEventListener('load', () => {
             setTimeout(aggiornaGrafici, 1000);
@@ -1997,6 +2113,152 @@
             });
             
             return csv;
+        }
+
+        async function exportaPianoPDF() {
+            try {
+                const response = await fetch('/api/piano');
+                const data = await response.json();
+                const piano = data.piano || [];
+                
+                if (piano.length === 0) {
+                    aggiungiMessaggio('⚠️ Genera prima un piano settimanale!', 'assistant');
+                    return;
+                }
+                
+                // Usa jsPDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Titolo
+                doc.setFontSize(20);
+                doc.text('Piano Settimanale', 105, 20, { align: 'center' });
+                
+                doc.setFontSize(12);
+                doc.text(`Generato il: ${new Date().toLocaleDateString('it-IT')}`, 105, 30, { align: 'center' });
+                
+                // Raggruppa per giorno
+                const pianoPerGiorno = {};
+                piano.forEach(att => {
+                    const data = new Date(att.data_inizio);
+                    const giorno = data.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'short' });
+                    if (!pianoPerGiorno[giorno]) pianoPerGiorno[giorno] = [];
+                    pianoPerGiorno[giorno].push(att);
+                });
+                
+                let y = 45;
+                
+                for (const [giorno, attivita] of Object.entries(pianoPerGiorno)) {
+                    // Check nuova pagina
+                    if (y > 250) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    
+                    // Giorno
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(giorno, 20, y);
+                    y += 8;
+                    
+                    doc.setFontSize(10);
+                    doc.setFont(undefined, 'normal');
+                    
+                    attivita.forEach(att => {
+                        const inizio = new Date(att.data_inizio);
+                        const fine = new Date(att.data_fine);
+                        const orario = `${inizio.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})} - ${fine.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}`;
+                        
+                        doc.text(`  • ${orario}: ${att.nome}`, 25, y);
+                        y += 6;
+                        
+                        if (y > 270) {
+                            doc.addPage();
+                            y = 20;
+                        }
+                    });
+                    
+                    y += 5;
+                }
+                
+                // Salva PDF
+                doc.save(`piano-settimanale-${new Date().toISOString().split('T')[0]}.pdf`);
+                aggiungiMessaggio('📄 Piano esportato in PDF!', 'assistant');
+                
+            } catch (error) {
+                console.error('Errore export PDF:', error);
+                aggiungiMessaggio('❌ Errore export PDF', 'assistant');
+            }
+        }
+
+        async function exportaImpegniICalendar() {
+            try {
+                const response = await fetch('/api/impegni');
+                const impegni = await response.json();
+                
+                if (impegni.length === 0) {
+                    aggiungiMessaggio('⚠️ Nessun impegno da esportare!', 'assistant');
+                    return;
+                }
+                
+                // Genera file iCalendar (.ics)
+                let icalContent = 'BEGIN:VCALENDAR\r\n';
+                icalContent += 'VERSION:2.0\r\n';
+                icalContent += 'PRODID:-//Assistente Intelligente//Agenda//IT\r\n';
+                icalContent += 'CALSCALE:GREGORIAN\r\n';
+                icalContent += 'METHOD:PUBLISH\r\n';
+                icalContent += 'X-WR-CALNAME:Agenda Assistente Intelligente\r\n';
+                icalContent += 'X-WR-TIMEZONE:Europe/Rome\r\n';
+                
+                impegni.forEach(imp => {
+                    const inizio = new Date(imp.data_inizio);
+                    const fine = new Date(imp.data_fine);
+                    
+                    // Formato iCal: YYYYMMDDTHHMMSS
+                    const dtStart = formatoICalDate(inizio);
+                    const dtEnd = formatoICalDate(fine);
+                    const dtStamp = formatoICalDate(new Date());
+                    
+                    icalContent += 'BEGIN:VEVENT\r\n';
+                    icalContent += `UID:${imp.id}@assistente-intelligente.local\r\n`;
+                    icalContent += `DTSTAMP:${dtStamp}\r\n`;
+                    icalContent += `DTSTART:${dtStart}\r\n`;
+                    icalContent += `DTEND:${dtEnd}\r\n`;
+                    icalContent += `SUMMARY:${imp.nome}\r\n`;
+                    icalContent += `DESCRIPTION:${imp.tipo || 'Impegno personale'}\r\n`;
+                    icalContent += `STATUS:CONFIRMED\r\n`;
+                    icalContent += 'END:VEVENT\r\n';
+                });
+                
+                icalContent += 'END:VCALENDAR\r\n';
+                
+                // Download file .ics
+                const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `agenda-${new Date().toISOString().split('T')[0]}.ics`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                aggiungiMessaggio(`📅 Export ${impegni.length} impegni in formato iCalendar! Importabile in Google Calendar, Outlook, Apple Calendar.`, 'assistant');
+                
+            } catch (error) {
+                console.error('Errore export iCal:', error);
+                aggiungiMessaggio('❌ Errore export iCalendar', 'assistant');
+            }
+        }
+
+        function formatoICalDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}${month}${day}T${hours}${minutes}${seconds}`;
         }
     </script>
 </body>

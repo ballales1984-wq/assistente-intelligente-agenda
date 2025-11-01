@@ -14,6 +14,7 @@ class InputManager:
         'obiettivo_durata': r'(?:voglio|devo|vorrei|mi piacerebbe)\s+(.+?)\s+per\s+(\d+)\s*(?:giorni|settimane|mesi)',
         'impegno_specifico': r'(.+?)\s+(?:dalle|dal|alle|al|dalle\s+ore|alle\s+ore)\s+(\d{1,2}):?(\d{2})?\s*(?:alle|al|-|–)?\s*(\d{1,2})?:?(\d{2})?',
         'impegno_oggi_domani': r'(?:oggi|domani)\s+(.+?)\s+(?:alle|dalle|al|\s)(\d{1,2}):?(\d{2})?(?:\s*-\s*(\d{1,2}):?(\d{2})?)?',
+        'impegno_ricorrente': r'ogni\s+(luned[ìi]|marted[ìi]|mercoled[ìi]|gioved[ìi]|venerd[ìi]|sabato|domenica|giorno)\s+(.+?)\s+(?:ore|alle|dalle)\s+(\d{1,2})',
         'stato_emotivo': r'(?:sono|mi sento|sto|mi trovo)\s+(stanco|stanca|concentrato|concentrata|rilassato|rilassata|stressato|stressata|motivato|motivata|energico|energica|esausto|esausta)',
         'preferenza_riposo': r'(?:voglio|preferisco|vorrei|ho bisogno di)\s+(?:riposare|rilassarmi|pause|più pause|pause più lunghe|dormire di più)',
         'giorno_settimana': r'(luned[ìi]|marted[ìi]|mercoled[ìi]|gioved[ìi]|venerd[ìi]|sabato|domenica|oggi|domani)',
@@ -70,6 +71,23 @@ class InputManager:
                 'nome': match.group(1).strip().title(),
                 'durata_settimanale': float(match.group(2)),
                 'tipo': InputManager._identifica_tipo_attivita(match.group(1))
+            }
+            return risultato
+        
+        # Riconosci impegno RICORRENTE (es. "ogni lunedì palestra ore 18")
+        match_ricorrente = re.search(InputManager.PATTERNS['impegno_ricorrente'], testo, re.IGNORECASE)
+        if match_ricorrente:
+            giorno_o_frequenza = match_ricorrente.group(1).lower()
+            nome = match_ricorrente.group(2).strip().title()
+            ora = int(match_ricorrente.group(3))
+            
+            risultato['tipo'] = 'impegno_ricorrente'
+            risultato['dati'] = {
+                'nome': nome,
+                'ora_inizio': f"{ora}:00",
+                'ora_fine': f"{ora+1}:00",
+                'pattern': 'settimanale' if giorno_o_frequenza != 'giorno' else 'giornaliero',
+                'giorno_settimana': giorno_o_frequenza if giorno_o_frequenza != 'giorno' else None
             }
             return risultato
         

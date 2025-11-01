@@ -15,6 +15,20 @@ def index():
     return render_template('index.html')
 
 
+@bp.route('/manifest.json')
+def manifest():
+    """Serve manifest.json per PWA"""
+    from flask import send_from_directory
+    return send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
+
+
+@bp.route('/sw.js')
+def service_worker():
+    """Serve service worker"""
+    from flask import send_from_directory
+    return send_from_directory('static', 'sw.js', mimetype='application/javascript')
+
+
 @bp.route('/api/profilo', methods=['GET', 'POST'])
 def gestisci_profilo():
     """Crea o recupera il profilo utente"""
@@ -293,6 +307,87 @@ def chat():
         risposta['dati'] = impegno.to_dict()
         if impegni_modificati:
             risposta['modifiche'] = impegni_modificati
+    
+    elif risultato['tipo'] == 'impegno_ricorrente':
+        # Crea impegni ricorrenti (prossime 8 settimane)
+        dati = risultato['dati']
+        impegni_creati = []
+        
+        # Mappa giorni settimana
+        giorni_map = {
+            'lunedì': 0, 'martedì': 1, 'mercoledì': 2, 
+            'giovedì': 3, 'venerdì': 4, 'sabato': 5, 'domenica': 6
+        }
+        
+        if dati['pattern'] == 'settimanale':
+            giorno_target = giorni_map.get(dati['giorno_settimana'])
+            
+            # Trova il prossimo giorno
+            oggi = datetime.now()
+            giorni_diff = (giorno_target - oggi.weekday()) % 7
+            if giorni_diff == 0:
+                giorni_diff = 7
+            
+            # Crea 8 impegni (8 settimane)
+            for settimana in range(8):
+                data_impegno = oggi + timedelta(days=giorni_diff + (settimana * 7))
+                
+                ora_inizio = datetime.strptime(dati['ora_inizio'], '%H:%M').time()
+                data_inizio = datetime.combine(data_impegno.date(), ora_inizio)
+                
+                ora_fine = datetime.strptime(dati['ora_fine'], '%H:%M').time()
+                data_fine = datetime.combine(data_impegno.date(), ora_fine)
+                
+                impegno = Impegno(
+                    user_id=profilo.id,
+                    nome=dati['nome'],
+                    data_inizio=data_inizio,
+                    data_fine=data_fine,
+                    tipo='personale',
+                    ricorrente=True,
+                    pattern_ricorrenza='settimanale',
+                    giorni_settimana=dati['giorno_settimana']
+                )
+                db.session.add(impegno)
+                impegni_creati.append(impegno)
+            
+            db.session.commit()
+            
+            risposta['risposta'] = f"🔄 Ho creato {len(impegni_creati)} impegni ricorrenti per '{dati['nome']}' " \
+                                   f"ogni {dati['giorno_settimana']} alle {dati['ora_inizio']} " \
+                                   f"(prossime 8 settimane)"
+            risposta['dati'] = [imp.to_dict() for imp in impegni_creati]
+        
+        elif dati['pattern'] == 'giornaliero':
+            # Crea 14 impegni giornalieri
+            oggi = datetime.now()
+            
+            for giorno in range(14):
+                data_impegno = oggi + timedelta(days=giorno+1)
+                
+                ora_inizio = datetime.strptime(dati['ora_inizio'], '%H:%M').time()
+                data_inizio = datetime.combine(data_impegno.date(), ora_inizio)
+                
+                ora_fine = datetime.strptime(dati['ora_fine'], '%H:%M').time()
+                data_fine = datetime.combine(data_impegno.date(), ora_fine)
+                
+                impegno = Impegno(
+                    user_id=profilo.id,
+                    nome=dati['nome'],
+                    data_inizio=data_inizio,
+                    data_fine=data_fine,
+                    tipo='personale',
+                    ricorrente=True,
+                    pattern_ricorrenza='giornaliero'
+                )
+                db.session.add(impegno)
+                impegni_creati.append(impegno)
+            
+            db.session.commit()
+            
+            risposta['risposta'] = f"🔄 Ho creato {len(impegni_creati)} impegni giornalieri per '{dati['nome']}' " \
+                                   f"alle {dati['ora_inizio']} (prossimi 14 giorni)"
+            risposta['dati'] = [imp.to_dict() for imp in impegni_creati]
     
     elif risultato['tipo'] == 'stato':
         risposta['risposta'] = f"💭 Ho capito che sei {risultato['dati']['stato']}. " \

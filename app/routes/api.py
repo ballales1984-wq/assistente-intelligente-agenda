@@ -1,7 +1,7 @@
 """API endpoints"""
 from flask import Blueprint, request, jsonify, render_template
 from datetime import datetime, timedelta, date
-from app import db
+from app import db, limiter
 from app.models import UserProfile, Obiettivo, Impegno, DiarioGiornaliero, Spesa
 from app.core import InputManager, AgendaDinamica, MotoreAdattivo, DiarioManager
 from app.managers import PassatoManager, PresenteManager, FuturoManager, SpeseManager
@@ -619,10 +619,14 @@ def prevedi_prossima_settimana():
 # ═══════════════════════════════════════════════════════════════
 
 @bp.route('/api/spese', methods=['GET', 'POST'])
+@limiter.limit("20 per minute")  # Rate limiting: max 20 spese al minuto
 def gestisci_spese():
     """Lista o crea spese"""
+    from flask import current_app
+    
     profilo = UserProfile.query.first()
     if not profilo:
+        current_app.logger.warning("Tentativo accesso spese senza profilo")
         return jsonify({'errore': 'Nessun profilo trovato'}), 404
     
     if request.method == 'POST':
@@ -630,16 +634,29 @@ def gestisci_spese():
         
         # Validazione input
         if not data:
+            current_app.logger.warning("POST spesa senza dati", extra={'user_id': profilo.id})
             return jsonify({'errore': 'Dati mancanti'}), 400
         
         if 'importo' not in data or 'descrizione' not in data:
+            current_app.logger.warning(
+                "POST spesa con campi mancanti",
+                extra={'user_id': profilo.id, 'data': data}
+            )
             return jsonify({'errore': 'Campi richiesti: importo, descrizione'}), 400
         
         try:
             importo = float(data['importo'])
             if importo <= 0:
+                current_app.logger.warning(
+                    "POST spesa con importo negativo",
+                    extra={'user_id': profilo.id, 'importo': importo}
+                )
                 return jsonify({'errore': 'Importo deve essere maggiore di 0'}), 400
         except (ValueError, TypeError):
+            current_app.logger.warning(
+                "POST spesa con importo invalido",
+                extra={'user_id': profilo.id, 'importo_raw': data.get('importo')}
+            )
             return jsonify({'errore': 'Importo non valido'}), 400
         
         # Categorizza automaticamente se non specificata
@@ -665,10 +682,25 @@ def gestisci_spese():
             db.session.add(spesa)
             db.session.commit()
             
+            current_app.logger.info(
+                f"Spesa creata: {data['descrizione']}",
+                extra={
+                    'user_id': profilo.id,
+                    'spesa_id': spesa.id,
+                    'importo': importo,
+                    'categoria': categoria
+                }
+            )
+            
             return jsonify(spesa.to_dict()), 201
             
         except Exception as e:
             db.session.rollback()
+            current_app.logger.error(
+                f"Errore creazione spesa: {str(e)}",
+                exc_info=True,
+                extra={'user_id': profilo.id, 'data': data}
+            )
             return jsonify({'errore': f'Errore creazione spesa: {str(e)}'}), 500
     
     # GET - spese recenti (ultimi 30 giorni)

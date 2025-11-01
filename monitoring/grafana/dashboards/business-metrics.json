@@ -1,0 +1,96 @@
+{
+  "dashboard": {
+    "title": "Wallmind - Business Metrics",
+    "tags": ["wallmind", "business", "kpi"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Active Users",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "users_active",
+            "legendFormat": "Users"
+          }
+        ],
+        "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4}
+      },
+      {
+        "id": 2,
+        "title": "Obiettivi Attivi",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "obiettivi_total{status=\"active\"}",
+            "legendFormat": "Active"
+          }
+        ],
+        "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4}
+      },
+      {
+        "id": 3,
+        "title": "Obiettivi Completati (Today)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "increase(obiettivi_completati_total[24h])",
+            "legendFormat": "Completed"
+          }
+        ],
+        "gridPos": {"x": 12, "y": 0, "w": 6, "h": 4}
+      },
+      {
+        "id": 4,
+        "title": "Spese Totali (€)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(spese_amount_euro)",
+            "legendFormat": "Total"
+          }
+        ],
+        "gridPos": {"x": 18, "y": 0, "w": 6, "h": 4}
+      },
+      {
+        "id": 5,
+        "title": "Spese per Categoria (Last 24h)",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "increase(spese_total[24h])",
+            "legendFormat": "{{categoria}}"
+          }
+        ],
+        "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8}
+      },
+      {
+        "id": 6,
+        "title": "Impegni per Tipo",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "impegni_total",
+            "legendFormat": "{{tipo}}"
+          }
+        ],
+        "gridPos": {"x": 12, "y": 4, "w": 12, "h": 8}
+      },
+      {
+        "id": 7,
+        "title": "Diary Entries by Sentiment",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "diario_entries_total",
+            "legendFormat": "{{sentiment}}"
+          }
+        ],
+        "gridPos": {"x": 0, "y": 12, "w": 24, "h": 6}
+      }
+    ],
+    "refresh": "1m",
+    "time": {"from": "now-24h", "to": "now"}
+  }
+}
+

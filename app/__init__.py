@@ -95,8 +95,10 @@ def create_app(config_class=Config):
     # BLUEPRINTS
     # ========================================
     from app.routes import api
+    from app.routes import beta
     app.register_blueprint(api.bp)
-    app.logger.info("📋 Blueprints registrati")
+    app.register_blueprint(beta.bp)
+    app.logger.info("📋 Blueprints registrati (API + Beta)")
     
     # ========================================
     # DATABASE TABLES

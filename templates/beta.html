@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallmind Agenda - Beta Program 🚀</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        .hero .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero .cta {
+            display: inline-block;
+            padding: 18px 40px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1.2s ease;
+        }
+        
+        .hero .cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        /* Features Section */
+        .features {
+            background: white;
+            padding: 80px 20px;
+            border-radius: 20px 20px 0 0;
+            margin-top: -40px;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: #667eea;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            padding: 30px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .feature-card p {
+            color: #555;
+        }
+        
+        /* Beta Signup Section */
+        .signup {
+            background: #667eea;
+            padding: 80px 20px;
+            color: white;
+        }
+        
+        .signup h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+        
+        .signup-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .success-message {
+            display: none;
+            padding: 20px;
+            background: #4caf50;
+            color: white;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        /* FAQ Section */
+        .faq {
+            background: white;
+            padding: 80px 20px;
+        }
+        
+        .faq h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: #667eea;
+        }
+        
+        .faq-item {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 25px;
+            background: #f5f7fa;
+            border-radius: 10px;
+        }
+        
+        .faq-item h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .tagline {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="container">
+            <h1>🧠 Wallmind Agenda</h1>
+            <p class="tagline">L'agenda intelligente che impara da te</p>
+            <a href="#signup" class="cta">Richiedi Accesso Beta 🚀</a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features">
+        <div class="container">
+            <h2>✨ Features Intelligenti</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon">🎯</div>
+                    <h3>Obiettivi Smart</h3>
+                    <p>Imposta obiettivi e lascia che Wallmind pianifichi automaticamente come raggiungerli</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">📅</div>
+                    <h3>Agenda Dinamica</h3>
+                    <p>Il tuo calendario si adatta in tempo reale al tuo stile di vita e priorità</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h3>Analytics Intelligenti</h3>
+                    <p>Scopri pattern, anomalie e ricevi suggerimenti per ottimizzare il tuo tempo</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">💰</div>
+                    <h3>Budget Tracker</h3>
+                    <p>Categorizzazione automatica delle spese con AI e alert budget</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">📝</div>
+                    <h3>Diario Personale</h3>
+                    <p>Analisi sentiment e connessione tra emozioni ed eventi</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">🤖</div>
+                    <h3>AI-Powered</h3>
+                    <p>Pattern recognition, anomaly detection e suggerimenti predittivi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Beta Signup Section -->
+    <div class="signup" id="signup">
+        <div class="container">
+            <h2>🎉 Unisciti al Beta Program!</h2>
+            <form class="signup-form" id="betaForm">
+                <div class="form-group">
+                    <label for="name">Nome *</label>
+                    <input type="text" id="name" name="name" required placeholder="Il tuo nome">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required placeholder="tua@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="role">Come useresti Wallmind?</label>
+                    <input type="text" id="role" name="role" placeholder="Es: Studente, Professionista, Manager...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedback">Cosa ti interessa di più? (opzionale)</label>
+                    <input type="text" id="feedback" name="feedback" placeholder="Features, use cases...">
+                </div>
+                
+                <button type="submit" class="submit-btn">🚀 Richiedi Accesso Beta</button>
+                
+                <div class="success-message" id="successMessage">
+                    ✅ Grazie! Ti abbiamo inviato l'email di conferma. Controlla la inbox! 🎉
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq">
+        <div class="container">
+            <h2>❓ Domande Frequenti</h2>
+            
+            <div class="faq-item">
+                <h3>🤔 Cos'è Wallmind Agenda?</h3>
+                <p>Wallmind è un'agenda intelligente che usa AI per aiutarti a gestire obiettivi, impegni, spese e vita quotidiana. Impara dal tuo comportamento e ti suggerisce ottimizzazioni.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>💰 È gratis?</h3>
+                <p>Durante il beta program, Wallmind è completamente gratuito! I beta tester avranno anche uno sconto speciale alla release ufficiale.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>📱 Su quali piattaforme funziona?</h3>
+                <p>Attualmente è una web app accessibile da qualsiasi browser (desktop e mobile). App native in arrivo!</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>🔒 I miei dati sono sicuri?</h3>
+                <p>Assolutamente sì! I tuoi dati sono crittografati e mai condivisi con terze parti. Privacy-first design.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>📅 Quando inizia il beta?</h3>
+                <p>ADESSO! I primi iscritti riceveranno accesso immediato. Posti limitati per garantire supporto personalizzato.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>💬 Come posso dare feedback?</h3>
+                <p>Avrai accesso diretto al team via email, WhatsApp group dedicato e feedback form in-app. Il tuo input è prezioso!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="container">
+            <p>&copy; 2025 Wallmind - L'agenda che pensa per te</p>
+            <p>Built with ❤️ in Italy | Apache 2.0 License</p>
+            <p><a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda" style="color: #667eea;">GitHub</a> | <a href="mailto:beta@wallmind.com" style="color: #667eea;">beta@wallmind.com</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Beta signup form handling
+        document.getElementById('betaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                role: document.getElementById('role').value,
+                feedback: document.getElementById('feedback').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                const response = await fetch('/api/beta/signup', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('betaForm').reset();
+                    
+                    // Scroll to success message
+                    document.getElementById('successMessage').scrollIntoView({behavior: 'smooth'});
+                }
+            } catch (error) {
+                alert('Errore nell\'invio. Riprova o scrivici a beta@wallmind.com');
+            }
+        });
+        
+        // Smooth scroll for CTA
+        document.querySelector('.cta').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#signup').scrollIntoView({behavior: 'smooth'});
+        });
+    </script>
+</body>
+</html>
+

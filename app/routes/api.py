@@ -28,6 +28,20 @@ def manifest():
     return send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
 
 
+@bp.route('/robots.txt')
+def robots():
+    """Serve robots.txt per SEO"""
+    from flask import send_from_directory
+    return send_from_directory('static', 'robots.txt', mimetype='text/plain')
+
+
+@bp.route('/sitemap.xml')
+def sitemap():
+    """Serve sitemap.xml per SEO"""
+    from flask import send_from_directory
+    return send_from_directory('static', 'sitemap.xml', mimetype='application/xml')
+
+
 @bp.route('/sw.js')
 def service_worker():
     """Serve service worker"""

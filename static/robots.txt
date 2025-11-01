@@ -1,0 +1,13 @@
+# Robots.txt per Assistente Intelligente
+# Permetti a tutti i crawler di indicizzare tutto
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://assistente-intelligente-agenda.onrender.com/sitemap.xml
+
+# Crawl-delay per essere gentili
+Crawl-delay: 1
+

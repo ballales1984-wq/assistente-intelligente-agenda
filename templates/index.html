@@ -1049,6 +1049,10 @@
                         }
                         
                         aggiungiMessaggio(risposta, 'assistant');
+                        
+                        // Lettura vocale proiezione
+                        const testoVocale = pulisciTestoPerVoce(risposta);
+                        parla(testoVocale);
                     } catch (error) {
                         aggiungiMessaggio('Errore nella proiezione', 'assistant');
                     }
@@ -1110,6 +1114,12 @@
                 }
 
                 aggiungiMessaggio(risposta, 'assistant');
+                
+                // ============================================
+                // LETTURA VOCALE della risposta
+                // ============================================
+                const testoVocale = pulisciTestoPerVoce(risposta);
+                parla(testoVocale);
 
             } catch (error) {
                 console.error('Errore domanda temporale:', error);
@@ -1230,6 +1240,10 @@
                         risposta += `${data.alert}`;
                         
                         aggiungiMessaggio(risposta, 'assistant');
+                        
+                        // Lettura vocale budget
+                        const testoVocale = pulisciTestoPerVoce(risposta);
+                        parla(testoVocale);
                     } catch (error) {
                         aggiungiMessaggio('Errore nel calcolo budget', 'assistant');
                     }
@@ -1272,6 +1286,12 @@
                 }
 
                 aggiungiMessaggio(risposta, 'assistant');
+                
+                // ============================================
+                // LETTURA VOCALE della risposta spese
+                // ============================================
+                const testoVocale = pulisciTestoPerVoce(risposta);
+                parla(testoVocale);
 
             } catch (error) {
                 console.error('Errore domanda spese:', error);
@@ -1280,10 +1300,36 @@
         }
 
         // ============================================
-        // LETTURA VOCALE IMPEGNI
+        // LETTURA VOCALE - Funzioni Utili
         // ============================================
         let synth = window.speechSynthesis;
         let currentUtterance = null;
+
+        function pulisciTestoPerVoce(testo) {
+            // Rimuovi emoji (pattern unicode)
+            let testoVocale = testo.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '');
+            
+            // Rimuovi markdown (**, *, #, ecc.)
+            testoVocale = testoVocale.replace(/\*\*/g, '');
+            testoVocale = testoVocale.replace(/\*/g, '');
+            testoVocale = testoVocale.replace(/#{1,6}\s/g, '');
+            testoVocale = testoVocale.replace(/`/g, '');
+            
+            // Rimuovi caratteri speciali inutili
+            testoVocale = testoVocale.replace(/•/g, '');
+            testoVocale = testoVocale.replace(/→/g, ' a ');
+            testoVocale = testoVocale.replace(/:/g, ', ');
+            
+            // Rimuovi spazi multipli e a capo multipli
+            testoVocale = testoVocale.replace(/\n\n+/g, '. ');
+            testoVocale = testoVocale.replace(/\n/g, '. ');
+            testoVocale = testoVocale.replace(/\s+/g, ' ');
+            
+            // Converti simboli euro
+            testoVocale = testoVocale.replace(/€/g, 'euro ');
+            
+            return testoVocale.trim();
+        }
 
         async function leggiImpegniGiorno(quando) {
             let dataTarget;

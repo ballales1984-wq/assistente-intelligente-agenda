@@ -29,6 +29,7 @@ certifi==2025.10.5
 # NLP and AI
 nltk==3.9.2
 langdetect==1.0.9
+ollama==0.6.0
 
 # Data processing
 numpy==1.26.4

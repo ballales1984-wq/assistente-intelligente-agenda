@@ -4,8 +4,9 @@
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.0-green.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+![License](https://img.shields.io/badge/License-Apache%202.0-red.svg)
 ![AI](https://img.shields.io/badge/AI-NLP-purple.svg)
+![Version](https://img.shields.io/badge/Version-1.1.0-brightgreen.svg)
 
 **Un assistente intelligente che organizza la tua vita attraverso linguaggio naturale**
 
@@ -245,7 +246,16 @@ Contributi benvenuti!
 
 ## 📝 Licenza
 
-Distribuito sotto licenza MIT. Vedi `LICENSE` per maggiori informazioni.
+Distribuito sotto licenza **Apache 2.0**. Vedi `LICENSE` per maggiori informazioni.
+
+### Cosa Significa?
+- ✅ **Uso libero** - Puoi usarlo come vuoi
+- ✅ **Modifiche** - Puoi modificarlo e distribuirlo
+- ✅ **Commerciale** - Puoi usarlo in progetti commerciali
+- ✅ **Protezione brevetti** - Include clausola protezione brevetti
+- ⚠️ **Disclaimer** - Software fornito "AS IS"
+
+Per dettagli completi: [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ---
 

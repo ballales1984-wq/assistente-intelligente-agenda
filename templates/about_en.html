@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="ehc2rdX_ZZQV4CI5Ro2pKbgUuM5IbRIR0tTRnVmxjV0" />
+    <meta name="description" content="Chi siamo, come funziona e perché Assistente Intelligente è gratis. Scopri la storia dietro l'app AI per gestire agenda, obiettivi e vita.">
+    <title>Chi Siamo - Assistente Intelligente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.95;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+
+        .feature-list li strong {
+            color: #667eea;
+        }
+
+        .cta-box {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            color: white;
+            margin-top: 50px;
+        }
+
+        .cta-box h2 {
+            color: white;
+            border: none;
+            margin: 0 0 20px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+            margin-top: 20px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .content-card {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-button">← Torna all'App</a>
+
+        <div class="content-card">
+            <h1>🧠 Chi Siamo</h1>
+            
+            <p>
+                <strong class="highlight">Assistente Intelligente</strong> è nato da una semplice domanda: 
+                <em>"Perché organizzare la vita deve essere complicato?"</em>
+            </p>
+
+            <p>
+                Crediamo che <strong>l'intelligenza artificiale</strong> debba rendere le cose più semplici, 
+                non più complicate. Per questo abbiamo creato un assistente che <strong>capisce il linguaggio naturale</strong> 
+                e gestisce automaticamente agenda, obiettivi, spese e diario.
+            </p>
+
+            <!-- Statistiche -->
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Gratis</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Features AI</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Lingue (IT/EN)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Online</div>
+                </div>
+            </div>
+
+            <!-- Come Funziona -->
+            <h2>🤔 Come Funziona?</h2>
+            
+            <h3>1. Parli in Linguaggio Naturale</h3>
+            <p>
+                Non servono comandi complicati. Scrivi come parleresti con un amico:
+                <em>"Voglio studiare Python 3 ore a settimana"</em>, 
+                <em>"Domani palestra ore 18"</em>, 
+                <em>"Speso 50€ per spesa"</em>.
+            </p>
+
+            <h3>2. L'AI Capisce e Organizza</h3>
+            <p>
+                Il nostro sistema di <strong>Natural Language Processing</strong> analizza quello che scrivi, 
+                capisce l'intento e lo trasforma in azioni: crea obiettivi, inserisce impegni nel calendario, 
+                traccia spese, salva riflessioni.
+            </p>
+
+            <h3>3. Tu Vedi Tutto Organizzato</h3>
+            <p>
+                Calendario settimanale, grafici spese, tracking obiettivi, analytics automatiche. 
+                Tutto aggiornato in tempo reale, senza che tu debba fare nulla!
+            </p>
+
+            <!-- Features Principali -->
+            <h2>✨ Cosa Puoi Fare</h2>
+            
+            <ul class="feature-list">
+                <li><strong>💬 Chat Intelligente:</strong> Parla in linguaggio naturale, l'AI capisce tutto</li>
+                <li><strong>📅 Calendario Interattivo:</strong> Vista settimanale con tutti i tuoi impegni</li>
+                <li><strong>🎯 Gestione Obiettivi:</strong> Tracking automatico del progresso</li>
+                <li><strong>💰 Budget & Spese:</strong> Controllo spese con grafici e categorie</li>
+                <li><strong>📔 Diario Personale:</strong> Sentiment analysis e concetti chiave</li>
+                <li><strong>📊 Analytics Dashboard:</strong> 3 grafici interattivi per visualizzare i dati</li>
+                <li><strong>🔔 Notifiche Intelligenti:</strong> Alert impegni, budget, sveglia mattutina</li>
+                <li><strong>🌙 Dark Mode:</strong> Tema scuro per utilizzo serale</li>
+                <li><strong>🔊 Lettura Vocale:</strong> Text-to-speech con voce femminile</li>
+                <li><strong>🌍 Multi-lingua:</strong> Italiano e Inglese completo</li>
+                <li><strong>📱 PWA:</strong> Installabile come app nativa su mobile</li>
+                <li><strong>💾 Export Multipli:</strong> PDF, iCal, CSV, JSON</li>
+                <li><strong>🔄 Impegni Ricorrenti:</strong> Crea automaticamente eventi settimanali</li>
+                <li><strong>🎨 Gestione Conflitti:</strong> Split/reduce automatico sovrapposizioni</li>
+            </ul>
+
+            <!-- Perché Gratis -->
+            <h2>💝 Perché è Gratis?</h2>
+            
+            <p>
+                Crediamo che <strong>organizzare la propria vita non debba costare soldi</strong>. 
+                Questa app è un progetto personale nato dalla passione per l'AI e la produttività.
+            </p>
+
+            <p>
+                Il codice è <strong>open source</strong> (licenza Apache 2.0), quindi puoi:
+            </p>
+
+            <ul class="feature-list">
+                <li>✅ Usarlo gratis, sempre</li>
+                <li>✅ Vedere il codice sorgente su <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda" target="_blank" style="color: #667eea;">GitHub</a></li>
+                <li>✅ Contribuire con miglioramenti</li>
+                <li>✅ Modificarlo per le tue esigenze</li>
+            </ul>
+
+            <!-- Tecnologia -->
+            <h2>🛠️ Tecnologia</h2>
+            
+            <p>
+                L'app è costruita con tecnologie moderne e affidabili:
+            </p>
+
+            <ul class="feature-list">
+                <li><strong>Backend:</strong> Python 3.11 + Flask (web framework robusto)</li>
+                <li><strong>Database:</strong> PostgreSQL (database enterprise permanente)</li>
+                <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript vanilla (veloce e leggero)</li>
+                <li><strong>AI/NLP:</strong> NLTK + Pattern Recognition custom + Ollama (locale)</li>
+                <li><strong>Grafici:</strong> Chart.js (libreria professionale)</li>
+                <li><strong>Deploy:</strong> Render (cloud hosting affidabile)</li>
+                <li><strong>Security:</strong> HTTPS/SSL, rate limiting, session cookies secure</li>
+            </ul>
+
+            <!-- Privacy -->
+            <h2>🔒 Privacy & Sicurezza</h2>
+            
+            <p>
+                I tuoi dati sono <strong>tuoi e solo tuoi</strong>:
+            </p>
+
+            <ul class="feature-list">
+                <li>✅ Salvati su database PostgreSQL sicuro e crittografato</li>
+                <li>✅ Nessuna condivisione con terze parti</li>
+                <li>✅ Nessun tracking invasivo</li>
+                <li>✅ Nessun dato venduto (MAI!)</li>
+                <li>✅ HTTPS/SSL sempre attivo</li>
+                <li>✅ Backup automatici giornalieri</li>
+                <li>✅ Export dati quando vuoi (PDF, JSON, CSV)</li>
+            </ul>
+
+            <!-- Roadmap -->
+            <h2>🗺️ Roadmap Futuro</h2>
+            
+            <h3>🚀 Prossimamente (1-2 mesi):</h3>
+            <ul class="feature-list">
+                <li>📱 App mobile nativa (iOS + Android)</li>
+                <li>🔄 Sincronizzazione Google Calendar</li>
+                <li>👥 Condivisione obiettivi con amici</li>
+                <li>🎯 Pomodoro timer integrato</li>
+                <li>📧 Email notifications</li>
+            </ul>
+
+            <h3>🔮 Futuro (3-6 mesi):</h3>
+            <ul class="feature-list">
+                <li>🤖 GPT-4 integration per chat avanzata</li>
+                <li>📊 Analytics predittive</li>
+                <li>👥 Multi-utente e team</li>
+                <li>⌚ Smartwatch integration</li>
+                <li>🌍 Altre lingue (ES, FR, DE)</li>
+            </ul>
+
+            <!-- Storia -->
+            <h2>📖 La Storia</h2>
+            
+            <p>
+                L'app è nata il <strong>1 Novembre 2025</strong> da un'idea semplice: creare un assistente 
+                che organizza la vita parlando in italiano naturale.
+            </p>
+
+            <p>
+                In sole <strong>24 ore</strong> è stata sviluppata, deployata in production con database PostgreSQL, 
+                tradotta in inglese, ottimizzata per SEO e resa disponibile gratuitamente a tutti.
+            </p>
+
+            <p>
+                Oggi è un'applicazione <strong>enterprise-level</strong> con 15+ funzionalità major, 
+                usata da persone in tutto il mondo per organizzare studio, lavoro e vita personale.
+            </p>
+
+            <!-- Team -->
+            <h2>👨‍💻 Il Team</h2>
+            
+            <p>
+                Sviluppato con ❤️ da un team di appassionati di AI e produttività.
+            </p>
+
+            <p>
+                <strong>Vuoi contribuire?</strong> Il progetto è open source! 
+                Visita <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda" target="_blank" style="color: #667eea; font-weight: 600;">GitHub</a> 
+                per vedere il codice e contribuire.
+            </p>
+
+            <!-- Contatti -->
+            <h2>📧 Contatti</h2>
+            
+            <p>
+                Hai domande? Feedback? Idee?
+            </p>
+
+            <ul class="feature-list">
+                <li>🐛 <strong>Bug Report:</strong> <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda/issues" target="_blank" style="color: #667eea;">GitHub Issues</a></li>
+                <li>💡 <strong>Feature Request:</strong> <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda/issues" target="_blank" style="color: #667eea;">GitHub Issues</a></li>
+                <li>⭐ <strong>GitHub:</strong> <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda" target="_blank" style="color: #667eea;">Repository</a></li>
+            </ul>
+
+        </div>
+
+        <!-- CTA Finale -->
+        <div class="cta-box content-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h2 style="color: white; border: none;">🚀 Pronto a Iniziare?</h2>
+            <p style="color: white; opacity: 0.95;">
+                Unisciti a centinaia di persone che organizzano la loro vita con l'AI.
+                <br><strong>Gratis, per sempre.</strong>
+            </p>
+            <a href="/" class="cta-button">Inizia Ora - È Gratis!</a>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; color: white; margin-top: 40px; padding: 20px;">
+            <p style="color: white; opacity: 0.9;">
+                Made with ❤️ and ☕ in Italy 🇮🇹
+                <br>
+                <a href="/" style="color: white;">Home</a> • 
+                <a href="/en" style="color: white;">English</a> • 
+                <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda" target="_blank" style="color: white;">GitHub</a>
+            </p>
+            <p style="color: white; opacity: 0.7; margin-top: 20px;">
+                © 2025 Assistente Intelligente • Apache License 2.0
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+

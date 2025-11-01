@@ -21,6 +21,18 @@ def index_en():
     return render_template('index_en_full.html')
 
 
+@bp.route('/about')
+def about():
+    """Pagina About - Chi siamo"""
+    return render_template('about.html')
+
+
+@bp.route('/en/about')
+def about_en():
+    """About page - English"""
+    return render_template('about_en.html')
+
+
 @bp.route('/manifest.json')
 def manifest():
     """Serve manifest.json per PWA"""

@@ -28,25 +28,25 @@
 
 <div align="center">
 
-### 💬 Chat Intelligente
-![Chat Interface](https://via.placeholder.com/800x400/4A90E2/FFFFFF?text=Chat+Intelligente+con+NLP)
+### 💬 Interfaccia Completa
+![Homepage](static/screenshots/1-homepage.png)
 
 *L'assistente capisce linguaggio naturale e distingue automaticamente tra agenda e diario*
 
 ### 📅 Calendario Settimanale
-![Calendar](https://via.placeholder.com/800x400/50C878/FFFFFF?text=Calendario+Interattivo)
+![Calendar](static/screenshots/2-calendario.png)
 
 *Vista timeline completa con tutti i tuoi impegni, obiettivi e pause*
 
-### 📊 Dashboard Analytics
-![Analytics](https://via.placeholder.com/800x400/9370DB/FFFFFF?text=Analytics+Dashboard)
-
-*Grafici interattivi con Chart.js per visualizzare spese, obiettivi e trend*
-
 ### 🌙 Dark Mode
-![Dark Mode](https://via.placeholder.com/800x400/1E1E1E/FFFFFF?text=Dark+Mode+Completo)
+![Dark Mode](static/screenshots/3-dark-mode.png)
 
-*Tema scuro ottimizzato per utilizzo serale*
+*Tema scuro ottimizzato per utilizzo serale - perfetto per lavoro notturno*
+
+### 📖 Diario Sfogliabile (NEW!)
+![Diario Book](static/screenshots/homepage-full.png)
+
+*Feature unica: sfoglia il tuo diario come un libro vero con swipe touch su mobile!*
 
 </div>
 

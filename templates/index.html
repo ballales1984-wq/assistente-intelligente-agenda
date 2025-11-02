@@ -1381,9 +1381,21 @@
                             : '';
 
                         div.innerHTML = `
-                            <strong>${emoji} ${dataStr}</strong>
-                            <span style="display: block; margin: 5px 0;">${testoBreve}</span>
-                            ${paroleChiave ? `<span style="color: #667eea;">🏷️ ${paroleChiave}</span>` : ''}
+                            <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
+                                <div style="flex: 1;">
+                                    <strong>${emoji} ${dataStr}</strong>
+                                    <span style="display: block; margin: 5px 0;">${testoBreve}</span>
+                                    ${paroleChiave ? `<span style="color: #667eea;">🏷️ ${paroleChiave}</span>` : ''}
+                                </div>
+                                <button 
+                                    onclick="eliminaDiario(${entry.id})" 
+                                    style="background: #ff4444; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1em; transition: all 0.3s;"
+                                    onmouseover="this.style.background='#cc0000'"
+                                    onmouseout="this.style.background='#ff4444'"
+                                    title="Elimina nota">
+                                    🗑️
+                                </button>
+                            </div>
                         `;
                         list.appendChild(div);
                     });
@@ -1404,6 +1416,31 @@
                 empty.style.display = 'block';
             } finally {
                 loading.classList.remove('active');
+            }
+        }
+
+        async function eliminaDiario(id) {
+            // Conferma eliminazione
+            if (!confirm('Sei sicuro di voler eliminare questa nota dal diario?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/diario/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    // Mostra messaggio successo
+                    alert('✅ Nota eliminata con successo!');
+                    // Ricarica diario
+                    caricaDiario();
+                } else {
+                    alert('❌ Errore nell\'eliminazione della nota');
+                }
+            } catch (error) {
+                console.error('Errore eliminazione diario:', error);
+                alert('❌ Errore nell\'eliminazione della nota');
             }
         }
 

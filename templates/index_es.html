@@ -1007,38 +1007,38 @@
                         type="text" 
                         class="chat-input" 
                         id="chatInput" 
-                        placeholder="Scrivi qui..."
+                        placeholder="Escribe aquí..."
                         onkeypress="handleKeyPress(event)"
                     >
-                    <button class="btn btn-primary" onclick="inviaMessaggio()">Invia</button>
+                    <button class="btn btn-primary" onclick="inviaMessaggio()">Enviar</button>
                 </div>
                 <div class="quick-actions">
                     <button class="quick-action" onclick="usaEsempio('Voglio studiare Python 3 ore a settimana')">
-                        📚 Esempio: Studio
+                        📚 Ejemplo: Estudio
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Domenica vado al mare dalle 16 alle 20')">
-                        🏖️ Esempio: Impegno
+                        🏖️ Ejemplo: Evento
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Sono stanco')">
-                        😴 Esempio: Stato
+                        😴 Ejemplo: Estado
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Oggi ho parlato con Sara e ho capito i cicli for in Python. Mi sento motivato!')">
-                        📔 Esempio: Diario
+                        📔 Ejemplo: Diario
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Spesa 12 euro per pranzo')">
-                        💰 Esempio: Spesa
+                        💰 Ejemplo: Gasto
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Domande Temporali:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Preguntas Temporales:</strong>
                     <button class="quick-action" onclick="domandaTemporale('passato')">
-                        ⏮️ Cosa ho fatto?
+                        ⏮️ ¿Qué hice?
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('oggi')">
-                        📅 Cosa faccio oggi?
+                        📅 ¿Qué hago hoy?
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('adesso')">
-                        ⏰ Cosa faccio adesso?
+                        ⏰ ¿Qué hago ahora?
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('giovedi')">
                         🔮 Come sarà giovedì?
@@ -1098,11 +1098,11 @@
             <div class="card">
                 <h2>🎯 Tus Objetivos</h2>
                 <div class="obiettivi-list" id="obiettiviList">
-                    <div class="loading" id="obiettiviLoading">Caricamento...</div>
+                    <div class="loading" id="obiettiviLoading">Cargando...</div>
                     <div class="empty-state" id="obiettiviEmpty">Nessun obiettivo ancora. Inizia a parlare con l'assistente!</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaObiettivi()">
-                    🔄 Aggiorna
+                    🔄 Actualizar
                 </button>
             </div>
 
@@ -1110,11 +1110,11 @@
             <div class="card">
                 <h2>📅 Plan Semanal</h2>
                 <div class="piano-list" id="pianoList">
-                    <div class="loading" id="pianoLoading">Caricamento...</div>
+                    <div class="loading" id="pianoLoading">Cargando...</div>
                     <div class="empty-state" id="pianoEmpty">Genera il tuo piano!</div>
                 </div>
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="generaPiano()">
-                    ✨ Genera Piano
+                    ✨ Generar Plan
                 </button>
             </div>
 
@@ -1136,7 +1136,7 @@
                     </div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaStatistiche()">
-                    🔄 Aggiorna
+                    🔄 Actualizar
                 </button>
             </div>
 
@@ -1184,12 +1184,12 @@
             <div class="card">
                 <h2>📔 Diario Personal</h2>
                 <div class="piano-list" id="diarioList">
-                    <div class="loading" id="diarioLoading">Caricamento...</div>
+                    <div class="loading" id="diarioLoading">Cargando...</div>
                     <div class="empty-state" id="diarioEmpty">Nessuna riflessione ancora. Scrivi nella chat!</div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn btn-secondary" style="flex: 1;" onclick="caricaDiario()">
-                        🔄 Aggiorna
+                        🔄 Actualizar
                     </button>
                     <a href="/diario-book" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
                         📖 Vista Libro
@@ -1203,7 +1203,7 @@
                 <div id="budgetSummary" style="margin-bottom: 15px;">
                     <div class="stat-box" style="margin-bottom: 10px;">
                         <span class="number" id="speseOggi">€0</span>
-                        <span class="label">Oggi</span>
+                        <span class="label">Hoy</span>
                     </div>
                     <div class="stat-box" style="margin-bottom: 10px;">
                         <span class="number" id="speseSettimana">€0</span>
@@ -1215,11 +1215,11 @@
                     </div>
                 </div>
                 <div class="piano-list" id="speseList" style="max-height: 200px;">
-                    <div class="loading" id="speseLoading">Caricamento...</div>
+                    <div class="loading" id="speseLoading">Cargando...</div>
                     <div class="empty-state" id="speseEmpty">Nessuna spesa registrata</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaSpese()">
-                    🔄 Aggiorna
+                    🔄 Actualizar
                 </button>
             </div>
 
@@ -1290,7 +1290,7 @@
                     </div>
                 </div>
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="aggiornaGrafici()">
-                    🔄 Aggiorna Analytics
+                    🔄 Actualizar Analytics
                 </button>
             </div>
         </div>

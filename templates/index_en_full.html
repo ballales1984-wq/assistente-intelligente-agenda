@@ -870,6 +870,46 @@
                 </button>
             </div>
 
+            <!-- AI Future Predictions -->
+            <div class="card">
+                <h2>🔮 AI Predictions</h2>
+                <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">Based on your past data</p>
+                
+                <div id="previsioniContainer">
+                    <div class="loading" id="previsioniLoading">Loading predictions...</div>
+                    
+                    <!-- Next Week Predictions -->
+                    <div id="previsioniContent" style="display: none;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; padding: 20px; color: white; margin-bottom: 15px;">
+                            <h3 style="margin-bottom: 10px; font-size: 1.1em;">📅 Next Week</h3>
+                            <div id="previsioniSettimana" style="font-size: 0.95em;">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+                        
+                        <!-- Goals Projections -->
+                        <div style="background: #f8f9ff; border-radius: 15px; padding: 20px; margin-bottom: 15px;">
+                            <h3 style="color: #667eea; margin-bottom: 10px; font-size: 1.1em;">🎯 Goals Projections</h3>
+                            <div id="previsioniObiettivi">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+                        
+                        <!-- Productivity Trend -->
+                        <div style="background: #fff4e6; border-radius: 15px; padding: 20px;">
+                            <h3 style="color: #f59e0b; margin-bottom: 10px; font-size: 1.1em;">📈 Predicted Trend</h3>
+                            <div id="previsioniTrend">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="caricaPrevisioni()">
+                    🔮 Update Predictions
+                </button>
+            </div>
+
             <!-- Personal Diary -->
             <div class="card">
                 <h2>📔 Personal Diary</h2>
@@ -979,6 +1019,7 @@
             
             caricaObiettivi();
             caricaStatistiche();
+            caricaPrevisioni();
             caricaDiario();
             caricaCalendario();
             caricaSpese();
@@ -1066,6 +1107,7 @@
                     caricaSpese();
                     caricaDiario();
                     caricaStatistiche();
+                    caricaPrevisioni();
                 }, 300);
             } catch (error) {
                 aggiungiMessaggio('❌ Errore. Riprova!', 'assistant');
@@ -1219,6 +1261,117 @@
                 document.getElementById('statCompletamento').textContent = `${(stats.tasso_completamento || 0).toFixed(0)}%`;
             } catch (error) {
                 console.error('Errore nel caricamento statistiche:', error);
+            }
+        }
+
+        async function caricaPrevisioni() {
+            const loading = document.getElementById('previsioniLoading');
+            const content = document.getElementById('previsioniContent');
+            
+            loading.classList.add('active');
+            content.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/futuro/prossima-settimana');
+                const previsioni = await response.json();
+                
+                const settimanaDiv = document.getElementById('previsioniSettimana');
+                const riepilogo = previsioni.riepilogo_settimana;
+                const giorni = previsioni.previsione_giorni;
+                
+                settimanaDiv.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">
+                            ${riepilogo.ore_totali_previste.toFixed(1)}h
+                        </div>
+                        <div style="opacity: 0.9;">Total predicted hours</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+                        <div style="font-weight: 600; margin-bottom: 5px;">📌 Busiest day:</div>
+                        <div>${riepilogo.giorno_piu_pieno.giorno} - ${riepilogo.giorno_piu_pieno.ore.toFixed(1)}h predicted</div>
+                    </div>
+                    <div style="font-size: 0.9em; opacity: 0.9;">
+                        ${previsioni.suggerimenti.join(' • ')}
+                    </div>
+                `;
+                
+                const obiettiviDiv = document.getElementById('previsioniObiettivi');
+                if (giorni && giorni.length > 0 && giorni[0].obiettivi_previsti.length > 0) {
+                    const obiettivi = giorni[0].obiettivi_previsti;
+                    const oreTotaliObiettivi = obiettivi.reduce((sum, obj) => sum + obj.durata_ore, 0) * 7;
+                    
+                    obiettiviDiv.innerHTML = `
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-size: 1.8em; font-weight: bold; color: #667eea;">
+                                ${oreTotaliObiettivi.toFixed(1)}h
+                            </div>
+                            <div style="color: #888; font-size: 0.9em;">Hours planned on goals this week</div>
+                        </div>
+                        ${obiettivi.map(obj => `
+                            <div style="background: white; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #667eea;">
+                                <div style="font-weight: 600; color: #333;">${obj.nome}</div>
+                                <div style="font-size: 0.85em; color: #888; margin-top: 3px;">
+                                    ~${(obj.durata_ore * 7).toFixed(1)}h this week • ${obj.intensita}
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                } else {
+                    obiettiviDiv.innerHTML = `
+                        <div style="color: #888; text-align: center; padding: 20px;">
+                            📝 No active goals<br>
+                            <span style="font-size: 0.9em;">Add goals to see projections!</span>
+                        </div>
+                    `;
+                }
+                
+                const trendDiv = document.getElementById('previsioniTrend');
+                const giorniLeggeri = giorni.filter(g => g.previsione.densita.includes('Tranquilla')).length;
+                const giorniIntensi = giorni.filter(g => g.previsione.densita.includes('Intensa')).length;
+                
+                let trendEmoji = '📊';
+                let trendText = 'Balanced week';
+                if (giorniIntensi >= 4) {
+                    trendEmoji = '🔥';
+                    trendText = 'Very intense week';
+                } else if (giorniLeggeri >= 5) {
+                    trendEmoji = '🌿';
+                    trendText = 'Relaxed week';
+                }
+                
+                trendDiv.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="font-size: 3em; margin-bottom: 5px;">${trendEmoji}</div>
+                        <div style="font-weight: 600; color: #f59e0b; font-size: 1.1em;">${trendText}</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #10b981;">${giorniLeggeri}</div>
+                            <div style="font-size: 0.85em; color: #888;">Light days</div>
+                        </div>
+                        <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #ef4444;">${giorniIntensi}</div>
+                            <div style="font-size: 0.85em; color: #888;">Intense days</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.9em; color: #666;">
+                        💡 Keep planning to maintain balance!
+                    </div>
+                `;
+                
+                loading.classList.remove('active');
+                content.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Errore nel caricamento previsioni:', error);
+                loading.classList.remove('active');
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #888;">
+                        ⚠️ Error loading predictions<br>
+                        <span style="font-size: 0.9em;">Try again in a moment</span>
+                    </div>
+                `;
+                content.style.display = 'block';
             }
         }
 

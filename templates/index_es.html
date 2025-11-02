@@ -1158,26 +1158,14 @@
                     parla(testoVocale);
                 }
 
-                // Aggiorna liste se necessario
-                if (data.tipo_riconosciuto === 'obiettivo') {
-                    setTimeout(caricaObiettivi, 500);
-                    setTimeout(caricaCalendario, 500);
-                } else if (data.tipo_riconosciuto === 'impegno') {
-                    // Nuovo impegno - aggiorna calendario
-                    setTimeout(caricaCalendario, 500);
-                } else if (data.tipo_riconosciuto === 'spesa') {
-                    setTimeout(caricaSpese, 500);
-                } else if (data.tipo_riconosciuto === 'diario') {
-                    setTimeout(caricaDiario, 500);
-                } else if (data.tipo_riconosciuto === 'ai_processed') {
-                    // AI ha processato - refresh tutto
-                    setTimeout(() => {
-                        caricaObiettivi();
-                        caricaCalendario();
-                        caricaSpese();
-                        caricaDiario();
-                    }, 500);
-                }
+                // Auto-refresh: ¡Recarga TODO después de cada mensaje!
+                setTimeout(() => {
+                    caricaObiettivi();
+                    caricaCalendario();
+                    caricaSpese();
+                    caricaDiario();
+                    caricaStatistiche();
+                }, 300);
             } catch (error) {
                 aggiungiMessaggio('❌ Errore. Riprova!', 'assistant');
                 console.error(error);

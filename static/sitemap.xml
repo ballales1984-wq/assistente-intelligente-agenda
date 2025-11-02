@@ -49,4 +49,20 @@
     <priority>0.5</priority>
   </url>
   
+  <!-- About Page English -->
+  <url>
+    <loc>https://assistente-intelligente-agenda.onrender.com/en/about</loc>
+    <lastmod>2025-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Diario Sfogliabile -->
+  <url>
+    <loc>https://assistente-intelligente-agenda.onrender.com/diario-book</loc>
+    <lastmod>2025-11-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
 </urlset>

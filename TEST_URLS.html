@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 TEST URLs - Assistente Intelligente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #764ba2;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .url-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+        
+        .url-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .checkbox {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        
+        .url-info {
+            flex: 1;
+        }
+        
+        .url-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        
+        .url-link {
+            color: #667eea;
+            text-decoration: none;
+            word-break: break-all;
+            font-size: 0.9em;
+        }
+        
+        .url-link:hover {
+            text-decoration: underline;
+        }
+        
+        .test-notes {
+            margin-top: 5px;
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .btn-test {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: auto;
+            transition: all 0.3s;
+        }
+        
+        .btn-test:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        .progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: #e0e0e0;
+            z-index: 1000;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .stats {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+        }
+        
+        .stats h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #764ba2;
+        }
+        
+        .completed {
+            background: #d4edda !important;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .pulsing {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div class="container">
+        <h1>🧪 TEST URLs - Assistente Intelligente</h1>
+        <p class="subtitle">Testa sistematicamente tutti gli URL dell'applicazione</p>
+        
+        <!-- LINGUE -->
+        <div class="section">
+            <h2>🌐 Versioni Lingua</h2>
+            
+            <div class="url-item" data-test="lingua-it">
+                <input type="checkbox" class="checkbox" id="test-it">
+                <div class="url-info">
+                    <div class="url-title">🇮🇹 Versione Italiana (Principale)</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/
+                    </a>
+                    <div class="test-notes">✓ Hero Section • Onboarding Modal • Footer nuovo</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/" target="_blank" class="btn-test">TESTA</a>
+            </div>
+            
+            <div class="url-item" data-test="lingua-en">
+                <input type="checkbox" class="checkbox" id="test-en">
+                <div class="url-info">
+                    <div class="url-title">🇬🇧 Versione Inglese</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/en" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/en
+                    </a>
+                    <div class="test-notes">✓ "Smart Assistant" • "Get Started - It's Free!" • Footer EN</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/en" target="_blank" class="btn-test">TESTA</a>
+            </div>
+            
+            <div class="url-item" data-test="lingua-es">
+                <input type="checkbox" class="checkbox" id="test-es">
+                <div class="url-info">
+                    <div class="url-title">🇪🇸 Versione Spagnola (NUOVO!)</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/es" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/es
+                    </a>
+                    <div class="test-notes">✓ "Asistente Inteligente" • "Comenzar Ahora" • Footer ES</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/es" target="_blank" class="btn-test">TESTA</a>
+            </div>
+        </div>
+        
+        <!-- PAGINE SPECIALI -->
+        <div class="section">
+            <h2>📖 Pagine Speciali</h2>
+            
+            <div class="url-item" data-test="diario-book">
+                <input type="checkbox" class="checkbox" id="test-diario">
+                <div class="url-info">
+                    <div class="url-title">📖 Diario Sfogliabile (FEATURE UNICA!)</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/diario-book" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/diario-book
+                    </a>
+                    <div class="test-notes">✓ PageFlip.js • Swipe mobile • Effetto libro 3D</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/diario-book" target="_blank" class="btn-test">TESTA</a>
+            </div>
+            
+            <div class="url-item" data-test="privacy">
+                <input type="checkbox" class="checkbox" id="test-privacy">
+                <div class="url-info">
+                    <div class="url-title">🛡️ Privacy Policy</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/privacy" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/privacy
+                    </a>
+                    <div class="test-notes">✓ Documento legale • Google Analytics • Link torna app</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/privacy" target="_blank" class="btn-test">TESTA</a>
+            </div>
+            
+            <div class="url-item" data-test="terms">
+                <input type="checkbox" class="checkbox" id="test-terms">
+                <div class="url-info">
+                    <div class="url-title">📜 Terms of Service</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/terms" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/terms
+                    </a>
+                    <div class="test-notes">✓ Termini uso • Disclaimer • Link torna app</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/terms" target="_blank" class="btn-test">TESTA</a>
+            </div>
+            
+            <div class="url-item" data-test="about-it">
+                <input type="checkbox" class="checkbox" id="test-about-it">
+                <div class="url-info">
+                    <div class="url-title">ℹ️ About Us (Italiano)</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/about" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/about
+                    </a>
+                    <div class="test-notes">✓ Mission • Features • Tech Stack • Roadmap</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/about" target="_blank" class="btn-test">TESTA</a>
+            </div>
+            
+            <div class="url-item" data-test="about-en">
+                <input type="checkbox" class="checkbox" id="test-about-en">
+                <div class="url-info">
+                    <div class="url-title">ℹ️ About Us (English)</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/en/about" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/en/about
+                    </a>
+                    <div class="test-notes">✓ Mission • Features • Tech Stack • Roadmap (EN)</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/en/about" target="_blank" class="btn-test">TESTA</a>
+            </div>
+        </div>
+        
+        <!-- SEO FILES -->
+        <div class="section">
+            <h2>🔍 SEO & PWA Files</h2>
+            
+            <div class="url-item" data-test="robots">
+                <input type="checkbox" class="checkbox" id="test-robots">
+                <div class="url-info">
+                    <div class="url-title">🤖 robots.txt</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/robots.txt" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/robots.txt
+                    </a>
+                    <div class="test-notes">✓ User-agent: * • Allow: / • Sitemap link</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/robots.txt" target="_blank" class="btn-test">TESTA</a>
+            </div>
+            
+            <div class="url-item" data-test="sitemap">
+                <input type="checkbox" class="checkbox" id="test-sitemap">
+                <div class="url-info">
+                    <div class="url-title">🗺️ sitemap.xml (AGGIORNATO!)</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/sitemap.xml" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/sitemap.xml
+                    </a>
+                    <div class="test-notes">✓ 8 URL totali • Include /diario-book • Priority corrette</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/sitemap.xml" target="_blank" class="btn-test">TESTA</a>
+            </div>
+            
+            <div class="url-item" data-test="manifest">
+                <input type="checkbox" class="checkbox" id="test-manifest">
+                <div class="url-info">
+                    <div class="url-title">📱 manifest.json (PWA)</div>
+                    <a href="https://assistente-intelligente-agenda.onrender.com/manifest.json" target="_blank" class="url-link">
+                        https://assistente-intelligente-agenda.onrender.com/manifest.json
+                    </a>
+                    <div class="test-notes">✓ Nome app • Icone • Theme color • Display standalone</div>
+                </div>
+                <a href="https://assistente-intelligente-agenda.onrender.com/manifest.json" target="_blank" class="btn-test">TESTA</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats">
+        <h3>📊 Progresso Test</h3>
+        <div class="stat-item">
+            <span>Completati:</span>
+            <span class="stat-value" id="completed">0</span>
+        </div>
+        <div class="stat-item">
+            <span>Totali:</span>
+            <span class="stat-value" id="total">11</span>
+        </div>
+        <div class="stat-item">
+            <span>Percentuale:</span>
+            <span class="stat-value" id="percentage">0%</span>
+        </div>
+    </div>
+    
+    <script>
+        // Track test progress
+        const checkboxes = document.querySelectorAll('.checkbox');
+        const progressBar = document.getElementById('progressBar');
+        const completedEl = document.getElementById('completed');
+        const totalEl = document.getElementById('total');
+        const percentageEl = document.getElementById('percentage');
+        
+        const total = checkboxes.length;
+        totalEl.textContent = total;
+        
+        function updateProgress() {
+            const completed = document.querySelectorAll('.checkbox:checked').length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            completedEl.textContent = completed;
+            percentageEl.textContent = percentage + '%';
+            progressBar.style.width = percentage + '%';
+            
+            // Save progress to localStorage
+            const checkedIds = Array.from(document.querySelectorAll('.checkbox:checked')).map(cb => cb.id);
+            localStorage.setItem('testProgress', JSON.stringify(checkedIds));
+            
+            // Celebrate if all done!
+            if (completed === total) {
+                confetti();
+            }
+        }
+        
+        // Restore progress from localStorage
+        const savedProgress = localStorage.getItem('testProgress');
+        if (savedProgress) {
+            const checkedIds = JSON.parse(savedProgress);
+            checkedIds.forEach(id => {
+                const checkbox = document.getElementById(id);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.closest('.url-item').classList.add('completed');
+                }
+            });
+            updateProgress();
+        }
+        
+        // Add checkbox listeners
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const urlItem = this.closest('.url-item');
+                if (this.checked) {
+                    urlItem.classList.add('completed');
+                } else {
+                    urlItem.classList.remove('completed');
+                }
+                updateProgress();
+            });
+        });
+        
+        // Simple confetti animation
+        function confetti() {
+            alert('🎉 PERFETTO! HAI TESTATO TUTTE LE PAGINE!\n\nL\'app è pronta per il MEGA LANCIO! 🚀');
+        }
+        
+        // Reset button (hidden, press R key)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'r' || e.key === 'R') {
+                if (confirm('Reset tutti i test?')) {
+                    checkboxes.forEach(cb => {
+                        cb.checked = false;
+                        cb.closest('.url-item').classList.remove('completed');
+                    });
+                    localStorage.removeItem('testProgress');
+                    updateProgress();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

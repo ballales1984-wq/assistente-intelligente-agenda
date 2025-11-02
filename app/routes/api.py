@@ -45,6 +45,12 @@ def terms():
     return render_template('terms.html')
 
 
+@bp.route('/diario-book')
+def diario_book():
+    """Diario sfogliabile come libro"""
+    return render_template('diario_book.html')
+
+
 @bp.route('/manifest.json')
 def manifest():
     """Serve manifest.json per PWA"""

@@ -971,9 +971,14 @@
                     <div class="loading" id="diarioLoading">Caricamento...</div>
                     <div class="empty-state" id="diarioEmpty">Nessuna riflessione ancora. Scrivi nella chat!</div>
                 </div>
-                <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaDiario()">
-                    🔄 Aggiorna
-                </button>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="caricaDiario()">
+                        🔄 Aggiorna
+                    </button>
+                    <a href="/diario-book" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                        📖 Vista Libro
+                    </a>
+                </div>
             </div>
 
             <!-- Budget & Spese -->

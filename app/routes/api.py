@@ -60,29 +60,37 @@ def diario_book():
 @bp.route('/manifest.json')
 def manifest():
     """Serve manifest.json per PWA"""
-    from flask import send_from_directory
-    return send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
+    from flask import send_from_directory, current_app
+    import os
+    static_folder = current_app.static_folder or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
+    return send_from_directory(static_folder, 'manifest.json', mimetype='application/manifest+json')
 
 
 @bp.route('/robots.txt')
 def robots():
     """Serve robots.txt per SEO"""
-    from flask import send_from_directory
-    return send_from_directory('static', 'robots.txt', mimetype='text/plain')
+    from flask import send_from_directory, current_app
+    import os
+    static_folder = current_app.static_folder or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
+    return send_from_directory(static_folder, 'robots.txt', mimetype='text/plain')
 
 
 @bp.route('/sitemap.xml')
 def sitemap():
     """Serve sitemap.xml per SEO"""
-    from flask import send_from_directory
-    return send_from_directory('static', 'sitemap.xml', mimetype='application/xml')
+    from flask import send_from_directory, current_app
+    import os
+    static_folder = current_app.static_folder or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
+    return send_from_directory(static_folder, 'sitemap.xml', mimetype='application/xml')
 
 
 @bp.route('/sw.js')
 def service_worker():
     """Serve service worker"""
-    from flask import send_from_directory
-    return send_from_directory('static', 'sw.js', mimetype='application/javascript')
+    from flask import send_from_directory, current_app
+    import os
+    static_folder = current_app.static_folder or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
+    return send_from_directory(static_folder, 'sw.js', mimetype='application/javascript')
 
 
 @bp.route('/api/profilo', methods=['GET', 'POST'])

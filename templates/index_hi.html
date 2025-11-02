@@ -2486,44 +2486,45 @@
             }
         }
 
-        function parla(testo) {
+                function parla(testo) {
             // Ferma eventuali letture in corso
             synth.cancel();
             
             currentUtterance = new SpeechSynthesisUtterance(testo);
-            currentUtterance.lang = 'it-IT';
-            currentUtterance.rate = 0.9; // Velocità leggermente più lenta
-            currentUtterance.pitch = 1.1; // Leggermente più acuto per voce femminile
             
             // ============================================
-            // Seleziona VOCE FEMMINILE ITALIANA
+            // AUTO-DETECTION LINGUA
+            // ============================================
+            const pageLang = 'hi'; // Lingua della pagina corrente
+            const langCode = 'hi-IN';
+            
+            currentUtterance.lang = langCode;
+            currentUtterance.rate = 0.9;
+            currentUtterance.pitch = 1.0;
+            
+            // ============================================
+            // Seleziona VOCE NELLA LINGUA CORRETTA
             // ============================================
             const voci = synth.getVoices();
             
-            // Cerca voce femminile italiana
-            let voceFemminile = voci.find(v => 
-                v.lang.startsWith('it') && v.name.toLowerCase().includes('female')
-            );
+            // Cerca voce nella lingua della pagina
+            let voceSelezionata = voci.find(v => v.lang.startsWith(pageLang));
             
-            // Fallback: cerca altre voci italiane femminili
-            if (!voceFemminile) {
-                voceFemminile = voci.find(v => 
-                    v.lang.startsWith('it') && (
-                        v.name.toLowerCase().includes('alice') ||
-                        v.name.toLowerCase().includes('serena') ||
-                        v.name.toLowerCase().includes('google italiano')
-                    )
+            // Fallback: cerca varianti della lingua
+            if (!voceSelezionata) {
+                voceSelezionata = voci.find(v => 
+                    v.lang.toLowerCase().includes(pageLang)
                 );
             }
             
-            // Ulteriore fallback: qualsiasi voce italiana
-            if (!voceFemminile) {
-                voceFemminile = voci.find(v => v.lang.startsWith('it'));
+            // Fallback finale: prima voce disponibile
+            if (!voceSelezionata && voci.length > 0) {
+                voceSelezionata = voci[0];
             }
             
-            if (voceFemminile) {
-                currentUtterance.voice = voceFemminile;
-                console.log('🔊 Voce selezionata:', voceFemminile.name);
+            if (voceSelezionata) {
+                currentUtterance.voice = voceSelezionata;
+                console.log('🔊 Voce selezionata:', voceSelezionata.name, '(' + voceSelezionata.lang + ')');
             }
             
             // Event listener per quando finisce

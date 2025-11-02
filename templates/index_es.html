@@ -325,8 +325,8 @@
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 25px;
+            margin-bottom: 25px;
         }
 
         @media (max-width: 768px) {
@@ -379,7 +379,7 @@
 
         .chat-container {
             grid-column: 1 / -1;
-            height: 500px;
+            height: 700px;
             display: flex;
             flex-direction: column;
         }
@@ -1790,11 +1790,11 @@
                 });
 
                 // Ore del giorno (8:00 - 23:00)
-                for (let ora = 8; ora <= 22; ora++) {
+                for (let ora = 0; ora <= 23; ora++) {
                     // Colonna ora
                     const timeCell = document.createElement('div');
                     timeCell.className = 'calendario-cell time-cell';
-                    timeCell.textContent = `${ora}:00`;
+                    timeCell.textContent = `${String(ora).padStart(2, '0')}:00`;
                     calendarioDiv.appendChild(timeCell);
 
                     // Celle per ogni giorno

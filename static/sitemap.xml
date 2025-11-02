@@ -17,6 +17,14 @@
     <priority>0.9</priority>
   </url>
   
+  <!-- Homepage Española -->
+  <url>
+    <loc>https://assistente-intelligente-agenda.onrender.com/es</loc>
+    <lastmod>2025-11-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
   <!-- About Page -->
   <url>
     <loc>https://assistente-intelligente-agenda.onrender.com/about</loc>

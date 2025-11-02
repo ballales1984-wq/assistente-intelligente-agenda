@@ -21,6 +21,12 @@ def index_en():
     return render_template('index_en_full.html')
 
 
+@bp.route('/es')
+def index_es():
+    """Versión Española (interfaz completa)"""
+    return render_template('index_es.html')
+
+
 @bp.route('/about')
 def about():
     """Pagina About - Chi siamo"""

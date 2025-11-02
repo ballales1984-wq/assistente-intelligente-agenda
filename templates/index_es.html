@@ -1,0 +1,2842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="ehc2rdX_ZZQV4CI5Ro2pKbgUuM5IbRIR0tTRnVmxjV0" />
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Tu compañero para organizar vida, estudios y objetivos">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+    <title>🧠 Asistente Inteligente</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-ZCZ9CM8HDG');
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            animation: pulse 2s infinite;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 800;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .hero .subtitle {
+            font-size: 1.4em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: none;
+            margin-bottom: 40px;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 40px;
+        }
+
+        .hero-feature {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+
+        .hero-feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .hero-feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .hero-feature-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .hero-feature-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* Onboarding Modal */
+        .onboarding-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .onboarding-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.5s;
+        }
+
+        .onboarding-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .onboarding-close:hover {
+            color: #333;
+        }
+
+        .onboarding-step {
+            display: none;
+        }
+
+        .onboarding-step.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .onboarding-step h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .onboarding-step p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .onboarding-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .onboarding-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .onboarding-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .onboarding-btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .onboarding-btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .onboarding-btn-secondary {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .onboarding-btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .onboarding-dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .onboarding-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s;
+        }
+
+        .onboarding-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2em;
+            }
+            .hero .subtitle {
+                font-size: 1.1em;
+            }
+            .hero-cta {
+                font-size: 1em;
+                padding: 15px 35px;
+            }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-container {
+            grid-column: 1 / -1;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            max-width: 80%;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.highlight {
+            animation: slideIn 0.3s ease, pulse 1.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.assistant {
+            background: white;
+            border: 2px solid #e9ecef;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .obiettivi-list, .piano-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .obiettivo-item, .piano-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .obiettivo-item strong, .piano-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .obiettivo-item span, .piano-item span {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-box .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .quick-action {
+            padding: 8px 16px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .quick-action:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            color: #667eea;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+        }
+
+        /* Calendario Styles */
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            gap: 1px;
+            background: #e9ecef;
+            border: 1px solid #e9ecef;
+            min-width: 900px;
+        }
+
+        .calendario-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .calendario-header.time-col {
+            background: #6c757d;
+        }
+
+        .calendario-cell {
+            background: white;
+            padding: 8px;
+            min-height: 60px;
+            position: relative;
+            font-size: 0.85em;
+        }
+
+        .calendario-cell.time-cell {
+            background: #f8f9fa;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+        }
+
+        .impegno-block {
+            background: #667eea;
+            color: white;
+            padding: 6px 8px;
+            border-radius: 6px;
+            margin: 2px 0;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .impegno-block:hover {
+            background: #5568d3;
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .impegno-block.obiettivo {
+            background: #28a745;
+        }
+
+        .impegno-block.pausa {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .impegno-time {
+            font-size: 0.75em;
+            opacity: 0.9;
+            display: block;
+        }
+
+        .oggi-highlight {
+            background: #fff3cd !important;
+            border-left: 3px solid #ffc107;
+        }
+
+        /* ============================================
+           DARK MODE
+           ============================================ */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.dark-mode .card {
+            background: #0f3460;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .chat-messages {
+            background: #1a1a2e;
+        }
+
+        body.dark-mode .message.assistant {
+            background: #16213e;
+            border-color: #0f3460;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .chat-input {
+            background: #16213e;
+            border-color: #0f3460;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .obiettivo-item,
+        body.dark-mode .piano-item {
+            background: #16213e;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .quick-action {
+            background: #16213e;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .quick-action:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        body.dark-mode .calendario-cell {
+            background: #16213e;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .calendario-cell.time-cell {
+            background: #1a1a2e;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        body.dark-mode .theme-toggle {
+            background: #0f3460;
+        }
+
+        .lang-toggle {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            color: #667eea;
+        }
+
+        .lang-toggle:hover {
+            transform: scale(1.05);
+            background: #667eea;
+            color: white;
+        }
+
+        body.dark-mode .lang-toggle {
+            background: #0f3460;
+            color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toggle Dark Mode -->
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Cambia tema">
+        <span id="themeIcon">🌙</span>
+    </button>
+    
+    <!-- Toggle Idioma -->
+    <button class="lang-toggle" onclick="toggleLanguage()" title="Cambiar idioma">
+        <span id="langIcon">🇪🇸 ES</span>
+    </button>
+    
+    <!-- Onboarding Modal -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+        <div class="onboarding-modal">
+            <button class="onboarding-close" onclick="chiudiOnboarding()">×</button>
+            
+            <!-- Step 1 -->
+            <div class="onboarding-step active" data-step="1">
+                <h2>👋 Benvenuto!</h2>
+                <p>Ciao! Sono il tuo <strong>Assistente Intelligente</strong> personale.</p>
+                <p>Ti aiuterò a organizzare <strong>obiettivi</strong>, <strong>impegni</strong>, <strong>spese</strong> e molto altro usando l'intelligenza artificiale.</p>
+                <div class="onboarding-example">
+                    💡 <strong>Tip:</strong> Parla con me in linguaggio naturale! Non servono comandi complicati.
+                </div>
+                <div class="onboarding-buttons">
+                    <button class="onboarding-btn onboarding-btn-secondary" onclick="chiudiOnboarding()">Salta</button>
+                    <button class="onboarding-btn onboarding-btn-primary" onclick="prossimoStep()">Avanti →</button>
+                </div>
+                <div class="onboarding-dots">
+                    <div class="onboarding-dot active"></div>
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot"></div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="onboarding-step" data-step="2">
+                <h2>💬 Come Usarmi</h2>
+                <p>È semplicissimo! Scrivi nella chat cosa vuoi fare:</p>
+                <div class="onboarding-example">
+                    <strong>Esempi:</strong><br>
+                    📚 "Voglio studiare Python 3 ore a settimana"<br>
+                    📅 "Domani palestra ore 18"<br>
+                    💰 "Speso 50€ per spesa"<br>
+                    📔 "Oggi mi sento motivato!"
+                </div>
+                <p>Io capisco cosa vuoi e lo organizzo automaticamente! 🎯</p>
+                <div class="onboarding-buttons">
+                    <button class="onboarding-btn onboarding-btn-secondary" onclick="stepPrecedente()">← Indietro</button>
+                    <button class="onboarding-btn onboarding-btn-primary" onclick="prossimoStep()">Avanti →</button>
+                </div>
+                <div class="onboarding-dots">
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot active"></div>
+                    <div class="onboarding-dot"></div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="onboarding-step" data-step="3">
+                <h2>🚀 Pronto a Iniziare?</h2>
+                <p>Hai tutto sotto controllo:</p>
+                <div class="onboarding-example">
+                    ✅ <strong>Calendario</strong> - Vedi tutti i tuoi impegni<br>
+                    ✅ <strong>Obiettivi</strong> - Tracking automatico progresso<br>
+                    ✅ <strong>Budget</strong> - Controllo spese in tempo reale<br>
+                    ✅ <strong>Diario</strong> - Riflessioni e sentiment analysis<br>
+                    ✅ <strong>Analytics</strong> - Grafici e statistiche
+                </div>
+                <p><strong>Prova ora!</strong> Clicca uno degli esempi nella chat per iniziare! 🎉</p>
+                <div class="onboarding-buttons">
+                    <button class="onboarding-btn onboarding-btn-secondary" onclick="stepPrecedente()">← Indietro</button>
+                    <button class="onboarding-btn onboarding-btn-primary" onclick="inizia()">Inizia! 🚀</button>
+                </div>
+                <div class="onboarding-dots">
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot active"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-badge">✨ Gratis • Inteligente • En Español 🇪🇸</div>
+            <h1>🧠 Asistente Inteligente</h1>
+            <p class="subtitle">Organiza vida, estudios y objetivos con inteligencia artificial. Todo en lenguaje natural.</p>
+            <button class="hero-cta" onclick="scrollToChat()">¡Empieza Ahora - Es Gratis!</button>
+            
+            <!-- Features -->
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">💬</div>
+                    <div class="hero-feature-title">Chat Inteligente</div>
+                    <div class="hero-feature-desc">Habla como con un amigo, la IA entiende todo</div>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">📊</div>
+                    <div class="hero-feature-title">Analytics Automáticos</div>
+                    <div class="hero-feature-desc">Gráficos y estadísticas sin esfuerzo</div>
+                </div>
+                <div class="hero-feature">
+                    <div class="hero-feature-icon">🎯</div>
+                    <div class="hero-feature-title">Objetivos Rastreados</div>
+                    <div class="hero-feature-desc">Alcanza tus metas paso a paso</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Chat -->
+            <div class="card chat-container">
+                <h2>💬 Chat</h2>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message assistant">
+                        Ciao! Sono il tuo assistente personale. Dimmi cosa vuoi fare! 
+                        Ad esempio: "Voglio studiare Python 3 ore a settimana" o "Domenica vado al mare dalle 16 alle 20".
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input 
+                        type="text" 
+                        class="chat-input" 
+                        id="chatInput" 
+                        placeholder="Scrivi qui..."
+                        onkeypress="handleKeyPress(event)"
+                    >
+                    <button class="btn btn-primary" onclick="inviaMessaggio()">Invia</button>
+                </div>
+                <div class="quick-actions">
+                    <button class="quick-action" onclick="usaEsempio('Voglio studiare Python 3 ore a settimana')">
+                        📚 Esempio: Studio
+                    </button>
+                    <button class="quick-action" onclick="usaEsempio('Domenica vado al mare dalle 16 alle 20')">
+                        🏖️ Esempio: Impegno
+                    </button>
+                    <button class="quick-action" onclick="usaEsempio('Sono stanco')">
+                        😴 Esempio: Stato
+                    </button>
+                    <button class="quick-action" onclick="usaEsempio('Oggi ho parlato con Sara e ho capito i cicli for in Python. Mi sento motivato!')">
+                        📔 Esempio: Diario
+                    </button>
+                    <button class="quick-action" onclick="usaEsempio('Spesa 12 euro per pranzo')">
+                        💰 Esempio: Spesa
+                    </button>
+                </div>
+                <div class="quick-actions" style="margin-top: 10px;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Domande Temporali:</strong>
+                    <button class="quick-action" onclick="domandaTemporale('passato')">
+                        ⏮️ Cosa ho fatto?
+                    </button>
+                    <button class="quick-action" onclick="domandaTemporale('oggi')">
+                        📅 Cosa faccio oggi?
+                    </button>
+                    <button class="quick-action" onclick="domandaTemporale('adesso')">
+                        ⏰ Cosa faccio adesso?
+                    </button>
+                    <button class="quick-action" onclick="domandaTemporale('giovedi')">
+                        🔮 Come sarà giovedì?
+                    </button>
+                    <button class="quick-action" onclick="domandaTemporale('proiezione')">
+                        📈 Proiezione future
+                    </button>
+                </div>
+                <div class="quick-actions" style="margin-top: 10px;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💰 Budget & Spese:</strong>
+                    <button class="quick-action" onclick="domandaSpese('oggi')">
+                        💵 Speso oggi?
+                    </button>
+                    <button class="quick-action" onclick="domandaSpese('settimana')">
+                        📊 Speso settimana?
+                    </button>
+                    <button class="quick-action" onclick="domandaSpese('mese')">
+                        📈 Speso mese?
+                    </button>
+                    <button class="quick-action" onclick="domandaSpese('budget')">
+                        🎯 Check budget
+                    </button>
+                </div>
+                <div class="quick-actions" style="margin-top: 10px;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">🔊 Lettura Vocale:</strong>
+                    <button class="quick-action" onclick="leggiImpegniGiorno('oggi')">
+                        🔊 Impegni oggi
+                    </button>
+                    <button class="quick-action" onclick="leggiImpegniGiorno('domani')">
+                        🔊 Impegni domani
+                    </button>
+                    <button class="quick-action" onclick="apriSelettoreGiorno()">
+                        📅 Scegli giorno
+                    </button>
+                    <button class="quick-action" onclick="stopLettura()">
+                        ⏹️ Stop
+                    </button>
+                </div>
+                <div class="quick-actions" style="margin-top: 10px;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💾 Backup & Export:</strong>
+                    <button class="quick-action" onclick="exportaTutto()">
+                        📦 Export Tutto JSON
+                    </button>
+                    <button class="quick-action" onclick="exportaPianoPDF()">
+                        📄 Export Piano PDF
+                    </button>
+                    <button class="quick-action" onclick="exportaImpegniICalendar()">
+                        📅 Export iCal
+                    </button>
+                    <button class="quick-action" onclick="exportaSpese()">
+                        💰 Export Spese CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Obiettivi -->
+            <div class="card">
+                <h2>🎯 Tus Objetivos</h2>
+                <div class="obiettivi-list" id="obiettiviList">
+                    <div class="loading" id="obiettiviLoading">Caricamento...</div>
+                    <div class="empty-state" id="obiettiviEmpty">Nessun obiettivo ancora. Inizia a parlare con l'assistente!</div>
+                </div>
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaObiettivi()">
+                    🔄 Aggiorna
+                </button>
+            </div>
+
+            <!-- Piano -->
+            <div class="card">
+                <h2>📅 Plan Semanal</h2>
+                <div class="piano-list" id="pianoList">
+                    <div class="loading" id="pianoLoading">Caricamento...</div>
+                    <div class="empty-state" id="pianoEmpty">Genera il tuo piano!</div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="generaPiano()">
+                    ✨ Genera Piano
+                </button>
+            </div>
+
+            <!-- Statistiche -->
+            <div class="card">
+                <h2>📊 Estadísticas</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-box">
+                        <span class="number" id="statObiettivi">0</span>
+                        <span class="label">Obiettivi</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="number" id="statOre">0h</span>
+                        <span class="label">Ore completate</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="number" id="statCompletamento">0%</span>
+                        <span class="label">Completamento</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaStatistiche()">
+                    🔄 Aggiorna
+                </button>
+            </div>
+
+            <!-- Diario Personale -->
+            <div class="card">
+                <h2>📔 Diario Personal</h2>
+                <div class="piano-list" id="diarioList">
+                    <div class="loading" id="diarioLoading">Caricamento...</div>
+                    <div class="empty-state" id="diarioEmpty">Nessuna riflessione ancora. Scrivi nella chat!</div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="caricaDiario()">
+                        🔄 Aggiorna
+                    </button>
+                    <a href="/diario-book" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                        📖 Vista Libro
+                    </a>
+                </div>
+            </div>
+
+            <!-- Budget & Spese -->
+            <div class="card">
+                <h2>💰 Presupuesto & Gastos</h2>
+                <div id="budgetSummary" style="margin-bottom: 15px;">
+                    <div class="stat-box" style="margin-bottom: 10px;">
+                        <span class="number" id="speseOggi">€0</span>
+                        <span class="label">Oggi</span>
+                    </div>
+                    <div class="stat-box" style="margin-bottom: 10px;">
+                        <span class="number" id="speseSettimana">€0</span>
+                        <span class="label">Questa Settimana</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="number" id="speseMese">€0</span>
+                        <span class="label">Questo Mese</span>
+                    </div>
+                </div>
+                <div class="piano-list" id="speseList" style="max-height: 200px;">
+                    <div class="loading" id="speseLoading">Caricamento...</div>
+                    <div class="empty-state" id="speseEmpty">Nessuna spesa registrata</div>
+                </div>
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaSpese()">
+                    🔄 Aggiorna
+                </button>
+            </div>
+
+            <!-- Calendario Settimanale -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>📅 Calendario Semanal</h2>
+                <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                    <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ Precedente</button>
+                    <span id="settimanaCorrente" style="flex: 1; text-align: center; font-weight: bold;">
+                        Questa settimana
+                    </span>
+                    <button class="btn btn-secondary" onclick="cambiaSettimana(1)">Successiva ▶</button>
+                    <button class="btn btn-primary" onclick="cambiaSettimana(0)">Oggi</button>
+                </div>
+                <div id="calendarioContainer" style="overflow-x: auto;">
+                    <div class="loading" id="calendarioLoading">Caricamento calendario...</div>
+                    <div id="calendarioGrid"></div>
+                </div>
+            </div>
+
+            <!-- Grafici Visuali -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>📊 Panel de Análisis</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">💰 Spese per Categoria (Mese)</h3>
+                        <canvas id="graficoSpese" style="max-height: 300px;"></canvas>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">⏰ Tempo per Obiettivo</h3>
+                        <canvas id="graficoObiettivi" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📈 Trend Spese Ultimi 30 Giorni</h3>
+                        <canvas id="graficoTrendSpese" style="max-height: 250px;"></canvas>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="aggiornaGrafici()">
+                    🔄 Aggiorna Analytics
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Stato globale
+        let settimanaOffset = 0;
+
+        // Carica dati all'avvio
+        window.addEventListener('DOMContentLoaded', () => {
+            // ============================================
+            // REGISTRA SERVICE WORKER (PWA)
+            // ============================================
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(registration => {
+                        console.log('✅ PWA: Service Worker registrato', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('⚠️ PWA: Errore registrazione SW:', error);
+                    });
+            }
+            
+            // Carica tema salvato
+            const temaSalvato = localStorage.getItem('tema') || 'light';
+            if (temaSalvato === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeIcon').textContent = '☀️';
+            }
+            
+            caricaObiettivi();
+            caricaStatistiche();
+            caricaDiario();
+            caricaCalendario();
+            caricaSpese();
+            
+            // Carica voci per text-to-speech
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => {
+                    const voci = speechSynthesis.getVoices();
+                    console.log('🔊 Voci disponibili:', voci.filter(v => v.lang.startsWith('it')).map(v => v.name));
+                };
+            }
+            
+            // ============================================
+            // SISTEMA NOTIFICHE
+            // ============================================
+            inizializzaNotifiche();
+            controllaImpegniImminenti();
+            controllaBudgetGiornaliero();
+            svegliaMattutina();
+            
+            // Controlla impegni ogni 5 minuti
+            setInterval(controllaImpegniImminenti, 5 * 60 * 1000);
+            
+            // Controlla budget ogni 30 minuti
+            setInterval(controllaBudgetGiornaliero, 30 * 60 * 1000);
+        });
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                inviaMessaggio();
+            }
+        }
+
+        function usaEsempio(testo) {
+            document.getElementById('chatInput').value = testo;
+        }
+
+        async function inviaMessaggio() {
+            const input = document.getElementById('chatInput');
+            const messaggio = input.value.trim();
+            
+            if (!messaggio) return;
+
+            // Aggiungi messaggio utente
+            aggiungiMessaggio(messaggio, 'user');
+            input.value = '';
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        messaggio: messaggio
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Mostra se AI è stata usata
+                let rispostaFinale = data.risposta;
+                if (data.ai_used) {
+                    rispostaFinale += `\n\n<em style="color: #4caf50; font-size: 0.85em;">🤖 AI Locale (${data.ai_model || 'gemma3:1b'}) - Zero costi!</em>`;
+                }
+                
+                // Aggiungi risposta assistente
+                aggiungiMessaggio(rispostaFinale, 'assistant');
+
+                // ============================================
+                // LETTURA VOCALE AUTOMATICA per impegni/obiettivi/spese
+                // ============================================
+                if (data.tipo_riconosciuto === 'impegno' || 
+                    data.tipo_riconosciuto === 'obiettivo' || 
+                    data.tipo_riconosciuto === 'spesa' ||
+                    data.tipo_riconosciuto === 'diario') {
+                    const testoVocale = pulisciTestoPerVoce(data.risposta);
+                    parla(testoVocale);
+                }
+
+                // Aggiorna liste se necessario
+                if (data.tipo_riconosciuto === 'obiettivo') {
+                    setTimeout(caricaObiettivi, 500);
+                    setTimeout(caricaCalendario, 500);
+                } else if (data.tipo_riconosciuto === 'impegno') {
+                    // Nuovo impegno - aggiorna calendario
+                    setTimeout(caricaCalendario, 500);
+                } else if (data.tipo_riconosciuto === 'spesa') {
+                    setTimeout(caricaSpese, 500);
+                } else if (data.tipo_riconosciuto === 'diario') {
+                    setTimeout(caricaDiario, 500);
+                } else if (data.tipo_riconosciuto === 'ai_processed') {
+                    // AI ha processato - refresh tutto
+                    setTimeout(() => {
+                        caricaObiettivi();
+                        caricaCalendario();
+                        caricaSpese();
+                        caricaDiario();
+                    }, 500);
+                }
+            } catch (error) {
+                aggiungiMessaggio('❌ Errore. Riprova!', 'assistant');
+                console.error(error);
+            }
+        }
+
+        function aggiungiMessaggio(testo, tipo) {
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${tipo}`;
+            
+            // Aggiungi highlight per risposte assistente
+            if (tipo === 'assistant') {
+                messageDiv.classList.add('highlight');
+            }
+            
+            // Usa innerHTML per supportare formattazione (safe perché controlliamo i dati)
+            messageDiv.innerHTML = testo.replace(/\n/g, '<br>');
+            container.appendChild(messageDiv);
+            // Scroll smooth per vedere la risposta
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function caricaObiettivi() {
+            const loading = document.getElementById('obiettiviLoading');
+            const empty = document.getElementById('obiettiviEmpty');
+            const list = document.getElementById('obiettiviList');
+            
+            loading.classList.add('active');
+            empty.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/obiettivi');
+                const obiettivi = await response.json();
+
+                // Rimuovi elementi precedenti
+                list.innerHTML = '';
+
+                if (obiettivi.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    obiettivi.forEach(obj => {
+                        const div = document.createElement('div');
+                        div.className = 'obiettivo-item';
+                        div.innerHTML = `
+                            <strong>${obj.nome}</strong>
+                            <span>📊 ${obj.durata_settimanale}h/settimana • ${obj.tipo}</span><br>
+                            <span>✅ Completate: ${obj.ore_completate}h</span>
+                        `;
+                        list.appendChild(div);
+                    });
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento obiettivi:', error);
+                empty.textContent = 'Errore nel caricamento';
+                empty.style.display = 'block';
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        async function generaPiano() {
+            const loading = document.getElementById('pianoLoading');
+            const empty = document.getElementById('pianoEmpty');
+            const list = document.getElementById('pianoList');
+            
+            loading.classList.add('active');
+            empty.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/piano');
+                const data = await response.json();
+                const piano = data.piano;
+
+                // Rimuovi elementi precedenti
+                list.innerHTML = '';
+
+                if (piano.length === 0) {
+                    empty.textContent = 'Aggiungi obiettivi per generare un piano!';
+                    empty.style.display = 'block';
+                } else {
+                    // Raggruppa per giorno
+                    const pianoPerGiorno = {};
+                    piano.forEach(att => {
+                        const data = new Date(att.data_inizio);
+                        const giorno = data.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'short' });
+                        
+                        if (!pianoPerGiorno[giorno]) {
+                            pianoPerGiorno[giorno] = [];
+                        }
+                        pianoPerGiorno[giorno].push(att);
+                    });
+
+                    // Mostra max 3 giorni per non sovraccaricare
+                    let count = 0;
+                    for (const [giorno, attivita] of Object.entries(pianoPerGiorno)) {
+                        if (count >= 3) break;
+                        
+                        const giornoDiv = document.createElement('div');
+                        giornoDiv.innerHTML = `<strong style="color: #667eea; margin: 10px 0; display: block;">${giorno}</strong>`;
+                        list.appendChild(giornoDiv);
+
+                        attivita.forEach(att => {
+                            const dataInizio = new Date(att.data_inizio);
+                            const dataFine = new Date(att.data_fine);
+                            const orario = `${dataInizio.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })} - ${dataFine.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`;
+                            
+                            let icona = '📌';
+                            if (att.tipo === 'obiettivo') icona = '🎯';
+                            if (att.tipo === 'pausa') icona = '☕';
+                            if (att.tipo === 'impegno') icona = '📅';
+
+                            const div = document.createElement('div');
+                            div.className = 'piano-item';
+                            div.innerHTML = `
+                                <strong>${icona} ${att.nome}</strong>
+                                <span>🕒 ${orario}</span>
+                            `;
+                            list.appendChild(div);
+                        });
+                        count++;
+                    }
+
+                    // Messaggio se ci sono più giorni
+                    if (Object.keys(pianoPerGiorno).length > 3) {
+                        const moreDiv = document.createElement('div');
+                        moreDiv.style.textAlign = 'center';
+                        moreDiv.style.color = '#6c757d';
+                        moreDiv.style.marginTop = '10px';
+                        moreDiv.textContent = '...e altri giorni';
+                        list.appendChild(moreDiv);
+                    }
+                }
+            } catch (error) {
+                console.error('Errore nella generazione del piano:', error);
+                empty.textContent = 'Errore nella generazione';
+                empty.style.display = 'block';
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        async function caricaStatistiche() {
+            try {
+                const response = await fetch('/api/statistiche');
+                const stats = await response.json();
+
+                document.getElementById('statObiettivi').textContent = stats.obiettivi_totali || 0;
+                document.getElementById('statOre').textContent = `${(stats.ore_completate || 0).toFixed(1)}h`;
+                document.getElementById('statCompletamento').textContent = `${(stats.tasso_completamento || 0).toFixed(0)}%`;
+            } catch (error) {
+                console.error('Errore nel caricamento statistiche:', error);
+            }
+        }
+
+        async function caricaDiario() {
+            const loading = document.getElementById('diarioLoading');
+            const empty = document.getElementById('diarioEmpty');
+            const list = document.getElementById('diarioList');
+            
+            loading.classList.add('active');
+            empty.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/diario');
+                const entries = await response.json();
+
+                // Rimuovi elementi precedenti
+                list.innerHTML = '';
+
+                if (entries.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    // Mostra ultime 5 entry
+                    entries.slice(0, 5).forEach(entry => {
+                        const data = new Date(entry.data);
+                        const dataStr = data.toLocaleDateString('it-IT', { 
+                            day: 'numeric', 
+                            month: 'short', 
+                            year: 'numeric' 
+                        });
+                        
+                        const sentimentEmoji = {
+                            'positivo': '😊',
+                            'neutro': '😐',
+                            'negativo': '😔'
+                        };
+                        const emoji = sentimentEmoji[entry.sentiment] || '📝';
+
+                        const div = document.createElement('div');
+                        div.className = 'piano-item';
+                        
+                        // Testo limitato a 100 caratteri
+                        const testoBreve = entry.testo.length > 100 
+                            ? entry.testo.substring(0, 100) + '...' 
+                            : entry.testo;
+                        
+                        // Parole chiave
+                        const paroleChiave = entry.parole_chiave && entry.parole_chiave.length > 0
+                            ? entry.parole_chiave.slice(0, 3).join(', ')
+                            : '';
+
+                        div.innerHTML = `
+                            <strong>${emoji} ${dataStr}</strong>
+                            <span style="display: block; margin: 5px 0;">${testoBreve}</span>
+                            ${paroleChiave ? `<span style="color: #667eea;">🏷️ ${paroleChiave}</span>` : ''}
+                        `;
+                        list.appendChild(div);
+                    });
+
+                    // Messaggio se ci sono più entry
+                    if (entries.length > 5) {
+                        const moreDiv = document.createElement('div');
+                        moreDiv.style.textAlign = 'center';
+                        moreDiv.style.color = '#6c757d';
+                        moreDiv.style.marginTop = '10px';
+                        moreDiv.textContent = `...e altre ${entries.length - 5} riflessioni`;
+                        list.appendChild(moreDiv);
+                    }
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento diario:', error);
+                empty.textContent = 'Errore nel caricamento';
+                empty.style.display = 'block';
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        function cambiaSettimana(offset) {
+            if (offset === 0) {
+                settimanaOffset = 0;
+            } else {
+                settimanaOffset += offset;
+            }
+            caricaCalendario();
+        }
+
+        async function caricaCalendario() {
+            const loading = document.getElementById('calendarioLoading');
+            const grid = document.getElementById('calendarioGrid');
+            
+            loading.style.display = 'block';
+            grid.innerHTML = '';
+
+            try {
+                // Calcola data inizio settimana
+                const oggi = new Date();
+                oggi.setHours(0, 0, 0, 0);
+                
+                // Vai al lunedì della settimana
+                const giorno = oggi.getDay();
+                const diff = oggi.getDate() - giorno + (giorno === 0 ? -6 : 1);
+                const lunedi = new Date(oggi.setDate(diff));
+                lunedi.setDate(lunedi.getDate() + (settimanaOffset * 7));
+
+                // Aggiorna label settimana
+                const domenica = new Date(lunedi);
+                domenica.setDate(domenica.getDate() + 6);
+                document.getElementById('settimanaCorrente').textContent = 
+                    `${lunedi.toLocaleDateString('it-IT', {day: 'numeric', month: 'short'})} - ` +
+                    `${domenica.toLocaleDateString('it-IT', {day: 'numeric', month: 'short', year: 'numeric'})}`;
+
+                // Carica piano settimana
+                const response = await fetch('/api/piano');
+                const data = await response.json();
+                const piano = data.piano || [];
+
+                // Carica impegni
+                const impegniResponse = await fetch('/api/impegni');
+                const impegni = await impegniResponse.json();
+
+                // Combina tutto
+                const tuttiEventi = [...piano, ...impegni.map(imp => ({
+                    tipo: 'impegno',
+                    nome: imp.nome,
+                    data_inizio: imp.data_inizio,
+                    data_fine: imp.data_fine
+                }))];
+
+                // Crea griglia calendario
+                const calendarioDiv = document.createElement('div');
+                calendarioDiv.className = 'calendario-grid';
+
+                // Header giorni
+                const giorni = ['Ora', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+                giorni.forEach((giorno, idx) => {
+                    const header = document.createElement('div');
+                    header.className = idx === 0 ? 'calendario-header time-col' : 'calendario-header';
+                    
+                    if (idx > 0) {
+                        const dataGiorno = new Date(lunedi);
+                        dataGiorno.setDate(dataGiorno.getDate() + (idx - 1));
+                        const isOggi = dataGiorno.toDateString() === new Date().toDateString();
+                        
+                        header.innerHTML = `
+                            ${giorno}<br>
+                            <span style="font-size: 1.2em;">${dataGiorno.getDate()}</span>
+                        `;
+                        
+                        if (isOggi) {
+                            header.style.background = 'linear-gradient(135deg, #ffc107 0%, #ff9800 100%)';
+                        }
+                    } else {
+                        header.textContent = giorno;
+                    }
+                    
+                    calendarioDiv.appendChild(header);
+                });
+
+                // Ore del giorno (8:00 - 23:00)
+                for (let ora = 8; ora <= 22; ora++) {
+                    // Colonna ora
+                    const timeCell = document.createElement('div');
+                    timeCell.className = 'calendario-cell time-cell';
+                    timeCell.textContent = `${ora}:00`;
+                    calendarioDiv.appendChild(timeCell);
+
+                    // Celle per ogni giorno
+                    for (let giorno = 0; giorno < 7; giorno++) {
+                        const dataGiorno = new Date(lunedi);
+                        dataGiorno.setDate(dataGiorno.getDate() + giorno);
+                        dataGiorno.setHours(ora, 0, 0, 0);
+
+                        const cell = document.createElement('div');
+                        cell.className = 'calendario-cell';
+                        
+                        // Highlight oggi
+                        if (dataGiorno.toDateString() === new Date().toDateString()) {
+                            cell.classList.add('oggi-highlight');
+                        }
+
+                        // Trova eventi in questa fascia oraria
+                        const eventiOra = tuttiEventi.filter(evento => {
+                            const inizio = new Date(evento.data_inizio);
+                            const oraInizio = inizio.getHours();
+                            return inizio.toDateString() === dataGiorno.toDateString() && 
+                                   oraInizio === ora;
+                        });
+
+                        // Aggiungi eventi
+                        eventiOra.forEach(evento => {
+                            const block = document.createElement('div');
+                            block.className = `impegno-block ${evento.tipo}`;
+                            
+                            const inizio = new Date(evento.data_inizio);
+                            const fine = new Date(evento.data_fine);
+                            const timeStr = `${inizio.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})} - ${fine.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}`;
+                            
+                            let icon = '📌';
+                            if (evento.tipo === 'obiettivo') icon = '🎯';
+                            if (evento.tipo === 'pausa') icon = '☕';
+                            if (evento.tipo === 'impegno') icon = '📅';
+                            
+                            block.innerHTML = `
+                                <strong>${icon} ${evento.nome}</strong>
+                                <span class="impegno-time">${timeStr}</span>
+                            `;
+                            
+                            block.title = `${evento.nome}\n${timeStr}`;
+                            cell.appendChild(block);
+                        });
+
+                        calendarioDiv.appendChild(cell);
+                    }
+                }
+
+                grid.appendChild(calendarioDiv);
+
+            } catch (error) {
+                console.error('Errore caricamento calendario:', error);
+                grid.innerHTML = '<div class="empty-state">Errore nel caricamento del calendario</div>';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function domandaTemporale(tipo) {
+            const chatMessages = document.getElementById('chatMessages');
+            let endpoint = '';
+            let messaggio = '';
+
+            switch(tipo) {
+                case 'passato':
+                    endpoint = '/api/passato/settimana-scorsa';
+                    messaggio = 'Cosa ho fatto la settimana scorsa?';
+                    break;
+                case 'oggi':
+                    endpoint = '/api/presente/oggi';
+                    messaggio = 'Cosa devo fare oggi?';
+                    break;
+                case 'adesso':
+                    endpoint = '/api/presente/adesso';
+                    messaggio = 'Cosa devo fare adesso?';
+                    break;
+                case 'giovedi':
+                    endpoint = '/api/futuro/giovedi';
+                    messaggio = 'Come sarà il mio giovedì?';
+                    break;
+                case 'proiezione':
+                    const obj = prompt('Su cosa vuoi la proiezione? (es. Python)');
+                    const mesi = prompt('Per quanti mesi?', '6');
+                    if (!obj) return;
+                    
+                    try {
+                        const response = await fetch('/api/futuro/proietta', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                obiettivo: obj,
+                                ore_settimanali: 3,
+                                mesi: parseInt(mesi)
+                            })
+                        });
+                        const data = await response.json();
+                        
+                        aggiungiMessaggio(`Proiezione ${obj} tra ${mesi} mesi`, 'user');
+                        
+                        let risposta = `📈 **Proiezione ${obj}**\n\n`;
+                        risposta += `⏰ Ore totali: ${data.impegno.ore_totali}h\n`;
+                        risposta += `🎯 Livello stimato: ${data.proiezione.livello_stimato}\n`;
+                        risposta += `📊 ${data.proiezione.competenza_descrizione}\n`;
+                        risposta += `💯 Progress to mastery: ${data.proiezione.percentuale_mastery}%\n\n`;
+                        
+                        if (data.milestones && data.milestones.length > 0) {
+                            risposta += `🏆 Traguardi:\n`;
+                            data.milestones.slice(0, 3).forEach(m => {
+                                risposta += `  • Mese ${m.mese}: ${m.descrizione}\n`;
+                            });
+                        }
+                        
+                        aggiungiMessaggio(risposta, 'assistant');
+                        
+                        // Lettura vocale proiezione
+                        const testoVocale = pulisciTestoPerVoce(risposta);
+                        parla(testoVocale);
+                    } catch (error) {
+                        aggiungiMessaggio('Errore nella proiezione', 'assistant');
+                    }
+                    return;
+            }
+
+            // Aggiungi domanda utente
+            aggiungiMessaggio(messaggio, 'user');
+
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                let risposta = '';
+
+                // Formatta risposta in base al tipo
+                if (tipo === 'passato') {
+                    risposta = `📊 **Settimana Scorsa**\n\n`;
+                    risposta += `📅 ${data.periodo.inizio} → ${data.periodo.fine}\n\n`;
+                    risposta += `📌 Impegni: ${data.impegni_count}\n`;
+                    risposta += `⏰ Ore totali: ${Object.values(data.ore_totali).reduce((a,b) => a+b, 0).toFixed(1)}h\n`;
+                    risposta += `📔 Riflessioni: ${data.riflessioni.totali}\n`;
+                    risposta += `😊 Sentiment: ${data.riflessioni.sentiment_medio}\n\n`;
+                    
+                    if (data.insights.length > 0) {
+                        risposta += `💡 Insights:\n`;
+                        data.insights.forEach(i => risposta += `  • ${i}\n`);
+                    }
+                    
+                } else if (tipo === 'oggi' || tipo === 'adesso') {
+                    if (tipo === 'oggi') {
+                        const piano = data.piano_completo;
+                        risposta = data.messaggio || `📅 **Piano di Oggi**\n\n`;
+                        risposta += `⏰ Ore occupate: ${piano.ore_occupate}h\n`;
+                        risposta += `🆓 Ore libere: ${piano.ore_libere}h\n`;
+                        risposta += `📊 Carico giornata: ${piano.stato_giornata}\n\n`;
+                        
+                        if (piano.prossimo_impegno) {
+                            risposta += `⏭️ Prossimo: ${piano.prossimo_impegno.nome} alle ${piano.prossimo_impegno.orario}\n`;
+                        }
+                    } else {
+                        risposta = data.messaggio;
+                        if (data.suggerimenti) {
+                            risposta += '\n\n💡 Suggerimenti:\n';
+                            data.suggerimenti.forEach(s => risposta += `  • ${s}\n`);
+                        }
+                    }
+                    
+                } else if (tipo === 'giovedi') {
+                    risposta = `🔮 **Previsione ${data.giorno_settimana}**\n\n`;
+                    risposta += `📅 ${data.data} (tra ${data.giorni_mancanti} giorni)\n\n`;
+                    risposta += `📌 Impegni fissi: ${data.impegni_fissi.length}\n`;
+                    risposta += `🎯 Obiettivi previsti: ${data.obiettivi_previsti.length}\n`;
+                    risposta += `⏰ Carico previsto: ${data.previsione.densita}\n\n`;
+                    
+                    if (data.suggerimenti_preparazione.length > 0) {
+                        risposta += `💡 Preparazione:\n`;
+                        data.suggerimenti_preparazione.forEach(s => risposta += `  • ${s}\n`);
+                    }
+                }
+
+                aggiungiMessaggio(risposta, 'assistant');
+                
+                // ============================================
+                // LETTURA VOCALE della risposta
+                // ============================================
+                const testoVocale = pulisciTestoPerVoce(risposta);
+                parla(testoVocale);
+
+            } catch (error) {
+                console.error('Errore domanda temporale:', error);
+                aggiungiMessaggio('Si è verificato un errore. Riprova.', 'assistant');
+            }
+        }
+
+        async function caricaSpese() {
+            const loading = document.getElementById('speseLoading');
+            const empty = document.getElementById('speseEmpty');
+            const list = document.getElementById('speseList');
+            
+            loading.classList.add('active');
+            empty.style.display = 'none';
+
+            try {
+                // Carica spese recenti
+                const response = await fetch('/api/spese');
+                const spese = await response.json();
+
+                // Carica riepiloghi
+                const [oggiResp, settResp, meseResp] = await Promise.all([
+                    fetch('/api/spese/oggi'),
+                    fetch('/api/spese/settimana'),
+                    fetch('/api/spese/mese')
+                ]);
+
+                const oggi = await oggiResp.json();
+                const settimana = await settResp.json();
+                const mese = await meseResp.json();
+
+                // Aggiorna totali
+                document.getElementById('speseOggi').textContent = `€${(oggi.totale || 0).toFixed(2)}`;
+                document.getElementById('speseSettimana').textContent = `€${(settimana.totale || 0).toFixed(2)}`;
+                document.getElementById('speseMese').textContent = `€${(mese.totale || 0).toFixed(2)}`;
+
+                // Rimuovi elementi precedenti
+                list.innerHTML = '';
+
+                if (spese.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    // Mostra ultime 5 spese
+                    spese.slice(0, 5).forEach(spesa => {
+                        const data = new Date(spesa.data);
+                        const dataStr = data.toLocaleDateString('it-IT', { 
+                            day: 'numeric', 
+                            month: 'short'
+                        });
+
+                        const div = document.createElement('div');
+                        div.className = 'piano-item';
+                        div.innerHTML = `
+                            <strong>💰 €${spesa.importo.toFixed(2)}</strong>
+                            <span>${spesa.descrizione} • ${dataStr}</span><br>
+                            <span style="color: #667eea;">🏷️ ${spesa.categoria}</span>
+                        `;
+                        list.appendChild(div);
+                    });
+
+                    if (spese.length > 5) {
+                        const moreDiv = document.createElement('div');
+                        moreDiv.style.textAlign = 'center';
+                        moreDiv.style.color = '#6c757d';
+                        moreDiv.style.marginTop = '10px';
+                        moreDiv.textContent = `...e altre ${spese.length - 5} spese`;
+                        list.appendChild(moreDiv);
+                    }
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento spese:', error);
+                empty.textContent = 'Errore nel caricamento';
+                empty.style.display = 'block';
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        async function domandaSpese(tipo) {
+            const chatMessages = document.getElementById('chatMessages');
+            let endpoint = '';
+            let messaggio = '';
+
+            switch(tipo) {
+                case 'oggi':
+                    endpoint = '/api/spese/oggi';
+                    messaggio = 'Quanto ho speso oggi?';
+                    break;
+                case 'settimana':
+                    endpoint = '/api/spese/settimana';
+                    messaggio = 'Quanto ho speso questa settimana?';
+                    break;
+                case 'mese':
+                    endpoint = '/api/spese/mese';
+                    messaggio = 'Quanto ho speso questo mese?';
+                    break;
+                case 'budget':
+                    const budget = prompt('Qual è il tuo budget mensile? (es. 1000)', '1000');
+                    if (!budget) return;
+                    
+                    try {
+                        const response = await fetch('/api/spese/budget', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ budget: parseFloat(budget) })
+                        });
+                        const data = await response.json();
+                        
+                        aggiungiMessaggio(`Budget check (€${budget}/mese)`, 'user');
+                        
+                        let risposta = `${data.emoji} **Budget Check**\n\n`;
+                        risposta += `💰 Budget: €${data.budget_mensile}\n`;
+                        risposta += `💸 Speso: €${data.speso} (${data.percentuale_usata}%)\n`;
+                        risposta += `💵 Rimanente: €${data.rimanente}\n`;
+                        risposta += `📅 Giorni rimanenti: ${data.giorni.rimanenti}\n`;
+                        risposta += `📊 Budget giornaliero: €${data.budget_giornaliero_rimanente.toFixed(2)}/giorno\n\n`;
+                        risposta += `🔮 Proiezione fine mese: €${data.proiezione_fine_mese}\n\n`;
+                        risposta += `${data.alert}`;
+                        
+                        aggiungiMessaggio(risposta, 'assistant');
+                        
+                        // Lettura vocale budget
+                        const testoVocale = pulisciTestoPerVoce(risposta);
+                        parla(testoVocale);
+                    } catch (error) {
+                        aggiungiMessaggio('Errore nel calcolo budget', 'assistant');
+                    }
+                    return;
+            }
+
+            aggiungiMessaggio(messaggio, 'user');
+
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+
+                let risposta = '';
+
+                if (tipo === 'oggi') {
+                    risposta = `💰 **Spese di Oggi**\n\n`;
+                } else if (tipo === 'settimana') {
+                    risposta = `📊 **Spese della Settimana**\n\n`;
+                    risposta += `📅 ${data.periodo.inizio} → ${data.periodo.fine}\n\n`;
+                } else if (tipo === 'mese') {
+                    risposta = `📈 **Spese del Mese**\n\n`;
+                    risposta += `📅 ${data.periodo.inizio} → ${data.periodo.fine}\n\n`;
+                }
+
+                risposta += `💵 Totale: €${data.totale}\n`;
+                risposta += `📌 Numero spese: ${data.num_spese}\n`;
+                risposta += `📊 Media giornaliera: €${data.media_giornaliera}\n\n`;
+
+                if (data.per_categoria && Object.keys(data.per_categoria).length > 0) {
+                    risposta += `🏷️ Per categoria:\n`;
+                    Object.entries(data.per_categoria).forEach(([cat, importo]) => {
+                        risposta += `  • ${cat}: €${importo}\n`;
+                    });
+                    risposta += '\n';
+                }
+
+                if (data.insights && data.insights.length > 0) {
+                    risposta += `💡 Insights:\n`;
+                    data.insights.forEach(i => risposta += `  • ${i}\n`);
+                }
+
+                aggiungiMessaggio(risposta, 'assistant');
+                
+                // ============================================
+                // LETTURA VOCALE della risposta spese
+                // ============================================
+                const testoVocale = pulisciTestoPerVoce(risposta);
+                parla(testoVocale);
+
+            } catch (error) {
+                console.error('Errore domanda spese:', error);
+                aggiungiMessaggio('Si è verificato un errore. Riprova.', 'assistant');
+            }
+        }
+
+        // ============================================
+        // LETTURA VOCALE - Funzioni Utili
+        // ============================================
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+
+        function pulisciTestoPerVoce(testo) {
+            // Rimuovi emoji (pattern unicode)
+            let testoVocale = testo.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '');
+            
+            // Rimuovi markdown (**, *, #, ecc.)
+            testoVocale = testoVocale.replace(/\*\*/g, '');
+            testoVocale = testoVocale.replace(/\*/g, '');
+            testoVocale = testoVocale.replace(/#{1,6}\s/g, '');
+            testoVocale = testoVocale.replace(/`/g, '');
+            
+            // Rimuovi caratteri speciali inutili
+            testoVocale = testoVocale.replace(/•/g, '');
+            testoVocale = testoVocale.replace(/→/g, ' a ');
+            testoVocale = testoVocale.replace(/:/g, ', ');
+            
+            // Rimuovi spazi multipli e a capo multipli
+            testoVocale = testoVocale.replace(/\n\n+/g, '. ');
+            testoVocale = testoVocale.replace(/\n/g, '. ');
+            testoVocale = testoVocale.replace(/\s+/g, ' ');
+            
+            // Converti simboli euro
+            testoVocale = testoVocale.replace(/€/g, 'euro ');
+            
+            return testoVocale.trim();
+        }
+
+        async function leggiImpegniGiorno(quando) {
+            let dataTarget;
+            let descrizioneGiorno;
+            
+            const oggi = new Date();
+            oggi.setHours(0, 0, 0, 0);
+            
+            if (quando === 'oggi') {
+                dataTarget = oggi;
+                descrizioneGiorno = 'oggi';
+            } else if (quando === 'domani') {
+                dataTarget = new Date(oggi);
+                dataTarget.setDate(dataTarget.getDate() + 1);
+                descrizioneGiorno = 'domani';
+            } else {
+                // Data specifica
+                dataTarget = new Date(quando);
+                descrizioneGiorno = dataTarget.toLocaleDateString('it-IT', { 
+                    weekday: 'long', 
+                    day: 'numeric', 
+                    month: 'long' 
+                });
+            }
+            
+            const dataISO = dataTarget.toISOString().split('T')[0];
+            
+            try {
+                const response = await fetch(`/api/impegni/giorno/${dataISO}`);
+                const impegni = await response.json();
+                
+                if (impegni.length === 0) {
+                    const testo = `Non ci sono impegni per ${descrizioneGiorno}`;
+                    parla(testo);
+                    aggiungiMessaggio(`🔊 ${testo}`, 'assistant');
+                    return;
+                }
+                
+                // Costruisci testo da leggere
+                let testo = `Hai ${impegni.length} impegni per ${descrizioneGiorno}. `;
+                
+                impegni.forEach((imp, index) => {
+                    const inizio = new Date(imp.data_inizio);
+                    const fine = new Date(imp.data_fine);
+                    const oraInizio = inizio.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                    const oraFine = fine.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                    
+                    testo += `${index + 1}. ${imp.nome}, dalle ${oraInizio} alle ${oraFine}. `;
+                });
+                
+                parla(testo);
+                aggiungiMessaggio(`🔊 Sto leggendo gli impegni di ${descrizioneGiorno}...`, 'assistant');
+                
+            } catch (error) {
+                console.error('Errore lettura impegni:', error);
+                aggiungiMessaggio('Errore nel recupero degli impegni.', 'assistant');
+            }
+        }
+
+        function parla(testo) {
+            // Ferma eventuali letture in corso
+            synth.cancel();
+            
+            currentUtterance = new SpeechSynthesisUtterance(testo);
+            currentUtterance.lang = 'it-IT';
+            currentUtterance.rate = 0.9; // Velocità leggermente più lenta
+            currentUtterance.pitch = 1.1; // Leggermente più acuto per voce femminile
+            
+            // ============================================
+            // Seleziona VOCE FEMMINILE ITALIANA
+            // ============================================
+            const voci = synth.getVoices();
+            
+            // Cerca voce femminile italiana
+            let voceFemminile = voci.find(v => 
+                v.lang.startsWith('it') && v.name.toLowerCase().includes('female')
+            );
+            
+            // Fallback: cerca altre voci italiane femminili
+            if (!voceFemminile) {
+                voceFemminile = voci.find(v => 
+                    v.lang.startsWith('it') && (
+                        v.name.toLowerCase().includes('alice') ||
+                        v.name.toLowerCase().includes('serena') ||
+                        v.name.toLowerCase().includes('google italiano')
+                    )
+                );
+            }
+            
+            // Ulteriore fallback: qualsiasi voce italiana
+            if (!voceFemminile) {
+                voceFemminile = voci.find(v => v.lang.startsWith('it'));
+            }
+            
+            if (voceFemminile) {
+                currentUtterance.voice = voceFemminile;
+                console.log('🔊 Voce selezionata:', voceFemminile.name);
+            }
+            
+            // Event listener per quando finisce
+            currentUtterance.onend = () => {
+                console.log('Lettura completata');
+            };
+            
+            currentUtterance.onerror = (event) => {
+                console.error('Errore lettura vocale:', event);
+            };
+            
+            synth.speak(currentUtterance);
+        }
+
+        function stopLettura() {
+            synth.cancel();
+            aggiungiMessaggio('⏹️ Lettura interrotta.', 'assistant');
+        }
+
+        function apriSelettoreGiorno() {
+            const data = prompt('Inserisci la data (formato: YYYY-MM-DD o gg/mm/aaaa):', 
+                                new Date().toISOString().split('T')[0]);
+            
+            if (data) {
+                let dataFormattata;
+                
+                // Gestisci formato italiano gg/mm/aaaa
+                if (data.includes('/')) {
+                    const parti = data.split('/');
+                    if (parti.length === 3) {
+                        dataFormattata = `${parti[2]}-${parti[1].padStart(2, '0')}-${parti[0].padStart(2, '0')}`;
+                    }
+                } else {
+                    dataFormattata = data;
+                }
+                
+                leggiImpegniGiorno(dataFormattata);
+            }
+        }
+
+        // ============================================
+        // SISTEMA NOTIFICHE BROWSER
+        // ============================================
+        let impegniNotificati = new Set(); // Evita notifiche duplicate
+
+        function inizializzaNotifiche() {
+            // Chiedi permesso per notifiche browser
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('✅ Notifiche abilitate');
+                        mostraNotifica('🔔 Notifiche Attive', 'Riceverai promemoria per i tuoi impegni!');
+                    }
+                });
+            }
+        }
+
+        function mostraNotifica(titolo, messaggio, icona = '🔔') {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const notifica = new Notification(titolo, {
+                    body: messaggio,
+                    icon: '/static/icon.png', // Fallback a icona se esiste
+                    badge: '/static/badge.png',
+                    requireInteraction: false,
+                    silent: false
+                });
+                
+                // Leggi anche con voce
+                parla(messaggio);
+                
+                notifica.onclick = () => {
+                    window.focus();
+                    notifica.close();
+                };
+                
+                // Auto-chiudi dopo 10 secondi
+                setTimeout(() => notifica.close(), 10000);
+            }
+        }
+
+        async function controllaImpegniImminenti() {
+            try {
+                const oggi = new Date();
+                const dataISO = oggi.toISOString().split('T')[0];
+                
+                const response = await fetch(`/api/impegni/giorno/${dataISO}`);
+                const impegni = await response.json();
+                
+                const ora_corrente = new Date();
+                const tra_15_min = new Date(ora_corrente.getTime() + 15 * 60 * 1000);
+                
+                impegni.forEach(imp => {
+                    const inizio = new Date(imp.data_inizio);
+                    
+                    // Se impegno inizia tra 10-20 minuti
+                    if (inizio > ora_corrente && inizio <= tra_15_min) {
+                        const chiave = `${imp.id}-${imp.data_inizio}`;
+                        
+                        if (!impegniNotificati.has(chiave)) {
+                            const minuti = Math.round((inizio - ora_corrente) / 60000);
+                            mostraNotifica(
+                                `⏰ Impegno tra ${minuti} minuti`,
+                                `${imp.nome} alle ${inizio.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}`
+                            );
+                            impegniNotificati.add(chiave);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Errore controllo impegni:', error);
+            }
+        }
+
+        async function controllaBudgetGiornaliero() {
+            try {
+                const response = await fetch('/api/spese/oggi');
+                const data = await response.json();
+                
+                // Alert se superi 100 euro al giorno
+                const LIMITE_GIORNO = 100;
+                
+                if (data.totale > LIMITE_GIORNO) {
+                    const percentuale = ((data.totale / LIMITE_GIORNO) * 100).toFixed(0);
+                    
+                    mostraNotifica(
+                        '💰 Alert Budget',
+                        `Hai speso €${data.totale.toFixed(2)} oggi (${percentuale}% del limite giornaliero)`
+                    );
+                }
+            } catch (error) {
+                console.error('Errore controllo budget:', error);
+            }
+        }
+
+        async function svegliaMattutina() {
+            const ora = new Date().getHours();
+            
+            // Mostra riepilogo tra le 7:00 e 8:00
+            if (ora === 7 || ora === 8) {
+                const chiave = `sveglia-${new Date().toDateString()}`;
+                
+                if (!impegniNotificati.has(chiave)) {
+                    try {
+                        const response = await fetch('/api/presente/oggi');
+                        const data = await response.json();
+                        
+                        const piano = data.piano_completo;
+                        const messaggioSveglia = `Buongiorno! Oggi hai ${piano.impegni_count || 0} impegni. ` +
+                                                 `Ore occupate: ${piano.ore_occupate}h. ` +
+                                                 `Carico: ${piano.stato_giornata}`;
+                        
+                        mostraNotifica('🌅 Buongiorno!', messaggioSveglia);
+                        impegniNotificati.add(chiave);
+                    } catch (error) {
+                        console.error('Errore sveglia mattutina:', error);
+                    }
+                }
+            }
+        }
+
+        // ============================================
+        // GRAFICI VISUALI - Chart.js
+        // ============================================
+        let graficoSpese = null;
+        let graficoObiettivi = null;
+
+        async function aggiornaGrafici() {
+            await creaGraficoSpese();
+            await creaGraficoObiettivi();
+            await creaGraficoTrendSpese();
+        }
+
+        async function creaGraficoSpese() {
+            try {
+                const response = await fetch('/api/spese/mese');
+                const data = await response.json();
+                
+                // Prepara dati per grafico
+                const categorie = Object.keys(data.per_categoria || {});
+                const importi = Object.values(data.per_categoria || {});
+                
+                // Colori vivaci per categorie
+                const colori = [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+                    '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                ];
+                
+                const ctx = document.getElementById('graficoSpese');
+                
+                // Distruggi grafico precedente se esiste
+                if (graficoSpese) {
+                    graficoSpese.destroy();
+                }
+                
+                graficoSpese = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categorie.map(c => c.charAt(0).toUpperCase() + c.slice(1)),
+                        datasets: [{
+                            data: importi,
+                            backgroundColor: colori.slice(0, categorie.length),
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    font: { size: 12 },
+                                    padding: 10
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${label}: €${value.toFixed(2)} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Errore creazione grafico spese:', error);
+            }
+        }
+
+        async function creaGraficoObiettivi() {
+            try {
+                const response = await fetch('/api/obiettivi');
+                const obiettivi = await response.json();
+                
+                const nomi = obiettivi.map(o => o.nome);
+                const durate = obiettivi.map(o => o.durata_settimanale);
+                const completate = obiettivi.map(o => o.ore_completate || 0);
+                
+                const ctx = document.getElementById('graficoObiettivi');
+                
+                // Distruggi grafico precedente
+                if (graficoObiettivi) {
+                    graficoObiettivi.destroy();
+                }
+                
+                graficoObiettivi = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: nomi,
+                        datasets: [
+                            {
+                                label: 'Obiettivo (h/sett)',
+                                data: durate,
+                                backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                                borderColor: 'rgba(102, 126, 234, 1)',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Completate (h)',
+                                data: completate,
+                                backgroundColor: 'rgba(40, 167, 69, 0.6)',
+                                borderColor: 'rgba(40, 167, 69, 1)',
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Ore'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Errore creazione grafico obiettivi:', error);
+            }
+        }
+
+        async function creaGraficoTrendSpese() {
+            try {
+                const response = await fetch('/api/spese');
+                const spese = await response.json();
+                
+                // Raggruppa spese per giorno (ultimi 30 giorni)
+                const oggi = new Date();
+                const spese_per_giorno = {};
+                
+                for (let i = 29; i >= 0; i--) {
+                    const data = new Date(oggi);
+                    data.setDate(data.getDate() - i);
+                    const chiave = data.toISOString().split('T')[0];
+                    spese_per_giorno[chiave] = 0;
+                }
+                
+                spese.forEach(s => {
+                    const chiave = s.data;
+                    if (chiave in spese_per_giorno) {
+                        spese_per_giorno[chiave] += s.importo;
+                    }
+                });
+                
+                const labels = Object.keys(spese_per_giorno).map(d => {
+                    const date = new Date(d);
+                    return date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+                });
+                const valori = Object.values(spese_per_giorno);
+                
+                const ctx = document.getElementById('graficoTrendSpese');
+                
+                if (window.graficoTrendSpese) {
+                    window.graficoTrendSpese.destroy();
+                }
+                
+                window.graficoTrendSpese = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Spese Giornaliere (€)',
+                            data: valori,
+                            borderColor: '#FF6384',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Euro (€)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    maxTicksLimit: 10
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        return `€${context.parsed.y.toFixed(2)}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Errore grafico trend:', error);
+            }
+        }
+
+        // Carica grafici all'avvio (dopo caricamento Chart.js)
+        window.addEventListener('load', () => {
+            setTimeout(aggiornaGrafici, 1000);
+        });
+
+        // ============================================
+        // DARK MODE TOGGLE
+        // ============================================
+        function toggleDarkMode() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                icon.textContent = '☀️';
+                localStorage.setItem('tema', 'dark');
+            } else {
+                icon.textContent = '🌙';
+                localStorage.setItem('tema', 'light');
+            }
+            
+            // Ricarica grafici per aggiornare colori
+            setTimeout(aggiornaGrafici, 300);
+        }
+
+        // ============================================
+        // LANGUAGE TOGGLE
+        // ============================================
+        function toggleLanguage() {
+            const currentLang = localStorage.getItem('lingua') || 'it';
+            
+            if (currentLang === 'it') {
+                localStorage.setItem('lingua', 'en');
+                window.location.href = '/en';
+            } else {
+                localStorage.setItem('lingua', 'it');
+                window.location.href = '/';
+            }
+        }
+
+        // ============================================
+        // EXPORT/IMPORT DATI
+        // ============================================
+        async function exportaTutto() {
+            try {
+                const response = await fetch('/api/export/tutto');
+                const data = await response.json();
+                
+                // Crea file JSON
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                // Download automatico
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `agenda-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                aggiungiMessaggio(`📦 Export completato! ${data.impegni.length} impegni, ${data.spese.length} spese, ${data.obiettivi.length} obiettivi.`, 'assistant');
+            } catch (error) {
+                console.error('Errore export:', error);
+                aggiungiMessaggio('❌ Errore durante l\'export', 'assistant');
+            }
+        }
+
+        async function exportaImpegni() {
+            try {
+                const response = await fetch('/api/export/impegni');
+                const data = await response.json();
+                
+                // Converti in CSV
+                const csv = convertiInCSV(data.impegni, ['nome', 'data_inizio', 'data_fine', 'tipo']);
+                const blob = new Blob([csv], { type: 'text/csv' });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `impegni-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                aggiungiMessaggio(`📅 Export ${data.count} impegni completato!`, 'assistant');
+            } catch (error) {
+                console.error('Errore export impegni:', error);
+            }
+        }
+
+        async function exportaSpese() {
+            try {
+                const response = await fetch('/api/export/spese');
+                const data = await response.json();
+                
+                // Converti in CSV
+                const csv = convertiInCSV(data.spese, ['data', 'descrizione', 'importo', 'categoria']);
+                const blob = new Blob([csv], { type: 'text/csv' });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `spese-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                aggiungiMessaggio(`💰 Export ${data.count} spese completato!`, 'assistant');
+            } catch (error) {
+                console.error('Errore export spese:', error);
+            }
+        }
+
+        function convertiInCSV(oggetti, campi) {
+            if (!oggetti || oggetti.length === 0) return '';
+            
+            // Header
+            let csv = campi.join(',') + '\n';
+            
+            // Righe
+            oggetti.forEach(obj => {
+                const riga = campi.map(campo => {
+                    let valore = obj[campo] || '';
+                    // Escape virgole e apici
+                    if (typeof valore === 'string' && (valore.includes(',') || valore.includes('"'))) {
+                        valore = `"${valore.replace(/"/g, '""')}"`;
+                    }
+                    return valore;
+                }).join(',');
+                csv += riga + '\n';
+            });
+            
+            return csv;
+        }
+
+        async function exportaPianoPDF() {
+            try {
+                const response = await fetch('/api/piano');
+                const data = await response.json();
+                const piano = data.piano || [];
+                
+                if (piano.length === 0) {
+                    aggiungiMessaggio('⚠️ Genera prima un piano settimanale!', 'assistant');
+                    return;
+                }
+                
+                // Usa jsPDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Titolo
+                doc.setFontSize(20);
+                doc.text('Piano Settimanale', 105, 20, { align: 'center' });
+                
+                doc.setFontSize(12);
+                doc.text(`Generato il: ${new Date().toLocaleDateString('it-IT')}`, 105, 30, { align: 'center' });
+                
+                // Raggruppa per giorno
+                const pianoPerGiorno = {};
+                piano.forEach(att => {
+                    const data = new Date(att.data_inizio);
+                    const giorno = data.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'short' });
+                    if (!pianoPerGiorno[giorno]) pianoPerGiorno[giorno] = [];
+                    pianoPerGiorno[giorno].push(att);
+                });
+                
+                let y = 45;
+                
+                for (const [giorno, attivita] of Object.entries(pianoPerGiorno)) {
+                    // Check nuova pagina
+                    if (y > 250) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    
+                    // Giorno
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(giorno, 20, y);
+                    y += 8;
+                    
+                    doc.setFontSize(10);
+                    doc.setFont(undefined, 'normal');
+                    
+                    attivita.forEach(att => {
+                        const inizio = new Date(att.data_inizio);
+                        const fine = new Date(att.data_fine);
+                        const orario = `${inizio.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})} - ${fine.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}`;
+                        
+                        doc.text(`  • ${orario}: ${att.nome}`, 25, y);
+                        y += 6;
+                        
+                        if (y > 270) {
+                            doc.addPage();
+                            y = 20;
+                        }
+                    });
+                    
+                    y += 5;
+                }
+                
+                // Salva PDF
+                doc.save(`piano-settimanale-${new Date().toISOString().split('T')[0]}.pdf`);
+                aggiungiMessaggio('📄 Piano esportato in PDF!', 'assistant');
+                
+            } catch (error) {
+                console.error('Errore export PDF:', error);
+                aggiungiMessaggio('❌ Errore export PDF', 'assistant');
+            }
+        }
+
+        async function exportaImpegniICalendar() {
+            try {
+                const response = await fetch('/api/impegni');
+                const impegni = await response.json();
+                
+                if (impegni.length === 0) {
+                    aggiungiMessaggio('⚠️ Nessun impegno da esportare!', 'assistant');
+                    return;
+                }
+                
+                // Genera file iCalendar (.ics)
+                let icalContent = 'BEGIN:VCALENDAR\r\n';
+                icalContent += 'VERSION:2.0\r\n';
+                icalContent += 'PRODID:-//Assistente Intelligente//Agenda//IT\r\n';
+                icalContent += 'CALSCALE:GREGORIAN\r\n';
+                icalContent += 'METHOD:PUBLISH\r\n';
+                icalContent += 'X-WR-CALNAME:Agenda Assistente Intelligente\r\n';
+                icalContent += 'X-WR-TIMEZONE:Europe/Rome\r\n';
+                
+                impegni.forEach(imp => {
+                    const inizio = new Date(imp.data_inizio);
+                    const fine = new Date(imp.data_fine);
+                    
+                    // Formato iCal: YYYYMMDDTHHMMSS
+                    const dtStart = formatoICalDate(inizio);
+                    const dtEnd = formatoICalDate(fine);
+                    const dtStamp = formatoICalDate(new Date());
+                    
+                    icalContent += 'BEGIN:VEVENT\r\n';
+                    icalContent += `UID:${imp.id}@assistente-intelligente.local\r\n`;
+                    icalContent += `DTSTAMP:${dtStamp}\r\n`;
+                    icalContent += `DTSTART:${dtStart}\r\n`;
+                    icalContent += `DTEND:${dtEnd}\r\n`;
+                    icalContent += `SUMMARY:${imp.nome}\r\n`;
+                    icalContent += `DESCRIPTION:${imp.tipo || 'Impegno personale'}\r\n`;
+                    icalContent += `STATUS:CONFIRMED\r\n`;
+                    icalContent += 'END:VEVENT\r\n';
+                });
+                
+                icalContent += 'END:VCALENDAR\r\n';
+                
+                // Download file .ics
+                const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `agenda-${new Date().toISOString().split('T')[0]}.ics`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                aggiungiMessaggio(`📅 Export ${impegni.length} impegni in formato iCalendar! Importabile in Google Calendar, Outlook, Apple Calendar.`, 'assistant');
+                
+            } catch (error) {
+                console.error('Errore export iCal:', error);
+                aggiungiMessaggio('❌ Errore export iCalendar', 'assistant');
+            }
+        }
+
+        function formatoICalDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+        }
+
+        // ============================================
+        // ONBOARDING TUTORIAL
+        // ============================================
+        
+        let currentOnboardingStep = 1;
+        
+        function mostraOnboarding() {
+            // Controlla se è la prima visita
+            const giaMostrato = localStorage.getItem('onboarding_completato');
+            if (!giaMostrato) {
+                document.getElementById('onboardingOverlay').style.display = 'flex';
+            }
+        }
+        
+        function chiudiOnboarding() {
+            document.getElementById('onboardingOverlay').style.display = 'none';
+            localStorage.setItem('onboarding_completato', 'true');
+        }
+        
+        function prossimoStep() {
+            const steps = document.querySelectorAll('.onboarding-step');
+            const dots = document.querySelectorAll('.onboarding-dot');
+            
+            if (currentOnboardingStep < steps.length) {
+                // Nascondi step corrente
+                steps[currentOnboardingStep - 1].classList.remove('active');
+                dots[currentOnboardingStep - 1].classList.remove('active');
+                
+                // Mostra prossimo step
+                currentOnboardingStep++;
+                steps[currentOnboardingStep - 1].classList.add('active');
+                dots[currentOnboardingStep - 1].classList.add('active');
+            }
+        }
+        
+        function stepPrecedente() {
+            const steps = document.querySelectorAll('.onboarding-step');
+            const dots = document.querySelectorAll('.onboarding-dot');
+            
+            if (currentOnboardingStep > 1) {
+                // Nascondi step corrente
+                steps[currentOnboardingStep - 1].classList.remove('active');
+                dots[currentOnboardingStep - 1].classList.remove('active');
+                
+                // Mostra step precedente
+                currentOnboardingStep--;
+                steps[currentOnboardingStep - 1].classList.add('active');
+                dots[currentOnboardingStep - 1].classList.add('active');
+            }
+        }
+        
+        function inizia() {
+            chiudiOnboarding();
+            scrollToChat();
+            // Focus sul campo input
+            setTimeout(() => {
+                document.querySelector('.chat-input input').focus();
+            }, 500);
+        }
+        
+        function scrollToChat() {
+            const chatElement = document.querySelector('.chat-container');
+            chatElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Mostra onboarding al caricamento (se prima visita)
+        window.addEventListener('load', () => {
+            setTimeout(mostraOnboarding, 1000);
+        });
+    </script>
+
+    <!-- Footer Professionale -->
+    <footer style="background: rgba(255, 255, 255, 0.95); border-radius: 20px; padding: 40px; margin-top: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <!-- Footer Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 30px;">
+                
+                <!-- Colonna 1: About -->
+                <div>
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.2em;">🧠 Asistente Inteligente</h3>
+                    <p style="color: #666; line-height: 1.6; font-size: 0.95em;">
+                        Tu compañero IA para organizar vida, estudios y objetivos. 
+                        Gratis, en español, para siempre.
+                    </p>
+                    <div style="margin-top: 15px;">
+                        <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.85em; font-weight: 600;">
+                            ✨ 100% Gratis
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Colonna 2: Links -->
+                <div>
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.2em;">📖 Recursos</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/about" style="color: #555; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#555'">
+                                👥 Chi Siamo
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda" target="_blank" style="color: #555; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#555'">
+                                💻 GitHub
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda/blob/main/README.md" target="_blank" style="color: #555; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#555'">
+                                📚 Documentazione
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda/issues" target="_blank" style="color: #555; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#555'">
+                                🐛 Report Bug
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/privacy" style="color: #555; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#555'">
+                                🔒 Privacy
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/terms" style="color: #555; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#555'">
+                                📜 Termini
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Colonna 3: Lingua & Social -->
+                <div>
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.2em;">🌍 Idioma</h3>
+                    <ul style="list-style: none; padding: 0; margin-bottom: 25px;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/" style="color: #555; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#555'">
+                                🇮🇹 Italiano
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/en" style="color: #555; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#555'">
+                                🇬🇧 English
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/es" style="color: #555; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#555'">
+                                🇪🇸 Español
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 1.2em;">⭐ Open Source</h3>
+                    <p style="color: #666; font-size: 0.9em; line-height: 1.5;">
+                        Codice aperto su GitHub.<br>
+                        Contribuisci anche tu!
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Divider -->
+            <div style="height: 1px; background: linear-gradient(90deg, transparent, #667eea, transparent); margin: 30px 0;"></div>
+
+            <!-- Bottom Footer -->
+            <div style="text-align: center; color: #666;">
+                <p style="margin-bottom: 10px; font-size: 0.95em;">
+                    Made with ❤️ and ☕ in Italy 🇮🇹
+                </p>
+                <p style="font-size: 0.85em; opacity: 0.8;">
+                    © 2025 Assistente Intelligente • 
+                    <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda/blob/main/LICENSE" target="_blank" style="color: #667eea; text-decoration: none;">
+                        Apache License 2.0
+                    </a>
+                </p>
+                <p style="font-size: 0.85em; margin-top: 15px; opacity: 0.7;">
+                    <strong>Gratis para siempre</strong> • Privacy-first • Sin rastreo invasivo
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
+

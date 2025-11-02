@@ -27,6 +27,14 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     
     # ========================================
+    # ANTI-CACHE: Force template reload
+    # ========================================
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+    app.jinja_env.auto_reload = True
+    app.logger.info("🔄 Template auto-reload attivato (no cache)")
+    
+    # ========================================
     # LOGGING STRUTTURATO
     # ========================================
     from app.utils.logger import setup_logger, log_performance

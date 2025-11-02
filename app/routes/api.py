@@ -30,19 +30,19 @@ def index_es():
 @bp.route('/zh')
 def index_zh():
     """Chinese version (简体中文)"""
-    return render_template('index_en_full.html')  # Per ora usa EN template
+    return render_template('index_zh.html')
 
 
 @bp.route('/ru')
 def index_ru():
     """Russian version (Русский)"""
-    return render_template('index_en_full.html')  # Per ora usa EN template
+    return render_template('index_ru.html')
 
 
 @bp.route('/hi')
 def index_hi():
     """Hindi version (हिन्दी)"""
-    return render_template('index_en_full.html')  # Per ora usa EN template
+    return render_template('index_hi.html')
 
 
 @bp.route('/about')

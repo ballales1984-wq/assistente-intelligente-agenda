@@ -2353,6 +2353,16 @@
             // Converti simboli euro
             testoVocale = testoVocale.replace(/€/g, 'euro ');
             
+            // Convert "h" to "hour" or "hours"
+            testoVocale = testoVocale.replace(/(\d+\.?\d*)\s?h\b/g, (match, numero) => {
+                const num = parseFloat(numero);
+                if (num === 1) {
+                    return `${numero} hour`;
+                } else {
+                    return `${numero} hours`;
+                }
+            });
+            
             return testoVocale.trim();
         }
 

@@ -1,0 +1,53 @@
+====== POST FACEBOOK ======
+
+🚀 HO LANCIATO LA MIA PRIMA WEB APP! 🎉
+
+Dopo 48 ore di lavoro intenso, ho creato "Assistente Intelligente" - un'app gratuita che usa l'AI per organizzare vita, studio e obiettivi! 🧠✨
+
+🎯 COSA FA:
+✅ Parli in linguaggio naturale: "Voglio studiare Python 3 ore a settimana" → L'AI organizza tutto automaticamente!
+✅ Calendario intelligente che gestisce i conflitti
+✅ Tracking obiettivi e progresso
+✅ Controllo spese con grafici
+✅ Diario personale con analisi sentiment
+✅ 📖 FEATURE UNICA: Diario sfogliabile come un libro vero! (swipe con il dito!)
+
+✨ COMPLETAMENTE GRATIS:
+• Nessun login richiesto
+• Installabile come app
+• 3 lingue: Italiano 🇮🇹 Inglese 🇬🇧 Spagnolo 🇪🇸
+• Open source su GitHub
+
+🔗 PROVALO SUBITO:
+https://assistente-intelligente-agenda.onrender.com
+
+💡 La cosa più bella? Il diario che puoi sfogliare con il dito come un libro vero! Mai visto in nessuna app! 📖
+
+Cerco feedback! Cosa ne pensate? Quali features vorreste? 🤔
+
+👉 Condividete se conoscete qualcuno a cui può servire!
+
+#WebDevelopment #AI #Productivity #ItalianTech #Startup #OpenSource
+
+====== ALTERNATIVA PIÙ CORTA (se preferisci) ======
+
+🚀 Ho creato un'app GRATIS per organizzare vita e obiettivi con l'AI!
+
+💬 Parli normalmente: "Voglio studiare 3 ore a settimana"
+🤖 L'AI capisce e organizza tutto!
+📖 UNICO: Diario sfogliabile come libro (swipe!)
+
+🆓 100% Gratis • 3 lingue (IT/EN/ES) • Open source
+
+Provala: https://assistente-intelligente-agenda.onrender.com
+
+Feedback? 😊
+
+====== TIPS ======
+
+1. Posta sul TUO profilo personale (massima visibilità ai tuoi 1800 amici)
+2. Aggiungi gli screenshot! (allega le immagini dalla cartella screenshots/)
+3. Considera taggare 5-10 amici interessati a tech/produttività
+4. Posta anche in gruppi: "Sviluppatori Italia", "Startup Italia", ecc.
+5. Rispondi a TUTTI i commenti entro 1 ora (algoritmo boost!)
+

@@ -1432,6 +1432,31 @@
             }
         }
 
+        async function eliminaImpegno(id) {
+            // Conferma eliminazione
+            if (!confirm('Sei sicuro di voler eliminare questo impegno?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/impegni/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    // Mostra messaggio successo
+                    alert('✅ Impegno eliminato con successo!');
+                    // Ricarica calendario
+                    caricaCalendario();
+                } else {
+                    alert('❌ Errore nell\'eliminazione dell\'impegno');
+                }
+            } catch (error) {
+                console.error('Errore eliminazione impegno:', error);
+                alert('❌ Errore nell\'eliminazione dell\'impegno');
+            }
+        }
+
         function cambiaSettimana(offset) {
             if (offset === 0) {
                 settimanaOffset = 0;
@@ -1475,12 +1500,13 @@
                 const impegniResponse = await fetch('/api/impegni');
                 const impegni = await impegniResponse.json();
 
-                // Combina tutto
+                // Combina tutto (mantieni ID per impegni eliminabili)
                 const tuttiEventi = [...piano, ...impegni.map(imp => ({
                     tipo: 'impegno',
                     nome: imp.nome,
                     data_inizio: imp.data_inizio,
-                    data_fine: imp.data_fine
+                    data_fine: imp.data_fine,
+                    id: imp.id  // ID per eliminazione
                 }))];
 
                 // Crea griglia calendario
@@ -1557,11 +1583,25 @@
                             if (evento.tipo === 'pausa') icon = '☕';
                             if (evento.tipo === 'impegno') icon = '📅';
                             
+                            // Se ha ID, è eliminabile
+                            const deleteBtn = evento.id ? `
+                                <button 
+                                    onclick="eliminaImpegno(${evento.id}); event.stopPropagation();" 
+                                    style="position: absolute; top: 2px; right: 2px; background: #ff4444; color: white; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.8em; opacity: 0.8; transition: opacity 0.3s;"
+                                    onmouseover="this.style.opacity='1'"
+                                    onmouseout="this.style.opacity='0.8'"
+                                    title="Elimina impegno">
+                                    🗑️
+                                </button>
+                            ` : '';
+                            
                             block.innerHTML = `
+                                ${deleteBtn}
                                 <strong>${icon} ${evento.nome}</strong>
                                 <span class="impegno-time">${timeStr}</span>
                             `;
                             
+                            block.style.position = 'relative';  // Per posizionare bottone
                             block.title = `${evento.nome}\n${timeStr}`;
                             cell.appendChild(block);
                         });

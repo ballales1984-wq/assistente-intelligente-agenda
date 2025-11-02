@@ -681,6 +681,15 @@ def gestisci_impegni():
     return jsonify([imp.to_dict() for imp in impegni])
 
 
+@bp.route('/api/impegni/<int:id>', methods=['DELETE'])
+def elimina_impegno(id):
+    """Elimina impegno"""
+    impegno = Impegno.query.get_or_404(id)
+    db.session.delete(impegno)
+    db.session.commit()
+    return '', 204
+
+
 @bp.route('/api/impegni/giorno/<data>', methods=['GET'])
 def impegni_giorno(data):
     """Ottieni impegni di un giorno specifico"""

@@ -1,0 +1,38 @@
+====== TITOLO ======
+[Tool] I built a free AI assistant to organize your life with natural language (Italian/English/Spanish) + unique swipeable diary!
+
+====== POST ======
+Hey r/productivity! 👋
+
+I just launched a free web app that helps organize your life using AI and natural language.
+
+🎯 **What it does:**
+- Chat in natural language (IT/EN/ES): "Study Python 3h/week" → automatically schedules it
+- Smart calendar with intelligent conflict management (splits/reduces overlapping events)
+- Goal tracking with progress analytics  
+- Expense tracking with graphs
+- Personal diary with sentiment analysis
+- 📖 **UNIQUE FEATURE:** Swipeable diary like a real book on mobile (touch gestures!)
+
+✨ **Features:**
+- 100% Free forever
+- No login required (starts immediately)
+- PWA (installable as native app)
+- Dark mode ready
+- Multi-language (IT/EN/ES)
+- Export to PDF, iCal, CSV
+- PostgreSQL database (permanent data)
+
+🔗 **Try it:** https://assistente-intelligente-agenda.onrender.com
+
+Built in Flask + PostgreSQL, deployed on Render. Open source (Apache 2.0).
+
+The diary feature is my favorite - you can literally swipe through your journal entries like a real book. Never seen this before! 📖
+
+Would love your feedback! What features would you add? 🚀
+
+**GitHub:** https://github.com/ballales1984-wq/assistente-intelligente-agenda
+
+====== FLAIR/TAG ======
+tool, webapp, ai, productivity, opensource
+

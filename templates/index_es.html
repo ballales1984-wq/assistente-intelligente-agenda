@@ -695,6 +695,85 @@
             background: #fff3cd !important;
             border-left: 3px solid #ffc107;
         }
+        
+        /* Vista Mensile Styles */
+        .calendario-mensile-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .calendario-mensile-header {
+            background: rgba(59, 130, 246, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+            padding: 12px;
+            text-align: center;
+            font-weight: 700;
+            border-radius: 10px;
+            font-size: 0.95em;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+        
+        .calendario-mensile-day {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            min-height: 100px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .calendario-mensile-day:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .calendario-mensile-day.other-month {
+            opacity: 0.3;
+        }
+        
+        .calendario-mensile-day.today {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .calendario-mensile-day-number {
+            font-weight: 700;
+            font-size: 1.2em;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+        }
+        
+        .calendario-mensile-impegni {
+            font-size: 0.75em;
+            color: #94a3b8;
+        }
+        
+        .calendario-mensile-impegno {
+            background: rgba(59, 130, 246, 0.3);
+            padding: 4px 6px;
+            border-radius: 6px;
+            margin: 3px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+        
+        .calendario-mensile-impegno:hover {
+            background: rgba(59, 130, 246, 0.6);
+            color: white;
+        }
 
         /* ============================================
            DARK MODE
@@ -1144,20 +1223,50 @@
                 </button>
             </div>
 
-            <!-- Calendario Settimanale -->
+            <!-- Calendario Multi-Vista -->
             <div class="card" style="grid-column: 1 / -1;">
-                <h2>📅 Calendario Semanal</h2>
-                <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                    <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ Precedente</button>
-                    <span id="settimanaCorrente" style="flex: 1; text-align: center; font-weight: bold;">
-                        Questa settimana
-                    </span>
-                    <button class="btn btn-secondary" onclick="cambiaSettimana(1)">Successiva ▶</button>
-                    <button class="btn btn-primary" onclick="cambiaSettimana(0)">Oggi</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">📅 Calendario</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" id="vistaSettimanaBtn" onclick="switchVistaCalendario('settimana')" style="padding: 8px 16px;">
+                            📅 Semana
+                        </button>
+                        <button class="btn btn-secondary" id="vistaMeseBtn" onclick="switchVistaCalendario('mese')" style="padding: 8px 16px;">
+                            📆 Mes
+                        </button>
+                    </div>
                 </div>
-                <div id="calendarioContainer" style="overflow-x: auto;">
-                    <div class="loading" id="calendarioLoading">Caricamento calendario...</div>
-                    <div id="calendarioGrid"></div>
+                
+                <!-- Vista Semanal -->
+                <div id="vistaSettimana">
+                    <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                        <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ Anterior</button>
+                        <span id="settimanaCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
+                            Esta semana
+                        </span>
+                        <button class="btn btn-secondary" onclick="cambiaSettimana(1)">Siguiente ▶</button>
+                        <button class="btn btn-primary" onclick="cambiaSettimana(0)">Hoy</button>
+                    </div>
+                    <div id="calendarioContainer" style="overflow-x: auto;">
+                        <div class="loading" id="calendarioLoading">Cargando calendario...</div>
+                        <div id="calendarioGrid"></div>
+                    </div>
+                </div>
+                
+                <!-- Vista Mensual -->
+                <div id="vistaMese" style="display: none;">
+                    <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                        <button class="btn btn-secondary" onclick="cambiaMese(-1)">◀ Mes Anterior</button>
+                        <span id="meseCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
+                            Este mes
+                        </span>
+                        <button class="btn btn-secondary" onclick="cambiaMese(1)">Mes Siguiente ▶</button>
+                        <button class="btn btn-primary" onclick="cambiaMese(0)">Hoy</button>
+                    </div>
+                    <div id="calendarioMensileContainer">
+                        <div class="loading" id="calendarioMensileLoading">Cargando mes...</div>
+                        <div id="calendarioMensileGrid"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1714,6 +1823,145 @@
                 settimanaOffset += offset;
             }
             caricaCalendario();
+        }
+        
+        let vistaCalendario = 'settimana';
+        let meseOffset = 0;
+        
+        function switchVistaCalendario(vista) {
+            vistaCalendario = vista;
+            const vistaSettimana = document.getElementById('vistaSettimana');
+            const vistaMese = document.getElementById('vistaMese');
+            const btnSettimana = document.getElementById('vistaSettimanaBtn');
+            const btnMese = document.getElementById('vistaMeseBtn');
+            
+            if (vista === 'settimana') {
+                vistaSettimana.style.display = 'block';
+                vistaMese.style.display = 'none';
+                btnSettimana.className = 'btn btn-primary';
+                btnMese.className = 'btn btn-secondary';
+                caricaCalendario();
+            } else {
+                vistaSettimana.style.display = 'none';
+                vistaMese.style.display = 'block';
+                btnSettimana.className = 'btn btn-secondary';
+                btnMese.className = 'btn btn-primary';
+                caricaCalendarioMensile();
+            }
+        }
+        
+        function cambiaMese(offset) {
+            if (offset === 0) {
+                meseOffset = 0;
+            } else {
+                meseOffset += offset;
+            }
+            caricaCalendarioMensile();
+        }
+        
+        async function caricaCalendarioMensile() {
+            const loading = document.getElementById('calendarioMensileLoading');
+            const grid = document.getElementById('calendarioMensileGrid');
+            const meseSpan = document.getElementById('meseCorrente');
+            
+            loading.classList.add('active');
+            grid.innerHTML = '';
+            
+            try {
+                const oggi = new Date();
+                const meseDaMostrare = new Date(oggi.getFullYear(), oggi.getMonth() + meseOffset, 1);
+                
+                const mesi = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                meseSpan.textContent = `${mesi[meseDaMostrare.getMonth()]} ${meseDaMostrare.getFullYear()}`;
+                
+                const calendarioDiv = document.createElement('div');
+                calendarioDiv.className = 'calendario-mensile-grid';
+                
+                const giorniSettimana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+                giorniSettimana.forEach(giorno => {
+                    const header = document.createElement('div');
+                    header.className = 'calendario-mensile-header';
+                    header.textContent = giorno;
+                    calendarioDiv.appendChild(header);
+                });
+                
+                const primoGiorno = new Date(meseDaMostrare.getFullYear(), meseDaMostrare.getMonth(), 1);
+                const ultimoGiorno = new Date(meseDaMostrare.getFullYear(), meseDaMostrare.getMonth() + 1, 0);
+                
+                let startDay = primoGiorno.getDay() - 1;
+                if (startDay < 0) startDay = 6;
+                
+                const mesePrecedente = new Date(meseDaMostrare.getFullYear(), meseDaMostrare.getMonth(), 0);
+                for (let i = startDay - 1; i >= 0; i--) {
+                    const giorno = mesePrecedente.getDate() - i;
+                    const cell = document.createElement('div');
+                    cell.className = 'calendario-mensile-day other-month';
+                    cell.innerHTML = `<div class="calendario-mensile-day-number">${giorno}</div>`;
+                    calendarioDiv.appendChild(cell);
+                }
+                
+                const response = await fetch(`/api/impegni`);
+                const impegni = await response.json();
+                
+                const impegniPerGiorno = {};
+                impegni.forEach(imp => {
+                    const dataImpegno = new Date(imp.data_inizio).toISOString().split('T')[0];
+                    if (!impegniPerGiorno[dataImpegno]) {
+                        impegniPerGiorno[dataImpegno] = [];
+                    }
+                    impegniPerGiorno[dataImpegno].push(imp);
+                });
+                
+                for (let giorno = 1; giorno <= ultimoGiorno.getDate(); giorno++) {
+                    const dataCorrente = new Date(meseDaMostrare.getFullYear(), meseDaMostrare.getMonth(), giorno);
+                    const dataStr = dataCorrente.toISOString().split('T')[0];
+                    
+                    const cell = document.createElement('div');
+                    cell.className = 'calendario-mensile-day';
+                    
+                    const oggiStr = new Date().toISOString().split('T')[0];
+                    if (dataStr === oggiStr) {
+                        cell.classList.add('today');
+                    }
+                    
+                    let html = `<div class="calendario-mensile-day-number">${giorno}</div>`;
+                    
+                    if (impegniPerGiorno[dataStr]) {
+                        html += '<div class="calendario-mensile-impegni">';
+                        impegniPerGiorno[dataStr].forEach(imp => {
+                            const oraInizio = new Date(imp.data_inizio).getHours();
+                            const minInizio = String(new Date(imp.data_inizio).getMinutes()).padStart(2, '0');
+                            html += `<div class="calendario-mensile-impegno" title="${imp.nome} - ${oraInizio}:${minInizio}">
+                                ${oraInizio}:${minInizio} ${imp.nome}
+                            </div>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    cell.innerHTML = html;
+                    calendarioDiv.appendChild(cell);
+                }
+                
+                const giorniTotali = startDay + ultimoGiorno.getDate();
+                const giorniRimanenti = 7 - (giorniTotali % 7);
+                if (giorniRimanenti < 7) {
+                    for (let giorno = 1; giorno <= giorniRimanenti; giorno++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'calendario-mensile-day other-month';
+                        cell.innerHTML = `<div class="calendario-mensile-day-number">${giorno}</div>`;
+                        calendarioDiv.appendChild(cell);
+                    }
+                }
+                
+                grid.appendChild(calendarioDiv);
+                loading.classList.remove('active');
+                
+            } catch (error) {
+                console.error('Errore caricamento calendario mensile:', error);
+                loading.classList.remove('active');
+                grid.innerHTML = '<div style="text-align: center; color: #ef4444; padding: 20px;">⚠️ Error al cargar</div>';
+            }
         }
 
         async function caricaCalendario() {

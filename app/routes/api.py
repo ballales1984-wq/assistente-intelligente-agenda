@@ -27,6 +27,24 @@ def index_es():
     return render_template('index_es.html')
 
 
+@bp.route('/zh')
+def index_zh():
+    """Chinese version (简体中文)"""
+    return render_template('index_en_full.html')  # Per ora usa EN template
+
+
+@bp.route('/ru')
+def index_ru():
+    """Russian version (Русский)"""
+    return render_template('index_en_full.html')  # Per ora usa EN template
+
+
+@bp.route('/hi')
+def index_hi():
+    """Hindi version (हिन्दी)"""
+    return render_template('index_en_full.html')  # Per ora usa EN template
+
+
 @bp.route('/about')
 def about():
     """Pagina About - Chi siamo"""

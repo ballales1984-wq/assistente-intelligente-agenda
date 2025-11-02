@@ -60,28 +60,46 @@ def diario_book():
 @bp.route('/manifest.json')
 def manifest():
     """Serve manifest.json per PWA"""
-    from flask import send_from_directory, current_app
+    from flask import Response, current_app
     import os
-    static_folder = current_app.static_folder or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
-    return send_from_directory(static_folder, 'manifest.json', mimetype='application/manifest+json')
+    # Path assoluto al file
+    file_path = os.path.join(current_app.root_path, 'static', 'manifest.json')
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return Response(content, mimetype='application/manifest+json')
+    except FileNotFoundError:
+        return Response('manifest.json not found', status=404, mimetype='application/json')
 
 
 @bp.route('/robots.txt')
 def robots():
     """Serve robots.txt per SEO"""
-    from flask import send_from_directory, current_app
+    from flask import Response, current_app
     import os
-    static_folder = current_app.static_folder or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
-    return send_from_directory(static_folder, 'robots.txt', mimetype='text/plain')
+    # Path assoluto al file
+    file_path = os.path.join(current_app.root_path, 'static', 'robots.txt')
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return Response(content, mimetype='text/plain')
+    except FileNotFoundError:
+        return Response('robots.txt not found', status=404, mimetype='text/plain')
 
 
 @bp.route('/sitemap.xml')
 def sitemap():
     """Serve sitemap.xml per SEO"""
-    from flask import send_from_directory, current_app
+    from flask import Response, current_app
     import os
-    static_folder = current_app.static_folder or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
-    return send_from_directory(static_folder, 'sitemap.xml', mimetype='application/xml')
+    # Path assoluto al file
+    file_path = os.path.join(current_app.root_path, 'static', 'sitemap.xml')
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return Response(content, mimetype='application/xml')
+    except FileNotFoundError:
+        return Response('sitemap.xml not found', status=404, mimetype='application/xml')
 
 
 @bp.route('/sw.js')

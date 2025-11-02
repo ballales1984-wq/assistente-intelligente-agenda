@@ -852,11 +852,15 @@
             background: #0f3460;
         }
 
-        .lang-toggle {
+                /* Language Selector Dropdown */
+        .lang-selector {
             position: fixed;
             top: 80px;
             right: 20px;
             z-index: 1000;
+        }
+
+        .lang-selector .lang-toggle {
             background: white;
             border: none;
             border-radius: 25px;
@@ -869,15 +873,73 @@
             color: #667eea;
         }
 
-        .lang-toggle:hover {
+        .lang-selector .lang-toggle:hover {
             transform: scale(1.05);
             background: #667eea;
             color: white;
         }
 
-        body.dark-mode .lang-toggle {
+        body.dark-mode .lang-selector .lang-toggle {
             background: #0f3460;
             color: #e9ecef;
+        }
+
+        .lang-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-width: 180px;
+        }
+
+        .lang-menu.active {
+            display: block;
+            animation: fadeIn 0.2s;
+        }
+
+        .lang-menu a {
+            display: block;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95em;
+        }
+
+        .lang-menu a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .lang-menu a.active {
+            background: #e8eaf6;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        body.dark-mode .lang-menu {
+            background: #16213e;
+        }
+
+        body.dark-mode .lang-menu a {
+            color: #e9ecef;
+        }
+
+        body.dark-mode .lang-menu a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        body.dark-mode .lang-menu a.active {
+            background: #0f3460;
+            color: #667eea;
         }
     </style>
 </head>

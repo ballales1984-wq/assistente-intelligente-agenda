@@ -868,11 +868,15 @@
             background: #0f3460;
         }
 
-        .lang-toggle {
+        /* Language Selector Dropdown */
+        .lang-selector {
             position: fixed;
             top: 80px;
             right: 20px;
             z-index: 1000;
+        }
+
+        .lang-selector .lang-toggle {
             background: white;
             border: none;
             border-radius: 25px;
@@ -885,15 +889,73 @@
             color: #667eea;
         }
 
-        .lang-toggle:hover {
+        .lang-selector .lang-toggle:hover {
             transform: scale(1.05);
             background: #667eea;
             color: white;
         }
 
-        body.dark-mode .lang-toggle {
+        body.dark-mode .lang-selector .lang-toggle {
             background: #0f3460;
             color: #e9ecef;
+        }
+
+        .lang-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-width: 180px;
+        }
+
+        .lang-menu.active {
+            display: block;
+            animation: fadeIn 0.2s;
+        }
+
+        .lang-menu a {
+            display: block;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95em;
+        }
+
+        .lang-menu a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .lang-menu a.active {
+            background: #e8eaf6;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        body.dark-mode .lang-menu {
+            background: #16213e;
+        }
+
+        body.dark-mode .lang-menu a {
+            color: #e9ecef;
+        }
+
+        body.dark-mode .lang-menu a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        body.dark-mode .lang-menu a.active {
+            background: #0f3460;
+            color: #667eea;
         }
     </style>
 </head>
@@ -903,10 +965,20 @@
         <span id="themeIcon">🌙</span>
     </button>
     
-    <!-- Toggle Lingua -->
-    <button class="lang-toggle" onclick="toggleLanguage()" title="Change language">
-        <span id="langIcon">🇮🇹 IT</span>
-    </button>
+    <!-- Language Selector Dropdown -->
+    <div class="lang-selector">
+        <button class="lang-toggle" onclick="toggleLangMenu()" title="Change language">
+            <span id="langIcon">🇮🇹 IT</span>
+        </button>
+        <div class="lang-menu" id="langMenu">
+            <a href="/" data-lang="it" onclick="setLanguage('it', '/')">🇮🇹 Italiano</a>
+            <a href="/en" data-lang="en" onclick="setLanguage('en', '/en')">🇬🇧 English</a>
+            <a href="/es" data-lang="es" onclick="setLanguage('es', '/es')">🇪🇸 Español</a>
+            <a href="/zh" data-lang="zh" onclick="setLanguage('zh', '/zh')">🇨🇳 中文</a>
+            <a href="/ru" data-lang="ru" onclick="setLanguage('ru', '/ru')">🇷🇺 Русский</a>
+            <a href="/hi" data-lang="hi" onclick="setLanguage('hi', '/hi')">🇮🇳 हिन्दी</a>
+        </div>
+    </div>
     
     <!-- Onboarding Modal -->
     <div class="onboarding-overlay" id="onboardingOverlay">
@@ -3010,18 +3082,70 @@
         }
 
         // ============================================
-        // LANGUAGE TOGGLE
+        // LANGUAGE SELECTOR
         // ============================================
-        function toggleLanguage() {
-            const currentLang = localStorage.getItem('lingua') || 'it';
+        function toggleLangMenu() {
+            const menu = document.getElementById('langMenu');
+            menu.classList.toggle('active');
+        }
+
+        function setLanguage(lang, url) {
+            localStorage.setItem('lingua', lang);
+            window.location.href = url;
+        }
+
+        // Close lang menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const langSelector = document.querySelector('.lang-selector');
+            const langMenu = document.getElementById('langMenu');
             
-            if (currentLang === 'it') {
-                localStorage.setItem('lingua', 'en');
-                window.location.href = '/en';
-            } else {
-                localStorage.setItem('lingua', 'it');
-                window.location.href = '/';
+            if (langSelector && !langSelector.contains(event.target)) {
+                if (langMenu) {
+                    langMenu.classList.remove('active');
+                }
             }
+        });
+
+        // Auto-detect language on first visit
+        function autoDetectLanguage() {
+            // Skip if user already selected a language
+            if (localStorage.getItem('lingua')) {
+                return;
+            }
+
+            // Skip if not on root path
+            if (window.location.pathname !== '/') {
+                return;
+            }
+
+            // Get browser language
+            const browserLang = navigator.language || navigator.userLanguage;
+            const langCode = browserLang.split('-')[0].toLowerCase();
+
+            // Map to supported languages
+            const langMap = {
+                'it': '/',
+                'en': '/en',
+                'es': '/es',
+                'zh': '/zh',
+                'ru': '/ru',
+                'hi': '/hi'
+            };
+
+            // Redirect if we support the browser language
+            if (langMap[langCode] && langMap[langCode] !== '/') {
+                console.log('🌍 Auto-detected language:', langCode);
+                localStorage.setItem('lingua', langCode);
+                localStorage.setItem('lang_auto_detected', 'true');
+                window.location.href = langMap[langCode];
+            }
+        }
+
+        // Run auto-detection on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', autoDetectLanguage);
+        } else {
+            autoDetectLanguage();
         }
 
         // ============================================

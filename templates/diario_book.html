@@ -305,8 +305,8 @@
                     <div class="page">
                         <div class="page-date">${data}</div>
                         <div class="page-sentiment">${sentiment}</div>
-                        <div class="page-content">${entry.contenuto}</div>
-                        ${entry.concetti_chiave ? `<div class="page-tags">🏷️ ${entry.concetti_chiave.join(', ')}</div>` : ''}
+                        <div class="page-content">${entry.testo || entry.contenuto || 'Nessun testo disponibile'}</div>
+                        ${entry.parole_chiave ? `<div class="page-tags">🏷️ ${entry.parole_chiave}</div>` : ''}
                         <div class="page-number">${index + 1}</div>
                     </div>
                 `;

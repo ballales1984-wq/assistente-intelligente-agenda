@@ -13,9 +13,9 @@ python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk
 mkdir -p logs
 mkdir -p instance
 
-# EMERGENCY FIX: Complete database setup
-echo "🚀 EMERGENCY DATABASE FIX..."
-python fix_database_now.py
+# COMPLETE REBUILD: All tables + columns
+echo "🔨 COMPLETE DATABASE REBUILD..."
+python rebuild_all_tables.py
 
 echo "Build completed successfully!"
 

@@ -7,7 +7,7 @@ from app.models.community import (
     ReflectionShare, Reaction, Comment, Circle, CircleMember,
     Challenge, ChallengeParticipation, ReactionType
 )
-from app.core.auth_fingerprint import FingerprintAuth, require_user
+from app.utils.temp_auth import get_or_create_temp_user  # TEMPORARY FIX
 from app.utils.content_safety import is_safe_content, get_crisis_resources
 import secrets
 
@@ -21,7 +21,7 @@ bp = Blueprint('community', __name__, url_prefix='/api/community')
 @bp.route('/whoami', methods=['GET'])
 def whoami():
     """Get info sull'utente corrente (auto-identificato via fingerprint)"""
-    user = FingerprintAuth.get_or_create_user()
+    user = get_or_create_temp_user()
     
     if not user:
         return jsonify({
@@ -35,9 +35,9 @@ def whoami():
         'user': {
             'id': user.id,
             'name': user.nome,
-            'fingerprint_id': user.fingerprint[:12] + '...' if user.fingerprint else None,
+            'temp_user': True,  # TEMPORARY - fingerprint coming soon
             'created_at': user.created_at.isoformat() if user.created_at else None,
-            'is_new': FingerprintAuth.is_new_user()
+            'is_new': True  # TEMPORARY
         }
     })
 
@@ -152,7 +152,7 @@ def create_reflection():
             }), 403
     
     # Get or create user automaticamente (fingerprint-based!)
-    profilo = FingerprintAuth.get_or_create_user()
+    profilo = get_or_create_temp_user()
     if not profilo:
         return jsonify({'success': False, 'error': 'Unable to identify user'}), 401
     
@@ -251,7 +251,7 @@ def add_reaction(reflection_id):
         return jsonify({'success': False, 'error': f'Invalid reaction type. Use: {valid_types}'}), 400
     
     # Get or create user automaticamente
-    profilo = FingerprintAuth.get_or_create_user()
+    profilo = get_or_create_temp_user()
     
     # Check reflection exists
     reflection = ReflectionShare.query.get_or_404(reflection_id)
@@ -295,7 +295,7 @@ def add_reaction(reflection_id):
 @bp.route('/reflections/<int:reflection_id>/react', methods=['DELETE'])
 def remove_reaction(reflection_id):
     """Rimuovi la tua reazione"""
-    profilo = FingerprintAuth.get_or_create_user()
+    profilo = get_or_create_temp_user()
     
     reaction = Reaction.query.filter_by(
         user_id=profilo.id,
@@ -389,7 +389,7 @@ def create_comment(reflection_id):
         return jsonify({'success': False, 'error': 'Comment too long (max 2000 characters)'}), 400
     
     # Get or create user automaticamente
-    profilo = FingerprintAuth.get_or_create_user()
+    profilo = get_or_create_temp_user()
     
     # Check reflection exists
     reflection = ReflectionShare.query.get_or_404(reflection_id)
@@ -427,7 +427,7 @@ def create_comment(reflection_id):
 @bp.route('/circles', methods=['GET'])
 def get_my_circles():
     """Get circles dell'utente"""
-    profilo = FingerprintAuth.get_or_create_user()
+    profilo = get_or_create_temp_user()
     
     # Get circles where user is member
     memberships = CircleMember.query.filter_by(user_id=profilo.id).all()
@@ -462,7 +462,7 @@ def create_circle():
         return jsonify({'success': False, 'error': 'Circle name required'}), 400
     
     # Get or create user automaticamente
-    profilo = FingerprintAuth.get_or_create_user()
+    profilo = get_or_create_temp_user()
     
     # Generate unique invite code
     invite_code = secrets.token_urlsafe(12)
@@ -520,7 +520,7 @@ def join_circle(invite_code):
         return jsonify({'success': False, 'error': 'Circle is full'}), 400
     
     # Get or create user automaticamente
-    profilo = FingerprintAuth.get_or_create_user()
+    profilo = get_or_create_temp_user()
     
     # Check if already member
     existing = CircleMember.query.filter_by(
@@ -608,7 +608,7 @@ def join_challenge(challenge_id):
         return jsonify({'success': False, 'error': 'Challenge has ended'}), 400
     
     # Get or create user automaticamente
-    profilo = FingerprintAuth.get_or_create_user()
+    profilo = get_or_create_temp_user()
     
     # Check if already joined
     existing = ChallengeParticipation.query.filter_by(
@@ -650,7 +650,7 @@ def join_challenge(challenge_id):
 @bp.route('/challenges/<int:challenge_id>/checkin', methods=['POST'])
 def challenge_checkin(challenge_id):
     """Daily check-in per un challenge"""
-    profilo = FingerprintAuth.get_or_create_user()
+    profilo = get_or_create_temp_user()
     
     participation = ChallengeParticipation.query.filter_by(
         challenge_id=challenge_id,

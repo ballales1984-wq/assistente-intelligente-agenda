@@ -957,6 +957,77 @@
             background: #0f3460;
             color: #667eea;
         }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 0 auto 40px;
+            max-width: 800px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .tab-navigation {
+                gap: 10px;
+                padding: 8px;
+            }
+
+            .tab-btn {
+                padding: 12px 20px;
+                font-size: 0.95em;
+            }
+
+            .tab-btn span:last-child {
+                display: none; /* Nascondi testo su mobile, solo emoji */
+            }
+        }
+
+        body.dark-mode .tab-navigation {
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        body.dark-mode .tab-btn {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        body.dark-mode .tab-btn:hover {
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -1079,6 +1150,18 @@
                     <div class="hero-feature-desc">Raggiungi i tuoi goal passo dopo passo</div>
                 </div>
             </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="window.location.href='/'">
+                <span>📔</span>
+                <span>Il Mio Spazio</span>
+            </button>
+            <button class="tab-btn" onclick="window.location.href='/community'">
+                <span>🤝</span>
+                <span>Community</span>
+            </button>
         </div>
 
         <div class="main-content">

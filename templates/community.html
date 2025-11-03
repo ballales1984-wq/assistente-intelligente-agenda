@@ -249,6 +249,62 @@
         .char-counter.error {
             color: #ef4444;
         }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            gap: 15px;
+            margin: 0 auto 30px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: #333;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .tab-navigation {
+                gap: 10px;
+                padding: 6px;
+            }
+
+            .tab-btn {
+                padding: 12px 20px;
+                font-size: 0.95em;
+            }
+
+            .tab-btn span:last-child {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -261,6 +317,18 @@
                 <a href="/" style="color: #667eea;">← Torna all'Assistente</a> • 
                 <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda/blob/main/COMMUNITY_GUIDELINES.md" target="_blank" style="color: #667eea;">📖 Regole Community</a>
             </p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn" onclick="window.location.href='/'">
+                <span>📔</span>
+                <span>Il Mio Spazio</span>
+            </button>
+            <button class="tab-btn active" onclick="window.location.href='/community'">
+                <span>🤝</span>
+                <span>Community</span>
+            </button>
         </div>
 
         <!-- Age & Crisis Disclaimer -->

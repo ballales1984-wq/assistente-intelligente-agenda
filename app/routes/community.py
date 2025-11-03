@@ -7,7 +7,7 @@ from app.models.community import (
     ReflectionShare, Reaction, Comment, Circle, CircleMember,
     Challenge, ChallengeParticipation, ReactionType
 )
-from app.utils.temp_auth import get_or_create_temp_user  # TEMPORARY FIX
+from flask import session
 from app.utils.content_safety import is_safe_content, get_crisis_resources
 import secrets
 
@@ -18,10 +18,24 @@ bp = Blueprint('community', __name__, url_prefix='/api/community')
 # AUTH - User identification
 # ========================================
 
+def get_or_create_simple_user():
+    """Get or create user SEMPLICE - session based"""
+    if 'user_id' not in session:
+        # Get first user or create
+        user = UserProfile.query.first()
+        if not user:
+            user = UserProfile(nome=f"User_{secrets.token_hex(4)}")
+            db.session.add(user)
+            db.session.commit()
+        session['user_id'] = user.id
+        session.permanent = True
+    
+    return UserProfile.query.get(session['user_id'])
+
 @bp.route('/whoami', methods=['GET'])
 def whoami():
-    """Get info sull'utente corrente (auto-identificato via fingerprint)"""
-    user = get_or_create_temp_user()
+    """Get info sull'utente corrente"""
+    user = get_or_create_simple_user()
     
     if not user:
         return jsonify({
@@ -35,9 +49,8 @@ def whoami():
         'user': {
             'id': user.id,
             'name': user.nome,
-            'temp_user': True,  # TEMPORARY - fingerprint coming soon
-            'created_at': user.created_at.isoformat() if user.created_at else None,
-            'is_new': True  # TEMPORARY
+            'temp_user': True,
+            'is_new': True
         }
     })
 
@@ -152,7 +165,7 @@ def create_reflection():
             }), 403
     
     # Get or create user automaticamente (fingerprint-based!)
-    profilo = get_or_create_temp_user()
+    profilo = get_or_create_simple_user()
     if not profilo:
         return jsonify({'success': False, 'error': 'Unable to identify user'}), 401
     
@@ -251,7 +264,7 @@ def add_reaction(reflection_id):
         return jsonify({'success': False, 'error': f'Invalid reaction type. Use: {valid_types}'}), 400
     
     # Get or create user automaticamente
-    profilo = get_or_create_temp_user()
+    profilo = get_or_create_simple_user()
     
     # Check reflection exists
     reflection = ReflectionShare.query.get_or_404(reflection_id)
@@ -295,7 +308,7 @@ def add_reaction(reflection_id):
 @bp.route('/reflections/<int:reflection_id>/react', methods=['DELETE'])
 def remove_reaction(reflection_id):
     """Rimuovi la tua reazione"""
-    profilo = get_or_create_temp_user()
+    profilo = get_or_create_simple_user()
     
     reaction = Reaction.query.filter_by(
         user_id=profilo.id,
@@ -389,7 +402,7 @@ def create_comment(reflection_id):
         return jsonify({'success': False, 'error': 'Comment too long (max 2000 characters)'}), 400
     
     # Get or create user automaticamente
-    profilo = get_or_create_temp_user()
+    profilo = get_or_create_simple_user()
     
     # Check reflection exists
     reflection = ReflectionShare.query.get_or_404(reflection_id)
@@ -427,7 +440,7 @@ def create_comment(reflection_id):
 @bp.route('/circles', methods=['GET'])
 def get_my_circles():
     """Get circles dell'utente"""
-    profilo = get_or_create_temp_user()
+    profilo = get_or_create_simple_user()
     
     # Get circles where user is member
     memberships = CircleMember.query.filter_by(user_id=profilo.id).all()
@@ -462,7 +475,7 @@ def create_circle():
         return jsonify({'success': False, 'error': 'Circle name required'}), 400
     
     # Get or create user automaticamente
-    profilo = get_or_create_temp_user()
+    profilo = get_or_create_simple_user()
     
     # Generate unique invite code
     invite_code = secrets.token_urlsafe(12)
@@ -520,7 +533,7 @@ def join_circle(invite_code):
         return jsonify({'success': False, 'error': 'Circle is full'}), 400
     
     # Get or create user automaticamente
-    profilo = get_or_create_temp_user()
+    profilo = get_or_create_simple_user()
     
     # Check if already member
     existing = CircleMember.query.filter_by(
@@ -608,7 +621,7 @@ def join_challenge(challenge_id):
         return jsonify({'success': False, 'error': 'Challenge has ended'}), 400
     
     # Get or create user automaticamente
-    profilo = get_or_create_temp_user()
+    profilo = get_or_create_simple_user()
     
     # Check if already joined
     existing = ChallengeParticipation.query.filter_by(
@@ -650,7 +663,7 @@ def join_challenge(challenge_id):
 @bp.route('/challenges/<int:challenge_id>/checkin', methods=['POST'])
 def challenge_checkin(challenge_id):
     """Daily check-in per un challenge"""
-    profilo = get_or_create_temp_user()
+    profilo = get_or_create_simple_user()
     
     participation = ChallengeParticipation.query.filter_by(
         challenge_id=challenge_id,

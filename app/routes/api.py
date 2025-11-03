@@ -45,6 +45,12 @@ def index_hi():
     return render_template('index_hi.html')
 
 
+@bp.route('/ar')
+def index_ar():
+    """Arabic version (العربية)"""
+    return render_template('index_ar.html')
+
+
 @bp.route('/about')
 def about():
     """Pagina About - Chi siamo"""

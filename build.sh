@@ -13,6 +13,10 @@ python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk
 mkdir -p logs
 mkdir -p instance
 
+# Migrate existing tables (add new columns)
+echo "Running database migrations..."
+python migrate_add_fingerprint.py
+
 # Initialize community database tables
 echo "Initializing community database tables..."
 python init_community_db.py

@@ -13,5 +13,9 @@ python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk
 mkdir -p logs
 mkdir -p instance
 
+# Initialize community database tables
+echo "Initializing community database tables..."
+python init_community_db.py
+
 echo "Build completed successfully!"
 

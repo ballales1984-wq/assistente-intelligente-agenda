@@ -21,9 +21,9 @@ class UserProfile(db.Model):
     ora_fine_giornata = db.Column(db.Time, default=datetime.strptime('23:00', '%H:%M').time())
     ore_sonno_desiderate = db.Column(db.Integer, default=8)
     
-    # Authentication (fingerprint-based, no password!)
-    fingerprint = db.Column(db.String(100), unique=True, index=True)  # IP + browser hash
-    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    # Authentication - COMMENTED OUT until database migration completes
+    # fingerprint = db.Column(db.String(100), unique=True, index=True)
+    # last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relazioni
     obiettivi = db.relationship('Obiettivo', backref='utente', lazy='dynamic', cascade='all, delete-orphan')

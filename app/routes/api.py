@@ -81,6 +81,24 @@ def diario_book():
     return render_template('diario_book.html')
 
 
+@bp.route('/community')
+def community():
+    """Community page - Share reflections and connect (Italian)"""
+    return render_template('community.html')
+
+
+@bp.route('/en/community')
+def community_en():
+    """Community page - English"""
+    return render_template('community_en.html')
+
+
+@bp.route('/es/community')
+def community_es():
+    """Community page - Español"""
+    return render_template('community_es.html')
+
+
 @bp.route('/manifest.json')
 def manifest():
     """Serve manifest.json per PWA"""

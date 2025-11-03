@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤝 Community - Assistente Intelligente</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-ZCZ9CM8HDG');
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .share-form textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        .share-form textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        select, button {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 2px solid #eee;
+            font-family: inherit;
+            font-size: 1em;
+        }
+
+        select {
+            flex: 1;
+            background: white;
+            cursor: pointer;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reflection {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .reflection.positive {
+            border-left-color: #48bb78;
+            background: #f0fdf4;
+        }
+
+        .reflection.negative {
+            border-left-color: #f56565;
+            background: #fef2f2;
+        }
+
+        .reflection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .reflection-category {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .reflection-text {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .reactions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .reaction-btn {
+            background: #f1f3f5;
+            border: 2px solid #dee2e6;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reaction-btn:hover {
+            background: #e9ecef;
+            transform: scale(1.05);
+        }
+
+        .reaction-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 0.85em;
+            color: #999;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+
+        .char-counter.warning {
+            color: #f59e0b;
+        }
+
+        .char-counter.error {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤝 Community</h1>
+            <p>Condividi i tuoi pensieri, ricevi supporto genuino</p>
+            <p style="margin-top: 10px; font-size: 0.9em; color: #999;">
+                <a href="/" style="color: #667eea;">← Torna all'Assistente</a> • 
+                <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda/blob/main/COMMUNITY_GUIDELINES.md" target="_blank" style="color: #667eea;">📖 Regole Community</a>
+            </p>
+        </div>
+
+        <!-- Age & Crisis Disclaimer -->
+        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; border-radius: 8px; margin-bottom: 30px; color: #78350f;">
+            <h3 style="margin-top: 0; color: #d97706;">⚠️ Leggi Prima di Partecipare</h3>
+            
+            <div style="background: #fef9f3; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                <strong>🔞 Solo Maggiorenni (18+)</strong><br>
+                Devi avere almeno 18 anni per usare la community.
+            </div>
+            
+            <div style="background: #fff; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                <strong>🆘 Se Hai Emergenza o Crisi:</strong><br>
+                📞 <strong>Telefono Amico: 02.2327.2327</strong> (24/7, gratuito)<br>
+                🚑 <strong>Emergenza: 112</strong><br>
+                💚 <strong>Samaritans: 06.77208977</strong>
+            </div>
+            
+            <p style="font-size: 0.9em; margin-bottom: 0;">
+                <strong>Questo è peer support, NON terapia professionale.</strong><br>
+                ✅ Condividi esperienze • ❌ No consigli medici non qualificati<br>
+                ❌ Violenza, hate speech, spam = ban permanente<br>
+                ❤️ Sii gentile. Tutti stiamo lottando con qualcosa.
+            </p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalReflections">...</div>
+                <div class="stat-label">Riflessioni</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalComments">...</div>
+                <div class="stat-label">Commenti</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCircles">...</div>
+                <div class="stat-label">Circles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalReactions">...</div>
+                <div class="stat-label">Supporto Dato</div>
+            </div>
+        </div>
+
+        <!-- Share Reflection -->
+        <div class="card">
+            <h2>✨ Condividi una Riflessione</h2>
+            <div class="share-form">
+                <textarea 
+                    id="reflectionText" 
+                    placeholder="Cosa hai imparato oggi? Cosa ti preoccupa? Cosa ti rende felice?
+
+Condividi i tuoi pensieri veri. La community ti ascolterà."
+                    maxlength="5000"
+                    oninput="updateCharCounter()"
+                ></textarea>
+                <div class="char-counter" id="charCounter">0 / 5000 caratteri</div>
+                
+                <div class="form-row">
+                    <select id="visibility">
+                        <option value="anonymous">🎭 Anonimo (nessuno sa chi sei)</option>
+                        <option value="public">👤 Pubblico (con il tuo nome)</option>
+                    </select>
+                    
+                    <select id="category">
+                        <option value="personal_growth">🌱 Crescita Personale</option>
+                        <option value="mental_health">🧠 Salute Mentale</option>
+                        <option value="goals">🎯 Obiettivi</option>
+                        <option value="relationships">❤️ Relazioni</option>
+                        <option value="work">💼 Lavoro</option>
+                        <option value="health">🏃 Salute</option>
+                        <option value="creativity">🎨 Creatività</option>
+                        <option value="spirituality">🙏 Spiritualità</option>
+                    </select>
+                </div>
+                
+                <!-- Age & Guidelines Acceptance -->
+                <div style="margin: 15px 0; padding: 15px; background: #f9fafb; border-radius: 8px; border: 2px solid #e5e7eb;">
+                    <label style="display: flex; align-items: start; cursor: pointer; margin-bottom: 10px;">
+                        <input 
+                            type="checkbox" 
+                            id="ageConfirm" 
+                            style="margin-right: 10px; margin-top: 4px; cursor: pointer;"
+                            required
+                        >
+                        <span style="font-size: 0.9em;">
+                            <strong>Confermo di avere almeno 18 anni</strong> 🔞
+                        </span>
+                    </label>
+                    
+                    <label style="display: flex; align-items: start; cursor: pointer;">
+                        <input 
+                            type="checkbox" 
+                            id="agreeGuidelines" 
+                            style="margin-right: 10px; margin-top: 4px; cursor: pointer;"
+                            required
+                        >
+                        <span style="font-size: 0.9em;">
+                            Ho letto le 
+                            <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda/blob/main/COMMUNITY_GUIDELINES.md" target="_blank" rel="noopener" style="color: #667eea;">regole community</a> 
+                            e sono <strong>responsabile</strong> per ciò che pubblico. 
+                            Contenuto inappropriato porta a ban.
+                        </span>
+                    </label>
+                </div>
+                
+                <button onclick="shareReflection()" id="shareBtn" disabled>
+                    ✨ Condividi con la Community
+                </button>
+            </div>
+        </div>
+
+        <!-- Community Feed -->
+        <div class="card">
+            <h2>💬 Feed Community</h2>
+            <div id="feed" class="loading">
+                Caricamento riflessioni...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // State
+        // ========================================
+        let reflections = [];
+
+        // ========================================
+        // Load Stats
+        // ========================================
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/community/stats');
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('totalReflections').textContent = result.data.total_reflections;
+                    document.getElementById('totalComments').textContent = result.data.total_comments;
+                    document.getElementById('totalCircles').textContent = result.data.total_circles;
+                    document.getElementById('totalReactions').textContent = result.data.total_reactions;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // ========================================
+        // Load Feed
+        // ========================================
+        async function loadFeed() {
+            try {
+                const response = await fetch('/api/community/reflections?language=it&limit=20');
+                const result = await response.json();
+                
+                if (result.success) {
+                    reflections = result.data;
+                    renderFeed();
+                }
+            } catch (error) {
+                console.error('Error loading feed:', error);
+                document.getElementById('feed').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">😔</div>
+                        <p>Errore nel caricamento. Riprova.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ========================================
+        // Render Feed
+        // ========================================
+        function renderFeed() {
+            const feedEl = document.getElementById('feed');
+            
+            if (reflections.length === 0) {
+                feedEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🌱</div>
+                        <p>Nessuna riflessione ancora.</p>
+                        <p style="margin-top: 10px;">Sii il primo a condividere!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            feedEl.innerHTML = reflections.map(r => `
+                <div class="reflection ${r.sentiment || ''}">
+                    <div class="reflection-header">
+                        <div>
+                            <strong>${r.user.name}</strong> • 
+                            <span class="reflection-category">${formatCategory(r.category)}</span>
+                        </div>
+                        <div style="font-size: 0.85em;">
+                            ${formatDate(r.created_at)}
+                        </div>
+                    </div>
+                    
+                    <div class="reflection-text">
+                        ${escapeHtml(r.text)}
+                    </div>
+                    
+                    <div class="reactions">
+                        <button class="reaction-btn" onclick="react(${r.id}, 'support')">
+                            ❤️ Supporto
+                        </button>
+                        <button class="reaction-btn" onclick="react(${r.id}, 'me_too')">
+                            🤝 Anche io
+                        </button>
+                        <button class="reaction-btn" onclick="react(${r.id}, 'insightful')">
+                            💡 Utile
+                        </button>
+                        <button class="reaction-btn" onclick="react(${r.id}, 'inspiring')">
+                            🌟 Ispirante
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                        ${r.reactions_count > 0 ? `${formatReactionsCount(r.reactions_count)} hanno reagito` : 'Sii il primo a reagire!'}
+                        ${r.comments_count > 0 ? ` • ${r.comments_count} commenti` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ========================================
+        // Share Reflection
+        // ========================================
+        async function shareReflection() {
+            const text = document.getElementById('reflectionText').value.trim();
+            const visibility = document.getElementById('visibility').value;
+            const category = document.getElementById('category').value;
+            
+            if (text.length < 20) {
+                alert('La riflessione deve essere almeno 20 caratteri.\nCondividi qualcosa di significativo! 😊');
+                return;
+            }
+            
+            const btn = document.getElementById('shareBtn');
+            btn.disabled = true;
+            btn.textContent = 'Condivisione...';
+            
+            try {
+                const response = await fetch('/api/community/reflections', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: text,
+                        visibility: visibility,
+                        category: category,
+                        language: 'it'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Success!
+                    document.getElementById('reflectionText').value = '';
+                    document.getElementById('ageConfirm').checked = false;
+                    document.getElementById('agreeGuidelines').checked = false;
+                    updateCharCounter();
+                    checkFormValidity();
+                    
+                    // Reload feed
+                    await loadFeed();
+                    await loadStats();
+                    
+                    // Scroll to feed
+                    document.getElementById('feed').scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Show success message
+                    alert('✅ Riflessione condivisa con la community!\n\nGrazie per aver condiviso qualcosa di genuino. 🙏');
+                } else {
+                    // Handle errors
+                    if (result.crisis_detected) {
+                        // Crisis detected - show resources
+                        let resourcesText = '\n\nRisorse di aiuto:\n';
+                        if (result.resources) {
+                            result.resources.forEach(r => {
+                                resourcesText += `\n📞 ${r.name}: ${r.phone} (${r.hours})`;
+                            });
+                        }
+                        alert(result.message + resourcesText);
+                    } else if (result.banned) {
+                        // User is banned
+                        alert(`❌ Il tuo account è stato bannato.\n\nMotivo: ${result.reason}\n\n` +
+                              (result.expires_at ? `Scade: ${new Date(result.expires_at).toLocaleDateString()}` : 'Ban permanente'));
+                    } else {
+                        // Other errors
+                        alert('❌ ' + (result.error || 'Errore sconosciuto') + 
+                              (result.details ? '\n\n' + result.details : ''));
+                    }
+                }
+            } catch (error) {
+                console.error('Error sharing:', error);
+                alert('Errore nella condivisione. Riprova.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '✨ Condividi con la Community';
+            }
+        }
+
+        // ========================================
+        // React to Reflection
+        // ========================================
+        async function react(reflectionId, reactionType) {
+            try {
+                const response = await fetch(`/api/community/reflections/${reflectionId}/react`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reaction_type: reactionType })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Reload feed to show updated counts
+                    await loadFeed();
+                    
+                    // Optional: Show toast notification
+                    console.log('Reaction added!');
+                }
+            } catch (error) {
+                console.error('Error reacting:', error);
+            }
+        }
+
+        // ========================================
+        // Utilities
+        // ========================================
+        function updateCharCounter() {
+            const text = document.getElementById('reflectionText').value;
+            const counter = document.getElementById('charCounter');
+            const length = text.length;
+            
+            counter.textContent = `${length} / 5000 caratteri`;
+            
+            if (length < 20) {
+                counter.className = 'char-counter error';
+            } else if (length > 4500) {
+                counter.className = 'char-counter warning';
+            } else {
+                counter.className = 'char-counter';
+            }
+        }
+
+        function formatCategory(cat) {
+            const labels = {
+                'personal_growth': '🌱 Crescita',
+                'mental_health': '🧠 Salute Mentale',
+                'goals': '🎯 Obiettivi',
+                'relationships': '❤️ Relazioni',
+                'work': '💼 Lavoro',
+                'health': '🏃 Salute',
+                'creativity': '🎨 Creatività',
+                'spirituality': '🙏 Spiritualità'
+            };
+            return labels[cat] || cat;
+        }
+
+        function formatDate(isoDate) {
+            if (!isoDate) return '';
+            const date = new Date(isoDate);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Ora';
+            if (diffMins < 60) return `${diffMins} min fa`;
+            if (diffHours < 24) return `${diffHours}h fa`;
+            if (diffDays < 7) return `${diffDays}g fa`;
+            
+            return date.toLocaleDateString('it-IT');
+        }
+
+        function formatReactionsCount(count) {
+            if (count >= 10) return 'Molti';
+            if (count >= 5) return 'Alcuni';
+            return 'Poche persone';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ========================================
+        // ========================================
+        // Age & Guidelines Check
+        // ========================================
+        function checkFormValidity() {
+            const ageConfirmed = document.getElementById('ageConfirm').checked;
+            const guidelinesAgreed = document.getElementById('agreeGuidelines').checked;
+            const textLength = document.getElementById('reflectionText').value.trim().length;
+            
+            // Enable button solo se entrambi checked E text > 20 char
+            const shareBtn = document.getElementById('shareBtn');
+            shareBtn.disabled = !(ageConfirmed && guidelinesAgreed && textLength >= 20);
+        }
+
+        // Attach listeners
+        document.getElementById('ageConfirm').addEventListener('change', checkFormValidity);
+        document.getElementById('agreeGuidelines').addEventListener('change', checkFormValidity);
+        document.getElementById('reflectionText').addEventListener('input', checkFormValidity);
+
+        // ========================================
+        // Initialize
+        // ========================================
+        window.addEventListener('load', function() {
+            loadStats();
+            loadFeed();
+            checkFormValidity();  // Initial check
+        });
+    </script>
+</body>
+</html>
+

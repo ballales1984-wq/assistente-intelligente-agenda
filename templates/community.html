@@ -595,6 +595,9 @@ Condividi i tuoi pensieri veri. La community ti ascolterà."
                     updateCharCounter();
                     checkFormValidity();
                     
+                    // ✅ RICARICA IL FEED!
+                    await loadFeed();
+                    
                     // Reload feed
                     await loadFeed();
                     await loadStats();

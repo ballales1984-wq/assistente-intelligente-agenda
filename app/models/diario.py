@@ -21,10 +21,10 @@ class DiarioGiornaliero(db.Model):
     parole_chiave = db.Column(db.String(500))  # Parole chiave separate da virgola
     sentiment = db.Column(db.String(20))  # positivo, neutro, negativo
     
-    # Condivisione - TEMPORANEAMENTE COMMENTATO fino a migration DB
-    # share_token = db.Column(db.String(64), unique=True, nullable=True, index=True)
-    # is_public = db.Column(db.Boolean, default=False)
-    # share_count = db.Column(db.Integer, default=0)
+    # Condivisione - RIATTIVATO dopo migration
+    share_token = db.Column(db.String(64), unique=True, nullable=True, index=True)
+    is_public = db.Column(db.Boolean, default=False)
+    share_count = db.Column(db.Integer, default=0)
     
     # Metadata
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -61,16 +61,15 @@ class DiarioGiornaliero(db.Model):
         """Ottiene le riflessioni come lista"""
         return json.loads(self.riflessioni) if self.riflessioni else []
     
-    # FUNZIONI CONDIVISIONE - TEMPORANEAMENTE DISABILITATE
-    # def generate_share_token(self):
-    #     """Genera un token univoco per la condivisione"""
-    #     if not self.share_token:
-    #         self.share_token = secrets.token_urlsafe(32)
-    #     return self.share_token
-    # 
-    # def get_share_url(self, base_url=''):
-    #     """Ottiene l'URL di condivisione"""
-    #     if not self.share_token:
-    #         self.generate_share_token()
-    #     return f"{base_url}/shared/diary/{self.share_token}"
+    def generate_share_token(self):
+        """Genera un token univoco per la condivisione"""
+        if not self.share_token:
+            self.share_token = secrets.token_urlsafe(32)
+        return self.share_token
+    
+    def get_share_url(self, base_url=''):
+        """Ottiene l'URL di condivisione"""
+        if not self.share_token:
+            self.generate_share_token()
+        return f"{base_url}/shared/diary/{self.share_token}"
 

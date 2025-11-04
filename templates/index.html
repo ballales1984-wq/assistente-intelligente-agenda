@@ -289,6 +289,142 @@
             background: #d0d0d0;
         }
 
+        /* Quick Tour Secondary Button */
+        .hero-cta-secondary {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.15);
+            color: white;
+            padding: 18px 35px;
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+        }
+
+        .hero-cta-secondary:hover {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: rgba(59, 130, 246, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Quick Tour Menu */
+        .quick-tour-menu {
+            position: fixed;
+            top: 80px;
+            right: -350px;
+            width: 320px;
+            max-height: 80vh;
+            overflow-y: auto;
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 20px 0 0 20px;
+            padding: 25px;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .quick-tour-menu.active {
+            right: 0;
+        }
+
+        .quick-tour-header {
+            color: white;
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quick-tour-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.2s;
+        }
+
+        .quick-tour-close:hover {
+            background: rgba(255, 77, 77, 0.4);
+            transform: rotate(90deg);
+        }
+
+        .quick-tour-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .quick-tour-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quick-tour-item:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateX(-5px);
+        }
+
+        .quick-tour-icon {
+            font-size: 1.8em;
+            flex-shrink: 0;
+        }
+
+        .quick-tour-text {
+            flex: 1;
+        }
+
+        .quick-tour-label {
+            color: white;
+            font-weight: 600;
+            font-size: 1em;
+            margin-bottom: 3px;
+        }
+
+        .quick-tour-desc {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85em;
+            line-height: 1.3;
+        }
+
+        /* Highlight effect per sezioni */
+        .section-highlight {
+            animation: highlightPulse 2.5s ease;
+            position: relative;
+        }
+
+        @keyframes highlightPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+            20%, 80% {
+                box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 0 12px rgba(59, 130, 246, 0.4);
+            }
+        }
+
         .onboarding-dots {
             display: flex;
             gap: 10px;
@@ -1145,13 +1281,99 @@
         </div>
     </div>
 
+    <!-- Quick Tour Menu (Sidebar) -->
+    <div class="quick-tour-menu" id="quickTourMenu">
+        <div class="quick-tour-header">
+            🧭 Tour Rapido
+            <button class="quick-tour-close" onclick="toggleQuickTour()">✕</button>
+        </div>
+        <div class="quick-tour-subtitle">Clicca per andare alla sezione</div>
+        
+        <div class="quick-tour-item" onclick="tourGoTo('chat', 'Qui scrivi cosa vuoi fare. L\'AI capisce il linguaggio naturale!')">
+            <div class="quick-tour-icon">💬</div>
+            <div class="quick-tour-text">
+                <div class="quick-tour-label">Chat</div>
+                <div class="quick-tour-desc">Digita obiettivi, impegni, diario</div>
+            </div>
+        </div>
+
+        <div class="quick-tour-item" onclick="tourGoTo('calendario', 'Qui vedi tutti i tuoi impegni organizzati per la settimana')">
+            <div class="quick-tour-icon">📅</div>
+            <div class="quick-tour-text">
+                <div class="quick-tour-label">Calendario</div>
+                <div class="quick-tour-desc">Vista settimanale impegni</div>
+            </div>
+        </div>
+
+        <div class="quick-tour-item" onclick="tourGoTo('obiettivi', 'Qui vedi gli obiettivi che hai creato e il progresso')">
+            <div class="quick-tour-icon">🎯</div>
+            <div class="quick-tour-text">
+                <div class="quick-tour-label">Obiettivi</div>
+                <div class="quick-tour-desc">Tracking automatico progresso</div>
+            </div>
+        </div>
+
+        <div class="quick-tour-item" onclick="tourGoTo('spese', 'Qui vedi le spese e il budget rimanente')">
+            <div class="quick-tour-icon">💰</div>
+            <div class="quick-tour-text">
+                <div class="quick-tour-label">Spese & Budget</div>
+                <div class="quick-tour-desc">Controllo spese giornaliero</div>
+            </div>
+        </div>
+
+        <div class="quick-tour-item" onclick="window.location.href='/diario-book'">
+            <div class="quick-tour-icon">📔</div>
+            <div class="quick-tour-text">
+                <div class="quick-tour-label">Diario</div>
+                <div class="quick-tour-desc">Sfoglia le tue riflessioni</div>
+            </div>
+        </div>
+
+        <div class="quick-tour-item" onclick="tourGoTo('analytics', 'Qui vedi grafici e statistiche della tua produttività')">
+            <div class="quick-tour-icon">📊</div>
+            <div class="quick-tour-text">
+                <div class="quick-tour-label">Analytics</div>
+                <div class="quick-tour-desc">Grafici e statistiche</div>
+            </div>
+        </div>
+
+        <div class="quick-tour-item" onclick="tourGoTo('export', 'Qui esporti i tuoi dati in vari formati (PDF, iCal, CSV)')">
+            <div class="quick-tour-icon">📤</div>
+            <div class="quick-tour-text">
+                <div class="quick-tour-label">Export</div>
+                <div class="quick-tour-desc">PDF, iCal, CSV, JSON</div>
+            </div>
+        </div>
+
+        <div class="quick-tour-item" onclick="testaTTS()">
+            <div class="quick-tour-icon">🔊</div>
+            <div class="quick-tour-text">
+                <div class="quick-tour-label">Lettura Vocale</div>
+                <div class="quick-tour-desc">Ascolta i tuoi impegni</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div class="quick-tour-item" style="background: rgba(59, 130, 246, 0.2);" onclick="mostraEsempiComandi()">
+                <div class="quick-tour-icon">💡</div>
+                <div class="quick-tour-text">
+                    <div class="quick-tour-label">Esempi Comandi</div>
+                    <div class="quick-tour-desc">Cosa puoi dire all'AI</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Hero Section -->
         <div class="hero">
             <div class="hero-badge">🔥 #102 su Product Hunt • Gratis • In Italiano 🇮🇹</div>
             <h1>🧠 Assistente Intelligente</h1>
             <p class="subtitle">Organizza vita, studio e obiettivi con l'intelligenza artificiale. Tutto in linguaggio naturale.</p>
-            <button class="hero-cta" onclick="scrollToChat()">Inizia Subito - È Gratis!</button>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+                <button class="hero-cta" onclick="scrollToChat()">Inizia Subito - È Gratis!</button>
+                <button class="hero-cta-secondary" onclick="toggleQuickTour()">🧭 Tour Rapido</button>
+            </div>
             
             <!-- Features -->
             <div class="hero-features">
@@ -3698,6 +3920,106 @@
         function scrollToChat() {
             const chatElement = document.querySelector('.chat-container');
             chatElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ============================================
+        // QUICK TOUR MENU
+        // ============================================
+        
+        function toggleQuickTour() {
+            const menu = document.getElementById('quickTourMenu');
+            menu.classList.toggle('active');
+        }
+
+        function tourGoTo(section, tooltip) {
+            // Chiudi il menu
+            toggleQuickTour();
+            
+            // Mappa sezioni a selettori
+            const sectionMap = {
+                'chat': '.chat-container',
+                'calendario': '#pianoSettimanale',
+                'obiettivi': '.card:has(#obiettiviList)',
+                'spese': '.card:has(#speseOggiCard)',
+                'analytics': '#analyticsDashboard',
+                'export': '.quick-actions'
+            };
+            
+            const selector = sectionMap[section];
+            if (!selector) return;
+            
+            setTimeout(() => {
+                const element = document.querySelector(selector);
+                if (!element) {
+                    console.log(`Sezione ${section} non trovata`);
+                    return;
+                }
+                
+                // Smooth scroll alla sezione
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                
+                // Aggiungi highlight temporaneo
+                setTimeout(() => {
+                    element.classList.add('section-highlight');
+                    
+                    // Mostra tooltip nella chat
+                    if (tooltip) {
+                        aggiungiMessaggio(`💡 **${section.toUpperCase()}:** ${tooltip}`, 'assistant');
+                    }
+                    
+                    // Focus input se è la chat
+                    if (section === 'chat') {
+                        setTimeout(() => {
+                            document.getElementById('chatInput').focus();
+                        }, 500);
+                    }
+                    
+                    // Rimuovi highlight dopo animazione
+                    setTimeout(() => {
+                        element.classList.remove('section-highlight');
+                    }, 2500);
+                }, 600);
+            }, 300);
+        }
+
+        function mostraEsempiComandi() {
+            toggleQuickTour();
+            scrollToChat();
+            
+            setTimeout(() => {
+                const esempi = `💡 **Esempi di Comandi:**\n\n` +
+                    `📚 OBIETTIVI:\n` +
+                    `• "Voglio studiare Python 3 ore a settimana"\n` +
+                    `• "Voglio leggere 2 libri al mese"\n\n` +
+                    `📅 IMPEGNI:\n` +
+                    `• "Lunedì riunione dalle 10 alle 12"\n` +
+                    `• "Giovedì palestra ore 18"\n` +
+                    `• "Domenica pranzo con Sara alle 13"\n\n` +
+                    `📔 DIARIO:\n` +
+                    `• "Oggi mi sento motivato!"\n` +
+                    `• "Ho parlato con Maria, mi sento felice"\n\n` +
+                    `💰 SPESE:\n` +
+                    `• "Speso 12€ per pranzo"\n` +
+                    `• "Pagato 50€ abbonamento palestra"\n\n` +
+                    `⏰ TEMPO:\n` +
+                    `• "Cosa devo fare oggi?"\n` +
+                    `• "Quanto tempo libero ho domani?"\n\n` +
+                    `💡 Prova uno di questi comandi nella chat!`;
+                
+                aggiungiMessaggio(esempi, 'assistant');
+                document.getElementById('chatInput').focus();
+            }, 800);
+        }
+
+        function testaTTS() {
+            toggleQuickTour();
+            aggiungiMessaggio('🔊 Test lettura vocale: Ciao! Sono il tuo assistente intelligente. Posso leggere i tuoi impegni ad alta voce!', 'assistant');
+            setTimeout(() => {
+                parla('Ciao! Sono il tuo assistente intelligente. Posso leggere i tuoi impegni ad alta voce!');
+            }, 500);
         }
         
         // Mostra onboarding al caricamento (se prima visita)

@@ -11,7 +11,178 @@
     <title>🧠 Asistente Inteligente</title>
     
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG">
+
+        // ========================================
+        // 🔄 AUTO-SYNCED FUNCTIONS (sync_multilang.py)
+        // Date: 2025-11-04 15:44:58
+        // ========================================
+
+        // Function: autoDetectLanguage
+        function autoDetectLanguage() {
+                    // Skip if user already selected a language
+                    if (localStorage.getItem('lingua')) {
+                        return;
+                    }
+        
+                    // Skip if not on root path
+                    if (window.location.pathname !== '/') {
+                        return;
+                    }
+        
+                    // Get browser language
+                    const browserLang = navigator.language || navigator.userLanguage;
+                    const langCode = browserLang.split('-')[0].toLowerCase();
+        
+                    // Map to supported languages
+                    const langMap = {
+                        'it': '/',
+                        'en': '/en',
+                        'es': '/es',
+                        'zh': '/zh',
+                        'ru': '/ru',
+                        'hi': '/hi'
+                    };
+        
+                    // Redirect if we support the browser language
+                    if (langMap[langCode] && langMap[langCode] !== '/') {
+                        console.log('🌍 Auto-detected language:', langCode);
+                        localStorage.setItem('lingua', langCode);
+                        localStorage.setItem('lang_auto_detected', 'true');
+                        window.location.href = langMap[langCode];
+                    }
+                }
+
+        // Function: mostraEsempiComandi
+        function mostraEsempiComandi() {
+                    toggleQuickTour();
+                    scrollToChat();
+                    
+                    setTimeout(() => {
+                        const esempi = `💡 **Esempi di Comandi:**\n\n` +
+                            `📚 OBIETTIVI:\n` +
+                            `• "Voglio studiare Python 3 ore a settimana"\n` +
+                            `• "Voglio leggere 2 libri al mese"\n\n` +
+                            `📅 IMPEGNI:\n` +
+                            `• "Lunedì riunione dalle 10 alle 12"\n` +
+                            `• "Giovedì palestra ore 18"\n` +
+                            `• "Domenica pranzo con Sara alle 13"\n\n` +
+                            `📔 DIARIO:\n` +
+                            `• "Oggi mi sento motivato!"\n` +
+                            `• "Ho parlato con Maria, mi sento felice"\n\n` +
+                            `💰 SPESE:\n` +
+                            `• "Speso 12€ per pranzo"\n` +
+                            `• "Pagato 50€ abbonamento palestra"\n\n` +
+                            `⏰ TEMPO:\n` +
+                            `• "Cosa devo fare oggi?"\n` +
+                            `• "Quanto tempo libero ho domani?"\n\n` +
+                            `💡 Prova uno di questi comandi nella chat!`;
+                        
+                        aggiungiMessaggio(esempi, 'assistant');
+                        document.getElementById('chatInput').focus();
+                    }, 800);
+                }
+
+        // Function: setLanguage
+        function setLanguage(lang, url) {
+                    localStorage.setItem('lingua', lang);
+                    window.location.href = url;
+                }
+
+        // Function: switchTab
+        function switchTab(tabName) {
+                    // Rimuovi active da tutti i tab
+                    document.querySelectorAll('.tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Attiva il tab cliccato
+                    const tabButton = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+                    if (tabButton) {
+                        tabButton.classList.add('active');
+                    }
+                    
+                    // Scroll alla sezione corrispondente
+                    let targetElement;
+                    
+                    switch(tabName) {
+                        case 'chat':
+                            targetElement = document.querySelector('.chat-container');
+                            setTimeout(() => {
+                                document.getElementById('chatInput').focus();
+                            }, 600);
+                            break;
+                            
+                        case 'calendario':
+                            targetElement = document.getElementById('pianoSettimanale');
+                            if (!targetElement) {
+                                // Fallback: cerca la card del calendario
+                                targetElement = Array.from(document.querySelectorAll('.card')).find(
+                                    card => card.querySelector('h2')?.textContent.includes('Piano')
+                                );
+                            }
+                            break;
+                            
+                        case 'diario':
+                            // Apri diario-book in una nuova tab
+                            window.open('/diario-book', '_blank');
+                            return;
+                            
+                        case 'spese':
+                            // Cerca la sezione spese
+                            targetElement = Array.from(document.querySelectorAll('.card')).find(
+                                card => card.querySelector('h2')?.textContent.includes('Spese') ||
+                                       card.querySelector('h2')?.textContent.includes('Budget')
+                            );
+                            break;
+                            
+                        case 'analytics':
+                            targetElement = document.getElementById('analyticsDashboard');
+                            if (!targetElement) {
+                                // Fallback: cerca card con grafici
+                                targetElement = Array.from(document.querySelectorAll('.card')).find(
+                                    card => card.querySelector('canvas')
+                                );
+                            }
+                            break;
+                    }
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Highlight temporaneo
+                        targetElement.classList.add('section-highlight');
+                        setTimeout(() => {
+                            targetElement.classList.remove('section-highlight');
+                        }, 2500);
+                    }
+                }
+
+        // Function: testaTTS
+        function testaTTS() {
+                    toggleQuickTour();
+                    aggiungiMessaggio('🔊 Test lettura vocale: Ciao! Sono il tuo assistente intelligente. Posso leggere i tuoi impegni ad alta voce!', 'assistant');
+                    setTimeout(() => {
+                        parla('Ciao! Sono il tuo assistente intelligente. Posso leggere i tuoi impegni ad alta voce!');
+                    }, 500);
+                }
+
+        // Function: toggleLangMenu
+        function toggleLangMenu() {
+                    const menu = document.getElementById('langMenu');
+                    menu.classList.toggle('active');
+                }
+
+        // Function: toggleQuickTour
+        function toggleQuickTour() {
+                    const menu = document.getElementById('quickTourMenu');
+                    menu.classList.toggle('active');
+                }
+
+</script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}

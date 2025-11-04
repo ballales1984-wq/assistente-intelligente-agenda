@@ -4,7 +4,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🤝 Comunidad - Asistente Inteligente</title>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG">
+
+        // ========================================
+        // 🔄 AUTO-SYNCED FUNCTIONS (sync_multilang.py)
+        // Date: 2025-11-04 15:45:00
+        // ========================================
+
+        // Function: escapeHtml
+        function escapeHtml(text) {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                }
+
+        // Function: formatCategory
+        function formatCategory(cat) {
+                    const labels = {
+                        'personal_growth': '🌱 Crescita',
+                        'mental_health': '🧠 Salute Mentale',
+                        'goals': '🎯 Obiettivi',
+                        'relationships': '❤️ Relazioni',
+                        'work': '💼 Lavoro',
+                        'health': '🏃 Salute',
+                        'creativity': '🎨 Creatività',
+                        'spirituality': '🙏 Spiritualità'
+                    };
+                    return labels[cat] || cat;
+                }
+
+        // Function: formatDate
+        function formatDate(isoDate) {
+                    if (!isoDate) return '';
+                    const date = new Date(isoDate);
+                    const now = new Date();
+                    const diffMs = now - date;
+                    const diffMins = Math.floor(diffMs / 60000);
+                    const diffHours = Math.floor(diffMs / 3600000);
+                    const diffDays = Math.floor(diffMs / 86400000);
+                    
+                    if (diffMins < 1) return 'Ora';
+                    if (diffMins < 60) return `${diffMins} min fa`;
+                    if (diffHours < 24) return `${diffHours}h fa`;
+                    if (diffDays < 7) return `${diffDays}g fa`;
+                    
+                    return date.toLocaleDateString('it-IT');
+                }
+
+        // Function: formatReactionsCount
+        function formatReactionsCount(count) {
+                    if (count >= 10) return 'Molti';
+                    if (count >= 5) return 'Alcuni';
+                    return 'Poche persone';
+                }
+
+        // Function: loadFeed
+        function loadFeed() {
+                    try {
+                        const response = await fetch('/api/community/reflections?language=it&limit=20');
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            reflections = result.data;
+                            renderFeed();
+                        }
+                    } catch (error) {
+                        console.error('Error loading feed:', error);
+                        document.getElementById('feed').innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">😔</div>
+                                <p>Errore nel caricamento. Riprova.</p>
+                            </div>
+                        `;
+                    }
+                }
+
+        // Function: loadStats
+        function loadStats() {
+                    try {
+                        const response = await fetch('/api/community/stats');
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            document.getElementById('totalReflections').textContent = result.data.total_reflections;
+                            document.getElementById('totalComments').textContent = result.data.total_comments;
+                            document.getElementById('totalCircles').textContent = result.data.total_circles;
+                            document.getElementById('totalReactions').textContent = result.data.total_reactions;
+                        }
+                    } catch (error) {
+                        console.error('Error loading stats:', error);
+                    }
+                }
+
+        // Function: renderFeed
+        function renderFeed() {
+                    const feedEl = document.getElementById('feed');
+                    
+                    if (reflections.length === 0) {
+                        feedEl.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🌱</div>
+                                <p>Nessuna riflessione ancora.</p>
+                                <p style="margin-top: 10px;">Sii il primo a condividere!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    feedEl.innerHTML = reflections.map(r => `
+                        <div class="reflection ${r.sentiment || ''}">
+                            <div class="reflection-header">
+                                <div>
+                                    <strong>${r.user.name}</strong> • 
+                                    <span class="reflection-category">${formatCategory(r.category)}</span>
+                                </div>
+                                <div style="font-size: 0.85em;">
+                                    ${formatDate(r.created_at)}
+                                </div>
+                            </div>
+                            
+                            <div class="reflection-text">
+                                ${escapeHtml(r.text)}
+                            </div>
+                            
+                            <div class="reactions">
+                                <button class="reaction-btn" onclick="react(${r.id}, 'support')">
+                                    ❤️ Supporto
+                                </button>
+                                <button class="reaction-btn" onclick="react(${r.id}, 'me_too')">
+                                    🤝 Anche io
+                                </button>
+                                <button class="reaction-btn" onclick="react(${r.id}, 'insightful')">
+                                    💡 Utile
+                                </button>
+                                <button class="reaction-btn" onclick="react(${r.id}, 'inspiring')">
+                                    🌟 Ispirante
+                                </button>
+                            </div>
+                            
+                            <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                                ${r.reactions_count > 0 ? `${formatReactionsCount(r.reactions_count)} hanno reagito` : 'Sii il primo a reagire!'}
+                                ${r.comments_count > 0 ? ` • ${r.comments_count} commenti` : ''}
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+        // Function: updateCharCounter
+        function updateCharCounter() {
+                    const text = document.getElementById('reflectionText').value;
+                    const counter = document.getElementById('charCounter');
+                    const length = text.length;
+                    
+                    counter.textContent = `${length} / 5000 caratteri`;
+                    
+                    if (length < 20) {
+                        counter.className = 'char-counter error';
+                    } else if (length > 4500) {
+                        counter.className = 'char-counter warning';
+                    } else {
+                        counter.className = 'char-counter';
+                    }
+                }
+
+</script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}

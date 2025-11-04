@@ -11,7 +11,585 @@
     <title>🧠 المساعد الذكي</title>
     
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG">
+
+        // ========================================
+        // 🔄 AUTO-SYNCED FUNCTIONS (sync_multilang.py)
+        // Date: 2025-11-04 15:45:00
+        // ========================================
+
+        // Function: aggiornaGrafici
+        function aggiornaGrafici() {
+                    await creaGraficoSpese();
+                    await creaGraficoObiettivi();
+                    await creaGraficoTrendSpese();
+                }
+
+        // Function: aggiungiMessaggio
+        function aggiungiMessaggio(testo, tipo, diarioId = null) {
+                    const container = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${tipo}`;
+                    
+                    // Aggiungi highlight per risposte assistente
+                    if (tipo === 'assistant') {
+                        messageDiv.classList.add('highlight');
+                    }
+                    
+                    // Usa innerHTML per supportare formattazione (safe perché controlliamo i dati)
+                    messageDiv.innerHTML = testo.replace(/\n/g, '<br>');
+                    
+                    // Aggiungi bottone condividi se è un messaggio di diario
+                    if (diarioId && tipo === 'user') {
+                        const shareBtn = document.createElement('button');
+                        shareBtn.className = 'share-message-btn';
+                        shareBtn.innerHTML = '🔗 Condividi';
+                        shareBtn.onclick = () => condividiMessaggioDiario(diarioId);
+                        messageDiv.appendChild(shareBtn);
+                    }
+                    
+                    container.appendChild(messageDiv);
+                    // Scroll smooth per vedere la risposta
+                    container.scrollTop = container.scrollHeight;
+                }
+
+        // Function: autoDetectLanguage
+        function autoDetectLanguage() {
+                    // Skip if user already selected a language
+                    if (localStorage.getItem('lingua')) {
+                        return;
+                    }
+        
+                    // Skip if not on root path
+                    if (window.location.pathname !== '/') {
+                        return;
+                    }
+        
+                    // Get browser language
+                    const browserLang = navigator.language || navigator.userLanguage;
+                    const langCode = browserLang.split('-')[0].toLowerCase();
+        
+                    // Map to supported languages
+                    const langMap = {
+                        'it': '/',
+                        'en': '/en',
+                        'es': '/es',
+                        'zh': '/zh',
+                        'ru': '/ru',
+                        'hi': '/hi'
+                    };
+        
+                    // Redirect if we support the browser language
+                    if (langMap[langCode] && langMap[langCode] !== '/') {
+                        console.log('🌍 Auto-detected language:', langCode);
+                        localStorage.setItem('lingua', langCode);
+                        localStorage.setItem('lang_auto_detected', 'true');
+                        window.location.href = langMap[langCode];
+                    }
+                }
+
+        // Function: cambiaMese
+        function cambiaMese(offset) {
+                    if (offset === 0) {
+                        meseOffset = 0;
+                    } else {
+                        meseOffset += offset;
+                    }
+                    caricaCalendarioMensile();
+                }
+
+        // Function: cambiaSettimana
+        function cambiaSettimana(offset) {
+                    if (offset === 0) {
+                        settimanaOffset = 0;
+                    } else {
+                        settimanaOffset += offset;
+                    }
+                    caricaCalendario();
+                }
+
+        // Function: caricaStatistiche
+        function caricaStatistiche() {
+                    try {
+                        const response = await fetch('/api/statistiche');
+                        const stats = await response.json();
+        
+                        document.getElementById('statObiettivi').textContent = stats.obiettivi_totali || 0;
+                        document.getElementById('statOre').textContent = `${(stats.ore_completate || 0).toFixed(1)}h`;
+                        document.getElementById('statCompletamento').textContent = `${(stats.tasso_completamento || 0).toFixed(0)}%`;
+                    } catch (error) {
+                        console.error('Errore nel caricamento statistiche:', error);
+                    }
+                }
+
+        // Function: chiudiOnboarding
+        function chiudiOnboarding() {
+                    document.getElementById('onboardingOverlay').style.display = 'none';
+                    localStorage.setItem('onboarding_completato', 'true');
+                }
+
+        // Function: eliminaDiario
+        function eliminaDiario(id) {
+                    // Conferma eliminazione
+                    if (!confirm('Sei sicuro di voler eliminare questa nota dal diario?')) {
+                        return;
+                    }
+        
+                    try {
+                        const response = await fetch(`/api/diario/${id}`, {
+                            method: 'DELETE'
+                        });
+        
+                        if (response.ok) {
+                            // Mostra messaggio successo
+                            alert('✅ Nota eliminata con successo!');
+                            // Ricarica diario
+                            caricaDiario();
+                        } else {
+                            alert('❌ Errore nell\'eliminazione della nota');
+                        }
+                    } catch (error) {
+                        console.error('Errore eliminazione diario:', error);
+                        alert('❌ Errore nell\'eliminazione della nota');
+                    }
+                }
+
+        // Function: eliminaImpegno
+        function eliminaImpegno(id) {
+                    // Conferma eliminazione
+                    if (!confirm('Sei sicuro di voler eliminare questo impegno?')) {
+                        return;
+                    }
+        
+                    try {
+                        const response = await fetch(`/api/impegni/${id}`, {
+                            method: 'DELETE'
+                        });
+        
+                        if (response.ok) {
+                            // Mostra messaggio successo
+                            alert('✅ Impegno eliminato con successo!');
+                            // Ricarica calendario
+                            caricaCalendario();
+                        } else {
+                            alert('❌ Errore nell\'eliminazione dell\'impegno');
+                        }
+                    } catch (error) {
+                        console.error('Errore eliminazione impegno:', error);
+                        alert('❌ Errore nell\'eliminazione dell\'impegno');
+                    }
+                }
+
+        // Function: exportaImpegni
+        function exportaImpegni() {
+                    try {
+                        const response = await fetch('/api/export/impegni');
+                        const data = await response.json();
+                        
+                        // Converti in CSV
+                        const csv = convertiInCSV(data.impegni, ['nome', 'data_inizio', 'data_fine', 'tipo']);
+                        const blob = new Blob([csv], { type: 'text/csv' });
+                        
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `impegni-${new Date().toISOString().split('T')[0]}.csv`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        
+                        aggiungiMessaggio(`📅 Export ${data.count} impegni completato!`, 'assistant');
+                    } catch (error) {
+                        console.error('Errore export impegni:', error);
+                    }
+                }
+
+        // Function: exportaSpese
+        function exportaSpese() {
+                    try {
+                        const response = await fetch('/api/export/spese');
+                        const data = await response.json();
+                        
+                        // Converti in CSV
+                        const csv = convertiInCSV(data.spese, ['data', 'descrizione', 'importo', 'categoria']);
+                        const blob = new Blob([csv], { type: 'text/csv' });
+                        
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `spese-${new Date().toISOString().split('T')[0]}.csv`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        
+                        aggiungiMessaggio(`💰 Export ${data.count} spese completato!`, 'assistant');
+                    } catch (error) {
+                        console.error('Errore export spese:', error);
+                    }
+                }
+
+        // Function: exportaTutto
+        function exportaTutto() {
+                    try {
+                        const response = await fetch('/api/export/tutto');
+                        const data = await response.json();
+                        
+                        // Crea file JSON
+                        const dataStr = JSON.stringify(data, null, 2);
+                        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                        
+                        // Download automatico
+                        const url = URL.createObjectURL(dataBlob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `agenda-backup-${new Date().toISOString().split('T')[0]}.json`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        
+                        aggiungiMessaggio(`📦 Export completato! ${data.impegni.length} impegni, ${data.spese.length} spese, ${data.obiettivi.length} obiettivi.`, 'assistant');
+                    } catch (error) {
+                        console.error('Errore export:', error);
+                        aggiungiMessaggio('❌ Errore durante l\'export', 'assistant');
+                    }
+                }
+
+        // Function: formatoICalDate
+        function formatoICalDate(date) {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+                }
+
+        // Function: handleKeyPress
+        function handleKeyPress(event) {
+                    if (event.key === 'Enter') {
+                        inviaMessaggio();
+                    }
+                }
+
+        // Function: inizia
+        function inizia() {
+                    chiudiOnboarding();
+                    scrollToChat();
+                    // Focus sul campo input
+                    setTimeout(() => {
+                        document.querySelector('.chat-input input').focus();
+                    }, 500);
+                }
+
+        // Function: mostraEsempiComandi
+        function mostraEsempiComandi() {
+                    toggleQuickTour();
+                    scrollToChat();
+                    
+                    setTimeout(() => {
+                        const esempi = `💡 **Esempi di Comandi:**\n\n` +
+                            `📚 OBIETTIVI:\n` +
+                            `• "Voglio studiare Python 3 ore a settimana"\n` +
+                            `• "Voglio leggere 2 libri al mese"\n\n` +
+                            `📅 IMPEGNI:\n` +
+                            `• "Lunedì riunione dalle 10 alle 12"\n` +
+                            `• "Giovedì palestra ore 18"\n` +
+                            `• "Domenica pranzo con Sara alle 13"\n\n` +
+                            `📔 DIARIO:\n` +
+                            `• "Oggi mi sento motivato!"\n` +
+                            `• "Ho parlato con Maria, mi sento felice"\n\n` +
+                            `💰 SPESE:\n` +
+                            `• "Speso 12€ per pranzo"\n` +
+                            `• "Pagato 50€ abbonamento palestra"\n\n` +
+                            `⏰ TEMPO:\n` +
+                            `• "Cosa devo fare oggi?"\n` +
+                            `• "Quanto tempo libero ho domani?"\n\n` +
+                            `💡 Prova uno di questi comandi nella chat!`;
+                        
+                        aggiungiMessaggio(esempi, 'assistant');
+                        document.getElementById('chatInput').focus();
+                    }, 800);
+                }
+
+        // Function: mostraNotifica
+        function mostraNotifica(titolo, messaggio, icona = '🔔') {
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        const notifica = new Notification(titolo, {
+                            body: messaggio,
+                            icon: '/static/icon.png', // Fallback a icona se esiste
+                            badge: '/static/badge.png',
+                            requireInteraction: false,
+                            silent: false
+                        });
+                        
+                        // Leggi anche con voce
+                        parla(messaggio);
+                        
+                        notifica.onclick = () => {
+                            window.focus();
+                            notifica.close();
+                        };
+                        
+                        // Auto-chiudi dopo 10 secondi
+                        setTimeout(() => notifica.close(), 10000);
+                    }
+                }
+
+        // Function: mostraOnboarding
+        function mostraOnboarding() {
+                    // Controlla se è la prima visita
+                    const giaMostrato = localStorage.getItem('onboarding_completato');
+                    if (!giaMostrato) {
+                        document.getElementById('onboardingOverlay').style.display = 'flex';
+                    }
+                }
+
+        // Function: parla
+        function parla(testo) {
+                    // Ferma eventuali letture in corso
+                    synth.cancel();
+                    
+                    currentUtterance = new SpeechSynthesisUtterance(testo);
+                    
+                    // ============================================
+                    // AUTO-DETECTION LINGUA
+                    // ============================================
+                    const pageLang = 'it'; // Lingua della pagina corrente
+                    const langCode = 'it-IT';
+                    
+                    currentUtterance.lang = langCode;
+                    currentUtterance.rate = 0.9;
+                    currentUtterance.pitch = 1.0;
+                    
+                    // ============================================
+                    // Seleziona VOCE NELLA LINGUA CORRETTA
+                    // ============================================
+                    const voci = synth.getVoices();
+                    
+                    // Cerca voce nella lingua della pagina
+                    let voceSelezionata = voci.find(v => v.lang.startsWith(pageLang));
+                    
+                    // Fallback: cerca varianti della lingua
+                    if (!voceSelezionata) {
+                        voceSelezionata = voci.find(v => 
+                            v.lang.toLowerCase().includes(pageLang)
+                        );
+                    }
+                    
+                    // Fallback finale: prima voce disponibile
+                    if (!voceSelezionata && voci.length > 0) {
+                        voceSelezionata = voci[0];
+                    }
+                    
+                    if (voceSelezionata) {
+                        currentUtterance.voice = voceSelezionata;
+                        console.log('🔊 Voce selezionata:', voceSelezionata.name, '(' + voceSelezionata.lang + ')');
+                    }
+                    
+                    // Event listener per quando finisce
+                    currentUtterance.onend = () => {
+                        console.log('Lettura completata');
+                    };
+                    
+                    currentUtterance.onerror = (event) => {
+                        console.error('Errore lettura vocale:', event);
+                    };
+                    
+                    synth.speak(currentUtterance);
+                }
+
+        // Function: prossimoStep
+        function prossimoStep() {
+                    const steps = document.querySelectorAll('.onboarding-step');
+                    const dots = document.querySelectorAll('.onboarding-dot');
+                    
+                    if (currentOnboardingStep < steps.length) {
+                        // Nascondi step corrente
+                        steps[currentOnboardingStep - 1].classList.remove('active');
+                        dots[currentOnboardingStep - 1].classList.remove('active');
+                        
+                        // Mostra prossimo step
+                        currentOnboardingStep++;
+                        steps[currentOnboardingStep - 1].classList.add('active');
+                        dots[currentOnboardingStep - 1].classList.add('active');
+                    }
+                }
+
+        // Function: scrollToChat
+        function scrollToChat() {
+                    const chatElement = document.querySelector('.chat-container');
+                    chatElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+
+        // Function: setLanguage
+        function setLanguage(lang, url) {
+                    localStorage.setItem('lingua', lang);
+                    window.location.href = url;
+                }
+
+        // Function: stepPrecedente
+        function stepPrecedente() {
+                    const steps = document.querySelectorAll('.onboarding-step');
+                    const dots = document.querySelectorAll('.onboarding-dot');
+                    
+                    if (currentOnboardingStep > 1) {
+                        // Nascondi step corrente
+                        steps[currentOnboardingStep - 1].classList.remove('active');
+                        dots[currentOnboardingStep - 1].classList.remove('active');
+                        
+                        // Mostra step precedente
+                        currentOnboardingStep--;
+                        steps[currentOnboardingStep - 1].classList.add('active');
+                        dots[currentOnboardingStep - 1].classList.add('active');
+                    }
+                }
+
+        // Function: stopLettura
+        function stopLettura() {
+                    synth.cancel();
+                    aggiungiMessaggio('⏹️ Lettura interrotta.', 'assistant');
+                }
+
+        // Function: switchTab
+        function switchTab(tabName) {
+                    // Rimuovi active da tutti i tab
+                    document.querySelectorAll('.tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Attiva il tab cliccato
+                    const tabButton = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+                    if (tabButton) {
+                        tabButton.classList.add('active');
+                    }
+                    
+                    // Scroll alla sezione corrispondente
+                    let targetElement;
+                    
+                    switch(tabName) {
+                        case 'chat':
+                            targetElement = document.querySelector('.chat-container');
+                            setTimeout(() => {
+                                document.getElementById('chatInput').focus();
+                            }, 600);
+                            break;
+                            
+                        case 'calendario':
+                            targetElement = document.getElementById('pianoSettimanale');
+                            if (!targetElement) {
+                                // Fallback: cerca la card del calendario
+                                targetElement = Array.from(document.querySelectorAll('.card')).find(
+                                    card => card.querySelector('h2')?.textContent.includes('Piano')
+                                );
+                            }
+                            break;
+                            
+                        case 'diario':
+                            // Apri diario-book in una nuova tab
+                            window.open('/diario-book', '_blank');
+                            return;
+                            
+                        case 'spese':
+                            // Cerca la sezione spese
+                            targetElement = Array.from(document.querySelectorAll('.card')).find(
+                                card => card.querySelector('h2')?.textContent.includes('Spese') ||
+                                       card.querySelector('h2')?.textContent.includes('Budget')
+                            );
+                            break;
+                            
+                        case 'analytics':
+                            targetElement = document.getElementById('analyticsDashboard');
+                            if (!targetElement) {
+                                // Fallback: cerca card con grafici
+                                targetElement = Array.from(document.querySelectorAll('.card')).find(
+                                    card => card.querySelector('canvas')
+                                );
+                            }
+                            break;
+                    }
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Highlight temporaneo
+                        targetElement.classList.add('section-highlight');
+                        setTimeout(() => {
+                            targetElement.classList.remove('section-highlight');
+                        }, 2500);
+                    }
+                }
+
+        // Function: switchVistaCalendario
+        function switchVistaCalendario(vista) {
+                    vistaCalendario = vista;
+                    
+                    const vistaSettimana = document.getElementById('vistaSettimana');
+                    const vistaMese = document.getElementById('vistaMese');
+                    const btnSettimana = document.getElementById('vistaSettimanaBtn');
+                    const btnMese = document.getElementById('vistaMeseBtn');
+                    
+                    if (vista === 'settimana') {
+                        vistaSettimana.style.display = 'block';
+                        vistaMese.style.display = 'none';
+                        btnSettimana.className = 'btn btn-primary';
+                        btnMese.className = 'btn btn-secondary';
+                        caricaCalendario();
+                    } else {
+                        vistaSettimana.style.display = 'none';
+                        vistaMese.style.display = 'block';
+                        btnSettimana.className = 'btn btn-secondary';
+                        btnMese.className = 'btn btn-primary';
+                        caricaCalendarioMensile();
+                    }
+                }
+
+        // Function: testaTTS
+        function testaTTS() {
+                    toggleQuickTour();
+                    aggiungiMessaggio('🔊 Test lettura vocale: Ciao! Sono il tuo assistente intelligente. Posso leggere i tuoi impegni ad alta voce!', 'assistant');
+                    setTimeout(() => {
+                        parla('Ciao! Sono il tuo assistente intelligente. Posso leggere i tuoi impegni ad alta voce!');
+                    }, 500);
+                }
+
+        // Function: toggleDarkMode
+        function toggleDarkMode() {
+                    const body = document.body;
+                    const icon = document.getElementById('themeIcon');
+                    
+                    body.classList.toggle('dark-mode');
+                    
+                    if (body.classList.contains('dark-mode')) {
+                        icon.textContent = '☀️';
+                        localStorage.setItem('tema', 'dark');
+                    } else {
+                        icon.textContent = '🌙';
+                        localStorage.setItem('tema', 'light');
+                    }
+                    
+                    // Ricarica grafici per aggiornare colori
+                    setTimeout(aggiornaGrafici, 300);
+                }
+
+        // Function: toggleQuickTour
+        function toggleQuickTour() {
+                    const menu = document.getElementById('quickTourMenu');
+                    menu.classList.toggle('active');
+                }
+
+        // Function: usaEsempio
+        function usaEsempio(testo) {
+                    document.getElementById('chatInput').value = testo;
+                }
+
+</script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}

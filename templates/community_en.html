@@ -6,7 +6,38 @@
     <title>🤝 Community - Smart Assistant</title>
     
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG">
+
+        // ========================================
+        // 🔄 AUTO-SYNCED FUNCTIONS (sync_multilang.py)
+        // Date: 2025-11-04 15:45:00
+        // ========================================
+
+        // Function: formatReactionsCount
+        function formatReactionsCount(count) {
+                    if (count >= 10) return 'Molti';
+                    if (count >= 5) return 'Alcuni';
+                    return 'Poche persone';
+                }
+
+        // Function: updateCharCounter
+        function updateCharCounter() {
+                    const text = document.getElementById('reflectionText').value;
+                    const counter = document.getElementById('charCounter');
+                    const length = text.length;
+                    
+                    counter.textContent = `${length} / 5000 caratteri`;
+                    
+                    if (length < 20) {
+                        counter.className = 'char-counter error';
+                    } else if (length > 4500) {
+                        counter.className = 'char-counter warning';
+                    } else {
+                        counter.className = 'char-counter';
+                    }
+                }
+
+</script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}

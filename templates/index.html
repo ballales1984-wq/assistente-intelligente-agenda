@@ -3363,7 +3363,10 @@
             } else {
                 // Data specifica
                 dataTarget = new Date(quando);
-                descrizioneGiorno = dataTarget.toLocaleDateString('it-IT', { 
+                const htmlLang = document.documentElement.lang || 'it';
+                const localeMap = {'it': 'it-IT', 'en': 'en-US', 'es': 'es-ES', 'zh': 'zh-CN', 'ru': 'ru-RU', 'hi': 'hi-IN', 'ar': 'ar-SA'};
+                const locale = localeMap[htmlLang] || 'it-IT';
+                descrizioneGiorno = dataTarget.toLocaleDateString(locale, { 
                     weekday: 'long', 
                     day: 'numeric', 
                     month: 'long' 
@@ -3389,8 +3392,11 @@
                 impegni.forEach((imp, index) => {
                     const inizio = new Date(imp.data_inizio);
                     const fine = new Date(imp.data_fine);
-                    const oraInizio = inizio.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                    const oraFine = fine.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                    const htmlLang = document.documentElement.lang || 'it';
+                    const localeMap = {'it': 'it-IT', 'en': 'en-US', 'es': 'es-ES', 'zh': 'zh-CN', 'ru': 'ru-RU', 'hi': 'hi-IN', 'ar': 'ar-SA'};
+                    const locale = localeMap[htmlLang] || 'it-IT';
+                    const oraInizio = inizio.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+                    const oraFine = fine.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
                     
                     testo += `${index + 1}. ${imp.nome}, dalle ${oraInizio} alle ${oraFine}. `;
                 });
@@ -3411,10 +3417,19 @@
             currentUtterance = new SpeechSynthesisUtterance(testo);
             
             // ============================================
-            // AUTO-DETECTION LINGUA
+            // AUTO-DETECTION LINGUA DALLA PAGINA
             // ============================================
-            const pageLang = 'it'; // Lingua della pagina corrente
-            const langCode = 'it-IT';
+            const htmlLang = document.documentElement.lang || 'it';
+            const langMap = {
+                'it': 'it-IT',
+                'en': 'en-US',
+                'es': 'es-ES',
+                'zh': 'zh-CN',
+                'ru': 'ru-RU',
+                'hi': 'hi-IN',
+                'ar': 'ar-SA'
+            };
+            const langCode = langMap[htmlLang] || 'it-IT';
             
             currentUtterance.lang = langCode;
             currentUtterance.rate = 0.9;
@@ -3425,13 +3440,13 @@
             // ============================================
             const voci = synth.getVoices();
             
-            // Cerca voce nella lingua della pagina
-            let voceSelezionata = voci.find(v => v.lang.startsWith(pageLang));
+            // Cerca voce nella lingua della pagina (es. en-US, en-GB)
+            let voceSelezionata = voci.find(v => v.lang.startsWith(langCode));
             
-            // Fallback: cerca varianti della lingua
+            // Fallback: cerca solo codice lingua (es. 'en')
             if (!voceSelezionata) {
                 voceSelezionata = voci.find(v => 
-                    v.lang.toLowerCase().includes(pageLang)
+                    v.lang.toLowerCase().startsWith(htmlLang)
                 );
             }
             

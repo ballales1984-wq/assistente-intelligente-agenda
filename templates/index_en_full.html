@@ -1764,8 +1764,8 @@
                         div.className = 'obiettivo-item';
                         div.innerHTML = `
                             <strong>${obj.nome}</strong>
-                            <span>📊 ${obj.durata_settimanale}h/settimana • ${obj.tipo}</span><br>
-                            <span>✅ Completate: ${obj.ore_completate}h</span>
+                            <span>📊 ${obj.durata_settimanale}h/week • ${obj.tipo}</span><br>
+                            <span>✅ Completed: ${obj.ore_completate}h</span>
                         `;
                         list.appendChild(div);
                     });
@@ -2316,7 +2316,7 @@
                 calendarioDiv.className = 'calendario-grid';
 
                 // Header giorni
-                const giorni = ['Ora', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+                const giorni = ['Time', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                 giorni.forEach((giorno, idx) => {
                     const header = document.createElement('div');
                     header.className = idx === 0 ? 'calendario-header time-col' : 'calendario-header';
@@ -2378,7 +2378,7 @@
                             
                             const inizio = new Date(evento.data_inizio);
                             const fine = new Date(evento.data_fine);
-                            const timeStr = `${inizio.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})} - ${fine.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}`;
+                            const timeStr = `${inizio.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})} - ${fine.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}`;
                             
                             let icon = '📌';
                             if (evento.tipo === 'obiettivo') icon = '🎯';

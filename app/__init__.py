@@ -106,11 +106,13 @@ def create_app(config_class=Config):
     from app.routes import beta
     from app.routes import ai_chat
     from app.routes import community
+    from app.routes import debug
     app.register_blueprint(api.bp)
     app.register_blueprint(beta.bp)
     app.register_blueprint(ai_chat.bp)
     app.register_blueprint(community.bp)
-    app.logger.info("📋 Blueprints registrati (API + Beta + AI + Community)")
+    app.register_blueprint(debug.bp)
+    app.logger.info("📋 Blueprints registrati (API + Beta + AI + Community + Debug)")
     
     # ========================================
     # DATABASE TABLES

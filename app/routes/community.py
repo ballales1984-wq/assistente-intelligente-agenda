@@ -223,11 +223,17 @@ def create_reflection():
     #         'expires_at': active_ban.expires_at.isoformat() if active_ban.expires_at else None
     #     }), 403
 
-    # Sentiment analysis (basic)
-    from app.core.diario_manager import DiarioManager
-
-    diario_mgr = DiarioManager(profilo)
-    analisi = diario_mgr.analizza_testo(text)
+    # Sentiment analysis (basic) - with fallback
+    sentiment = "neutral"
+    try:
+        from app.core.diario_manager import DiarioManager
+        diario_mgr = DiarioManager(profilo)
+        analisi = diario_mgr.analizza_testo(text)
+        sentiment = analisi.get("sentiment", "neutral")
+    except Exception as e:
+        # Fallback: if sentiment analysis fails, continue without it
+        print(f"⚠️ Sentiment analysis failed: {e}, using default 'neutral'")
+        sentiment = "neutral"
 
     # Create reflection
     reflection = ReflectionShare(
@@ -237,7 +243,7 @@ def create_reflection():
         visibility=data.get("visibility", "anonymous"),
         category=data.get("category", "personal_growth"),
         tags=",".join(data.get("tags", [])) if data.get("tags") else "",
-        sentiment=analisi.get("sentiment", "neutral"),
+        sentiment=sentiment,
         language=data.get("language", "it"),
     )
 
@@ -258,7 +264,18 @@ def create_reflection():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        # Detailed error logging
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"❌ Community reflection creation failed:")
+        print(f"   Error: {str(e)}")
+        print(f"   Details: {error_details}")
+        
+        return jsonify({
+            "success": False, 
+            "error": f"Database error: {str(e)}",
+            "details": "Check server logs for more info"
+        }), 500
 
 
 @bp.route("/reflections/<int:reflection_id>", methods=["DELETE"])

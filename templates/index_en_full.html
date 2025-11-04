@@ -2800,30 +2800,30 @@
                 const impegni = await response.json();
                 
                 if (impegni.length === 0) {
-                    const testo = `Non ci sono impegni per ${descrizioneGiorno}`;
+                    const testo = `No events for ${descrizioneGiorno}`;
                     parla(testo);
                     aggiungiMessaggio(`🔊 ${testo}`, 'assistant');
                     return;
                 }
                 
                 // Costruisci testo da leggere
-                let testo = `Hai ${impegni.length} impegni per ${descrizioneGiorno}. `;
+                let testo = `You have ${impegni.length} events for ${descrizioneGiorno}. `;
                 
                 impegni.forEach((imp, index) => {
                     const inizio = new Date(imp.data_inizio);
                     const fine = new Date(imp.data_fine);
-                    const oraInizio = inizio.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                    const oraFine = fine.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                    const oraInizio = inizio.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    const oraFine = fine.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
                     
-                    testo += `${index + 1}. ${imp.nome}, dalle ${oraInizio} alle ${oraFine}. `;
+                    testo += `${index + 1}. ${imp.nome}, from ${oraInizio} to ${oraFine}. `;
                 });
                 
                 parla(testo);
-                aggiungiMessaggio(`🔊 Sto leggendo gli impegni di ${descrizioneGiorno}...`, 'assistant');
+                aggiungiMessaggio(`🔊 Reading events for ${descrizioneGiorno}...`, 'assistant');
                 
             } catch (error) {
-                console.error('Errore lettura impegni:', error);
-                aggiungiMessaggio('Errore nel recupero degli impegni.', 'assistant');
+                console.error('Error reading events:', error);
+                aggiungiMessaggio('Error retrieving events.', 'assistant');
             }
         }
 

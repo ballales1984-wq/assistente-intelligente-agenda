@@ -21,10 +21,10 @@ class DiarioGiornaliero(db.Model):
     parole_chiave = db.Column(db.String(500))  # Parole chiave separate da virgola
     sentiment = db.Column(db.String(20))  # positivo, neutro, negativo
     
-    # Condivisione
-    share_token = db.Column(db.String(64), unique=True, nullable=True, index=True)
-    is_public = db.Column(db.Boolean, default=False)
-    share_count = db.Column(db.Integer, default=0)
+    # Condivisione - TEMPORANEAMENTE COMMENTATO fino a migration DB
+    # share_token = db.Column(db.String(64), unique=True, nullable=True, index=True)
+    # is_public = db.Column(db.Boolean, default=False)
+    # share_count = db.Column(db.Integer, default=0)
     
     # Metadata
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

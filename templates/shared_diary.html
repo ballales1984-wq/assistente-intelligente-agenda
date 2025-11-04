@@ -242,7 +242,7 @@
 
         <div class="stats">
             <div class="stat-item">
-                <div class="stat-value">👁️ {{ entry.share_count }}</div>
+                <div class="stat-value">👁️ {{ entry.share_count if entry.share_count is defined else 0 }}</div>
                 <div class="stat-label">Visualizzazioni</div>
             </div>
             <div class="stat-item">

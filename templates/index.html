@@ -575,6 +575,98 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
+        
+        /* ========================================
+           🔗 SMART LINKS STYLES
+           ======================================== */
+        .smart-links-header {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .smart-links-results {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .smart-link-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .smart-link-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .smart-link-number {
+            flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .smart-link-content {
+            flex: 1;
+        }
+        
+        .smart-link-title {
+            font-weight: 600;
+            font-size: 1em;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+        
+        .smart-link-url {
+            font-size: 0.75em;
+            color: #667eea;
+            margin-bottom: 6px;
+        }
+        
+        .smart-link-body {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+        
+        .smart-link-icon {
+            flex-shrink: 0;
+            font-size: 1.5em;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+        
+        .smart-link-card:hover .smart-link-icon {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        
+        .smart-links-footer {
+            margin-top: 10px;
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+        }
 
         @keyframes slideIn {
             from {
@@ -1793,6 +1885,14 @@
 
                 const data = await response.json();
                 
+                // ============================================
+                // 🔗 SMART LINKS: Formatta risultati ricerca
+                // ============================================
+                if (data.smart_links && data.dati && data.dati.results) {
+                    aggiungiMessaggioSmartLinks(data.risposta, data.dati.results);
+                    return; // Exit early
+                }
+                
                 // Mostra se AI è stata usata
                 let rispostaFinale = data.risposta;
                 if (data.ai_used) {
@@ -1865,6 +1965,82 @@
             
             container.appendChild(messageDiv);
             // Scroll smooth per vedere la risposta
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // ========================================
+        // 🔗 SMART LINKS: Formattazione risultati ricerca
+        // ========================================
+        function aggiungiMessaggioSmartLinks(risposta, results) {
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant smart-links';
+            
+            // Header
+            const header = document.createElement('div');
+            header.className = 'smart-links-header';
+            header.innerHTML = `<strong>🔍 Risultati di ricerca</strong>`;
+            messageDiv.appendChild(header);
+            
+            // Risultati
+            const resultsContainer = document.createElement('div');
+            resultsContainer.className = 'smart-links-results';
+            
+            results.forEach((result, idx) => {
+                const card = document.createElement('a');
+                card.className = 'smart-link-card';
+                card.href = result.href;
+                card.target = '_blank';
+                card.rel = 'noopener noreferrer';
+                
+                // Numero risultato
+                const number = document.createElement('div');
+                number.className = 'smart-link-number';
+                number.textContent = idx + 1;
+                card.appendChild(number);
+                
+                // Contenuto
+                const content = document.createElement('div');
+                content.className = 'smart-link-content';
+                
+                // Titolo
+                const title = document.createElement('div');
+                title.className = 'smart-link-title';
+                title.textContent = result.title;
+                content.appendChild(title);
+                
+                // URL
+                const url = document.createElement('div');
+                url.className = 'smart-link-url';
+                url.textContent = new URL(result.href).hostname;
+                content.appendChild(url);
+                
+                // Descrizione
+                const body = document.createElement('div');
+                body.className = 'smart-link-body';
+                body.textContent = result.body;
+                content.appendChild(body);
+                
+                card.appendChild(content);
+                
+                // Icon
+                const icon = document.createElement('div');
+                icon.className = 'smart-link-icon';
+                icon.innerHTML = '🔗';
+                card.appendChild(icon);
+                
+                resultsContainer.appendChild(card);
+            });
+            
+            messageDiv.appendChild(resultsContainer);
+            
+            // Footer
+            const footer = document.createElement('div');
+            footer.className = 'smart-links-footer';
+            footer.innerHTML = '💡 <em>Clicca per aprire in una nuova scheda</em>';
+            messageDiv.appendChild(footer);
+            
+            container.appendChild(messageDiv);
             container.scrollTop = container.scrollHeight;
         }
         

@@ -206,7 +206,28 @@ def chat():
         db.session.add(profilo)
         db.session.commit()
     
-    # Analizza input con regex
+    # ============================================
+    # 🔗 SMART LINKS: Check se è una ricerca web
+    # ============================================
+    from app.core.smart_links import SmartLinksManager
+    smart_links = SmartLinksManager()
+    smart_result = smart_links.process_message(messaggio)
+    
+    if smart_result['has_smart_links']:
+        # È una ricerca! Ritorna risultati direttamente
+        current_app.logger.info(f"🔗 Smart Links triggered for: {messaggio}")
+        return jsonify({
+            'messaggio': messaggio,
+            'tipo_riconosciuto': 'web_search',
+            'risposta': smart_result['response'],
+            'dati': {
+                'results': smart_result['results'],
+                'count': len(smart_result['results']) if smart_result['results'] else 0
+            },
+            'smart_links': True
+        })
+    
+    # Analizza input con regex (se non è una ricerca)
     input_manager = InputManager()
     risultato = input_manager.analizza_input(messaggio)
     

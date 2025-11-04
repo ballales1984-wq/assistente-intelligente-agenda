@@ -247,6 +247,111 @@
                     menu.classList.toggle('active');
                 }
 
+        // ========================================
+        // 🔄 AUTO-SYNCED FUNCTIONS (sync_multilang.py)
+        // Date: 2025-11-04 20:07:25
+        // ========================================
+
+        // Function: aggiungiMessaggioSmartLinks
+        function aggiungiMessaggioSmartLinks(risposta, results) {
+                    const container = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message assistant smart-links';
+                    
+                    // Header
+                    const header = document.createElement('div');
+                    header.className = 'smart-links-header';
+                    header.innerHTML = `<strong>🔍 Risultati di ricerca</strong>`;
+                    messageDiv.appendChild(header);
+                    
+                    // Risultati
+                    const resultsContainer = document.createElement('div');
+                    resultsContainer.className = 'smart-links-results';
+                    
+                    results.forEach((result, idx) => {
+                        const card = document.createElement('a');
+                        card.className = 'smart-link-card';
+                        card.href = result.href;
+                        card.target = '_blank';
+                        card.rel = 'noopener noreferrer';
+                        
+                        // Numero risultato
+                        const number = document.createElement('div');
+                        number.className = 'smart-link-number';
+                        number.textContent = idx + 1;
+                        card.appendChild(number);
+                        
+                        // Contenuto
+                        const content = document.createElement('div');
+                        content.className = 'smart-link-content';
+                        
+                        // Titolo
+                        const title = document.createElement('div');
+                        title.className = 'smart-link-title';
+                        title.textContent = result.title;
+                        content.appendChild(title);
+                        
+                        // URL
+                        const url = document.createElement('div');
+                        url.className = 'smart-link-url';
+                        url.textContent = new URL(result.href).hostname;
+                        content.appendChild(url);
+                        
+                        // Descrizione
+                        const body = document.createElement('div');
+                        body.className = 'smart-link-body';
+                        body.textContent = result.body;
+                        content.appendChild(body);
+                        
+                        card.appendChild(content);
+                        
+                        // Icon
+                        const icon = document.createElement('div');
+                        icon.className = 'smart-link-icon';
+                        icon.innerHTML = '🔗';
+                        card.appendChild(icon);
+                        
+                        resultsContainer.appendChild(card);
+                    });
+                    
+                    messageDiv.appendChild(resultsContainer);
+                    
+                    // Footer
+                    const footer = document.createElement('div');
+                    footer.className = 'smart-links-footer';
+                    footer.innerHTML = '💡 <em>Clicca per aprire in una nuova scheda</em>';
+                    messageDiv.appendChild(footer);
+                    
+                    container.appendChild(messageDiv);
+                    container.scrollTop = container.scrollHeight;
+                }
+
+        // Function: closeMobileMenu
+        function closeMobileMenu() {
+                    const drawer = document.getElementById('mobileMenuDrawer');
+                    drawer.classList.remove('open');
+                }
+
+        // Function: setActiveNavBtn
+        function setActiveNavBtn(index) {
+                    const btns = document.querySelectorAll('.mobile-nav-btn');
+                    btns.forEach((btn, i) => {
+                        if (i === index) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                }
+
+        // Function: toggleMobileMenu
+        function toggleMobileMenu() {
+                    const drawer = document.getElementById('mobileMenuDrawer');
+                    drawer.classList.toggle('open');
+                }
+
+
+
 </script>
     <script>
       window.dataLayer = window.dataLayer || [];

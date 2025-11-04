@@ -3544,7 +3544,20 @@
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
                 
-                aggiungiMessaggio(`📅 Export ${impegni.length} impegni in formato iCalendar! Importabile in Google Calendar, Outlook, Apple Calendar.`, 'assistant');
+                // Mostra istruzioni dettagliate
+                const istruzioni = `✅ File scaricato: agenda-${new Date().toISOString().split('T')[0]}.ics\n\n` +
+                    `📅 Come importare in Google Calendar:\n` +
+                    `1. Apri calendar.google.com\n` +
+                    `2. Clicca l'icona ⚙️ (Impostazioni)\n` +
+                    `3. Vai su "Importa ed esporta"\n` +
+                    `4. Clicca "Seleziona file dal computer"\n` +
+                    `5. Scegli il file appena scaricato\n` +
+                    `6. Clicca "Importa" ✅\n\n` +
+                    `🍎 Apple Calendar: Doppio click sul file\n` +
+                    `📧 Outlook: File → Importa → Calendario iCalendar\n\n` +
+                    `${impegni.length} impegni pronti per essere importati!`;
+                
+                aggiungiMessaggio(istruzioni, 'assistant');
                 
             } catch (error) {
                 console.error('Errore export iCal:', error);

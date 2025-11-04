@@ -126,10 +126,11 @@ def create_reflection():
     
     # ========================================
     # SAFETY CHECKS (Crisis, Banned Keywords, Spam, Minors)
+    # TEMPORANEAMENTE DISABLED - Riattivare quando database fully stable!
     # ========================================
-    is_safe, error_type, extra_info = is_safe_content(text)
+    # is_safe, error_type, extra_info = is_safe_content(text)
     
-    if not is_safe:
+    if False:  # TEMPORARY - safety checks disabled
         if error_type == 'crisis_detected':
             return jsonify({
                 'success': False,
@@ -169,21 +170,21 @@ def create_reflection():
     if not profilo:
         return jsonify({'success': False, 'error': 'Unable to identify user'}), 401
     
-    # Check if user is banned
-    from app.models.community import UserBan
-    active_ban = UserBan.query.filter_by(
-        user_id=profilo.id,
-        active=True
-    ).first()
-    
-    if active_ban:
-        return jsonify({
-            'success': False,
-            'banned': True,
-            'ban_type': active_ban.ban_type,
-            'reason': active_ban.reason,
-            'expires_at': active_ban.expires_at.isoformat() if active_ban.expires_at else None
-        }), 403
+    # Check if user is banned - TEMPORARY DISABLED
+    # from app.models.community import UserBan
+    # active_ban = UserBan.query.filter_by(
+    #     user_id=profilo.id,
+    #     active=True
+    # ).first()
+    # 
+    # if active_ban:
+    #     return jsonify({
+    #         'success': False,
+    #         'banned': True,
+    #         'ban_type': active_ban.ban_type,
+    #         'reason': active_ban.reason,
+    #         'expires_at': active_ban.expires_at.isoformat() if active_ban.expires_at else None
+    #     }), 403
     
     # Sentiment analysis (basic)
     from app.core.diario_manager import DiarioManager

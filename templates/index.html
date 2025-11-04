@@ -1365,100 +1365,34 @@
     </div>
 
     <div class="container">
-        <!-- Hero Section -->
-        <div class="hero">
-            <div class="hero-badge">🔥 #102 su Product Hunt • Gratis • In Italiano 🇮🇹</div>
-            <h1>🧠 Assistente Intelligente</h1>
-            <p class="subtitle">Organizza vita, studio e obiettivi con l'intelligenza artificiale. Tutto in linguaggio naturale.</p>
-            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
-                <button class="hero-cta" onclick="scrollToChat()">Inizia Subito - È Gratis!</button>
-                <button class="hero-cta-secondary" onclick="toggleQuickTour()">🧭 Tour Rapido</button>
-            </div>
-            
-            <!-- Features -->
-            <div class="hero-features">
-                <div class="hero-feature">
-                    <div class="hero-feature-icon">💬</div>
-                    <div class="hero-feature-title">Chat Intelligente</div>
-                    <div class="hero-feature-desc">Parla come fai con un amico, l'AI capisce tutto</div>
-                </div>
-                <div class="hero-feature">
-                    <div class="hero-feature-icon">📊</div>
-                    <div class="hero-feature-title">Analytics Automatiche</div>
-                    <div class="hero-feature-desc">Grafici e statistiche senza sforzo</div>
-                </div>
-                <div class="hero-feature">
-                    <div class="hero-feature-icon">🎯</div>
-                    <div class="hero-feature-title">Obiettivi Tracciati</div>
-                    <div class="hero-feature-desc">Raggiungi i tuoi goal passo dopo passo</div>
-                </div>
-            </div>
+        <!-- Header Minimale -->
+        <div style="text-align: center; color: white; padding: 30px 20px 20px 20px;">
+            <h1 style="font-size: 2em; margin-bottom: 10px;">🧠 Assistente Intelligente</h1>
+            <p style="opacity: 0.8; font-size: 0.95em;">Organizza vita, studio e obiettivi • Gratis 🇮🇹</p>
+            <button class="hero-cta-secondary" onclick="toggleQuickTour()" style="margin-top: 15px;">🧭 Tour Rapido</button>
         </div>
 
-        <!-- GIF Showcase Section -->
-        <div class="gif-showcase">
-            <h2 class="gif-showcase-title">🎬 Guarda Come Funziona</h2>
-            <p class="gif-showcase-subtitle">Demo interattive delle funzionalità principali</p>
-            
-            <div class="gif-grid">
-                <!-- GIF 1: Chat to Goal -->
-                <div class="gif-card">
-                    <div class="gif-wrapper">
-                        <img src="/static/screenshots/6-chat-demo.png" alt="Chat to Goal Demo" loading="lazy">
-                    </div>
-                    <h3 class="gif-title">💬 Scrivi in Linguaggio Naturale</h3>
-                    <p class="gif-description">
-                        Dici "Voglio studiare Python 3 ore a settimana" e l'AI crea automaticamente l'obiettivo.
-                        Niente form complicati!
-                    </p>
-                    <span class="gif-badge">🎯 Obiettivi Automatici</span>
-                </div>
-
-                <!-- GIF 2: Plan Generation -->
-                <div class="gif-card">
-                    <div class="gif-wrapper">
-                        <img src="/static/screenshots/2-calendario.png" alt="Plan Generation Demo" loading="lazy">
-                    </div>
-                    <h3 class="gif-title">🤖 Pianificazione Automatica</h3>
-                    <p class="gif-description">
-                        Click su "Genera Piano" e l'AI organizza la tua settimana perfetta in pochi secondi.
-                        Magia pura!
-                    </p>
-                    <span class="gif-badge">📅 Piano Perfetto</span>
-                </div>
-
-                <!-- GIF 3: Diary Sentiment -->
-                <div class="gif-card">
-                    <div class="gif-wrapper">
-                        <img src="/static/screenshots/diario-swipe-demo.gif" alt="Diary Sentiment Demo" loading="lazy">
-                    </div>
-                    <h3 class="gif-title">😊 Diario Intelligente</h3>
-                    <p class="gif-description">
-                        Scrivi le tue riflessioni e l'AI analizza automaticamente il tuo stato emotivo.
-                        Conosci te stesso meglio!
-                    </p>
-                    <span class="gif-badge">💭 Sentiment Analysis</span>
-                </div>
-
-                <!-- GIF 4: Full Dashboard -->
-                <div class="gif-card">
-                    <div class="gif-wrapper">
-                        <img src="/static/screenshots/5-dashboard-full.png" alt="Full Dashboard Demo" loading="lazy">
-                    </div>
-                    <h3 class="gif-title">📊 Tutto Sotto Controllo</h3>
-                    <p class="gif-description">
-                        Calendario, obiettivi, spese, diario e analytics. Tutto sincronizzato e aggiornato in tempo reale.
-                    </p>
-                    <span class="gif-badge">🎨 Dashboard Completa</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab Navigation -->
+        <!-- Tab Navigation Funzionanti -->
         <div class="tab-navigation">
-            <button class="tab-btn active" onclick="window.location.href='/'">
+            <button class="tab-btn active" onclick="switchTab('chat')" id="tabChat">
+                <span>💬</span>
+                <span>Chat AI</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('calendario')" id="tabCalendario">
+                <span>📅</span>
+                <span>Calendario</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('diario')" id="tabDiario">
                 <span>📔</span>
-                <span>Il Mio Spazio</span>
+                <span>Diario</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('spese')" id="tabSpese">
+                <span>💰</span>
+                <span>Spese</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('analytics')" id="tabAnalytics">
+                <span>📊</span>
+                <span>Analytics</span>
             </button>
             <button class="tab-btn" onclick="window.location.href='/community'">
                 <span>🤝</span>
@@ -3922,6 +3856,81 @@
             chatElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
+        // ============================================
+        // TAB NAVIGATION
+        // ============================================
+        
+        function switchTab(tabName) {
+            // Rimuovi active da tutti i tab
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Attiva il tab cliccato
+            const tabButton = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+            if (tabButton) {
+                tabButton.classList.add('active');
+            }
+            
+            // Scroll alla sezione corrispondente
+            let targetElement;
+            
+            switch(tabName) {
+                case 'chat':
+                    targetElement = document.querySelector('.chat-container');
+                    setTimeout(() => {
+                        document.getElementById('chatInput').focus();
+                    }, 600);
+                    break;
+                    
+                case 'calendario':
+                    targetElement = document.getElementById('pianoSettimanale');
+                    if (!targetElement) {
+                        // Fallback: cerca la card del calendario
+                        targetElement = Array.from(document.querySelectorAll('.card')).find(
+                            card => card.querySelector('h2')?.textContent.includes('Piano')
+                        );
+                    }
+                    break;
+                    
+                case 'diario':
+                    // Apri diario-book in una nuova tab
+                    window.open('/diario-book', '_blank');
+                    return;
+                    
+                case 'spese':
+                    // Cerca la sezione spese
+                    targetElement = Array.from(document.querySelectorAll('.card')).find(
+                        card => card.querySelector('h2')?.textContent.includes('Spese') ||
+                               card.querySelector('h2')?.textContent.includes('Budget')
+                    );
+                    break;
+                    
+                case 'analytics':
+                    targetElement = document.getElementById('analyticsDashboard');
+                    if (!targetElement) {
+                        // Fallback: cerca card con grafici
+                        targetElement = Array.from(document.querySelectorAll('.card')).find(
+                            card => card.querySelector('canvas')
+                        );
+                    }
+                    break;
+            }
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Highlight temporaneo
+                targetElement.classList.add('section-highlight');
+                setTimeout(() => {
+                    targetElement.classList.remove('section-highlight');
+                }, 2500);
+            }
+        }
+        
         // ============================================
         // QUICK TOUR MENU
         // ============================================

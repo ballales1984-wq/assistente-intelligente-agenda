@@ -797,11 +797,17 @@ def gestisci_diario():
         return jsonify(diario_entry.to_dict()), 201
     
     # GET - ultime 30 entry del diario
-    entries = profilo.diario_entries.order_by(
-        DiarioGiornaliero.data.desc()
-    ).limit(30).all()
-    
-    return jsonify([entry.to_dict() for entry in entries])
+    try:
+        entries = profilo.diario_entries.order_by(
+            DiarioGiornaliero.data.desc()
+        ).limit(30).all()
+        
+        return jsonify([entry.to_dict() for entry in entries])
+    except Exception as e:
+        # Fallback sicuro se ci sono problemi
+        from flask import current_app
+        current_app.logger.error(f"Error in gestisci_diario: {e}")
+        return jsonify([]), 200  # Ritorna array vuoto invece di errore
 
 
 @bp.route('/api/diario/<int:id>', methods=['GET', 'DELETE'])

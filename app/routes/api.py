@@ -861,24 +861,37 @@ def cerca_diario():
 @bp.route('/api/diario/<int:id>/share', methods=['POST'])
 def share_diario(id):
     """Genera link di condivisione per una entry del diario"""
-    entry = DiarioGiornaliero.query.get_or_404(id)
-    
-    # Genera o recupera il token
-    token = entry.generate_share_token()
-    entry.is_public = True
-    
-    db.session.commit()
-    
-    # Crea URL completo
-    base_url = request.host_url.rstrip('/')
-    share_url = entry.get_share_url(base_url)
-    
-    return jsonify({
-        'success': True,
-        'share_url': share_url,
-        'share_token': token,
-        'message': 'Link di condivisione creato!'
-    })
+    try:
+        entry = DiarioGiornaliero.query.get_or_404(id)
+        
+        # Verifica che i campi condivisione esistano
+        if not hasattr(entry, 'share_token'):
+            return jsonify({
+                'success': False,
+                'error': 'Sharing feature not yet available. Database migration pending.'
+            }), 503
+        
+        # Genera o recupera il token
+        token = entry.generate_share_token()
+        entry.is_public = True
+        
+        db.session.commit()
+        
+        # Crea URL completo
+        base_url = request.host_url.rstrip('/')
+        share_url = entry.get_share_url(base_url)
+        
+        return jsonify({
+            'success': True,
+            'share_url': share_url,
+            'share_token': token,
+            'message': 'Link di condivisione creato!'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 
 @bp.route('/api/diario/<int:id>/unshare', methods=['POST'])
@@ -897,13 +910,18 @@ def unshare_diario(id):
 @bp.route('/shared/diary/<token>')
 def view_shared_diary(token):
     """Visualizza una entry del diario condivisa pubblicamente"""
-    entry = DiarioGiornaliero.query.filter_by(share_token=token, is_public=True).first_or_404()
-    
-    # Incrementa il contatore di visualizzazioni
-    entry.share_count += 1
-    db.session.commit()
-    
-    return render_template('shared_diary.html', entry=entry)
+    try:
+        entry = DiarioGiornaliero.query.filter_by(share_token=token, is_public=True).first_or_404()
+        
+        # Incrementa il contatore di visualizzazioni (se campo esiste)
+        if hasattr(entry, 'share_count'):
+            entry.share_count += 1
+            db.session.commit()
+        
+        return render_template('shared_diary.html', entry=entry)
+    except Exception as e:
+        # Fallback se campi condivisione non esistono
+        return jsonify({'error': 'Sharing feature not yet available'}), 503
 
 
 @bp.route('/api/shared/board', methods=['GET'])

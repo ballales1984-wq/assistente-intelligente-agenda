@@ -45,10 +45,11 @@ class DiarioGiornaliero(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
         if include_share:
+            # Accesso sicuro ai campi che potrebbero non esistere
             data.update({
-                'share_token': self.share_token,
-                'is_public': self.is_public,
-                'share_count': self.share_count
+                'share_token': getattr(self, 'share_token', None),
+                'is_public': getattr(self, 'is_public', False),
+                'share_count': getattr(self, 'share_count', 0)
             })
         return data
     

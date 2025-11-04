@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Bacheca pubblica di riflessioni condivise dalla community di Assistente Intelligente">
+    <meta property="og:title" content="Bacheca Pubblica - Riflessioni Condivise">
+    <meta property="og:description" content="Scopri riflessioni, pensieri e obiettivi condivisi dalla nostra community">
+    <meta property="og:type" content="website">
+    <title>📋 Bacheca Pubblica - Riflessioni Condivise</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px 35px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .entry-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .entry-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .entry-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+        }
+
+        .entry-date {
+            color: #999;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+
+        .entry-sentiment {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .entry-text {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            max-height: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .entry-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .keyword {
+            background: #e8e6ff;
+            color: #667eea;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.85em;
+        }
+
+        .entry-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .view-count {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .read-more {
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .read-more:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+            font-size: 1.5em;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .empty h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .empty p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 40px 0;
+        }
+
+        .page-btn {
+            background: white;
+            color: #667eea;
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-btn:not(:disabled):hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-info {
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: #667eea;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .board {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Bacheca Pubblica</h1>
+            <p>Riflessioni e pensieri condivisi dalla community</p>
+            
+            <div class="nav-buttons">
+                <a href="/" class="nav-btn">🏠 Homepage</a>
+                <a href="/diario-book" class="nav-btn">📖 Il Mio Diario</a>
+                <a href="/community" class="nav-btn">🤝 Community</a>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalEntries">0</div>
+                <div class="stat-label">Riflessioni Condivise</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">🌍</div>
+                <div class="stat-label">Community Globale</div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">
+            Caricamento riflessioni... 📚
+        </div>
+
+        <div id="emptyState" class="empty" style="display: none;">
+            <h2>📋 Nessuna Riflessione Condivisa</h2>
+            <p>Sii il primo a condividere una riflessione dal tuo diario!</p>
+            <a href="/diario-book" class="read-more">Vai al Diario</a>
+        </div>
+
+        <div id="board" class="board" style="display: none;"></div>
+
+        <div id="pagination" class="pagination" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+
+        async function loadBoard(page = 1) {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('board').style.display = 'none';
+                document.getElementById('pagination').style.display = 'none';
+
+                const response = await fetch(`/api/shared/board?page=${page}&per_page=12`);
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.entries && data.entries.length > 0) {
+                    document.getElementById('board').style.display = 'grid';
+                    document.getElementById('totalEntries').textContent = data.total;
+
+                    currentPage = data.page;
+                    totalPages = data.pages;
+
+                    renderEntries(data.entries);
+                    renderPagination(data);
+                } else {
+                    document.getElementById('emptyState').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Errore caricamento bacheca:', error);
+                document.getElementById('loading').textContent = '❌ Errore nel caricamento. Riprova.';
+            }
+        }
+
+        function renderEntries(entries) {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+
+            entries.forEach(entry => {
+                const sentiment = getSentimentEmoji(entry.sentiment);
+                const data = new Date(entry.data).toLocaleDateString('it-IT', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                const card = document.createElement('div');
+                card.className = 'entry-card';
+                card.onclick = () => window.location.href = `/shared/diary/${entry.share_token}`;
+
+                let keywordsHTML = '';
+                if (entry.parole_chiave && entry.parole_chiave.length > 0) {
+                    keywordsHTML = `
+                        <div class="entry-keywords">
+                            ${entry.parole_chiave.map(k => `<span class="keyword">#${k.trim()}</span>`).join('')}
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="entry-date">📅 ${data}</div>
+                    <div class="entry-sentiment">${sentiment}</div>
+                    <div class="entry-text">${entry.testo_preview}</div>
+                    ${keywordsHTML}
+                    <div class="entry-footer">
+                        <span class="view-count">👁️ ${entry.share_count} visualizzazioni</span>
+                        <span class="read-more">Leggi →</span>
+                    </div>
+                `;
+
+                board.appendChild(card);
+            });
+        }
+
+        function renderPagination(data) {
+            if (data.pages <= 1) return;
+
+            const pagination = document.getElementById('pagination');
+            pagination.style.display = 'flex';
+            pagination.innerHTML = '';
+
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn';
+            prevBtn.textContent = '← Precedente';
+            prevBtn.disabled = !data.has_prev;
+            prevBtn.onclick = () => loadBoard(currentPage - 1);
+            pagination.appendChild(prevBtn);
+
+            const pageInfo = document.createElement('div');
+            pageInfo.className = 'page-info';
+            pageInfo.textContent = `Pagina ${data.page} di ${data.pages}`;
+            pagination.appendChild(pageInfo);
+
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn';
+            nextBtn.textContent = 'Successiva →';
+            nextBtn.disabled = !data.has_next;
+            nextBtn.onclick = () => loadBoard(currentPage + 1);
+            pagination.appendChild(nextBtn);
+        }
+
+        function getSentimentEmoji(sentiment) {
+            const emojiMap = {
+                'positivo': '😊✨',
+                'neutro': '😌',
+                'negativo': '😔💭',
+                'molto_positivo': '🤩🎉',
+                'molto_negativo': '😢'
+            };
+            return emojiMap[sentiment] || '📝';
+        }
+
+        // Carica la bacheca al caricamento della pagina
+        window.addEventListener('load', () => loadBoard(1));
+    </script>
+</body>
+</html>
+

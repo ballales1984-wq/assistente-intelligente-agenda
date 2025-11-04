@@ -417,6 +417,26 @@
             border-radius: 10px;
             max-width: 80%;
             animation: slideIn 0.3s ease;
+            position: relative;
+        }
+        
+        .share-message-btn {
+            margin-top: 10px;
+            padding: 6px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+        }
+        
+        .share-message-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         @keyframes slideIn {
@@ -1565,6 +1585,19 @@
                 
                 // Aggiungi risposta assistente
                 aggiungiMessaggio(rispostaFinale, 'assistant');
+                
+                // Se è una voce del diario, ri-mostra il messaggio utente con il bottone condividi
+                if (data.diario_id) {
+                    // Rimuovi l'ultimo messaggio utente (senza bottone)
+                    const container = document.getElementById('chatMessages');
+                    const userMessages = container.querySelectorAll('.message.user');
+                    if (userMessages.length > 0) {
+                        const lastUserMessage = userMessages[userMessages.length - 1];
+                        lastUserMessage.remove();
+                    }
+                    // Aggiungilo di nuovo con il bottone condividi
+                    aggiungiMessaggio(messaggio, 'user', data.diario_id);
+                }
 
                 // ============================================
                 // LETTURA VOCALE AUTOMATICA per impegni/obiettivi/spese
@@ -1592,7 +1625,7 @@
             }
         }
 
-        function aggiungiMessaggio(testo, tipo) {
+        function aggiungiMessaggio(testo, tipo, diarioId = null) {
             const container = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${tipo}`;
@@ -1604,9 +1637,60 @@
             
             // Usa innerHTML per supportare formattazione (safe perché controlliamo i dati)
             messageDiv.innerHTML = testo.replace(/\n/g, '<br>');
+            
+            // Aggiungi bottone condividi se è un messaggio di diario
+            if (diarioId && tipo === 'user') {
+                const shareBtn = document.createElement('button');
+                shareBtn.className = 'share-message-btn';
+                shareBtn.innerHTML = '🔗 Condividi';
+                shareBtn.onclick = () => condividiMessaggioDiario(diarioId);
+                messageDiv.appendChild(shareBtn);
+            }
+            
             container.appendChild(messageDiv);
             // Scroll smooth per vedere la risposta
             container.scrollTop = container.scrollHeight;
+        }
+        
+        async function condividiMessaggioDiario(diarioId) {
+            try {
+                const response = await fetch(`/api/diario/${diarioId}/share`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const shareUrl = result.share_url;
+                    const shareText = '📖 Guarda questa riflessione dal mio Diario!';
+                    
+                    // Prova Web Share API (mobile)
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                title: 'Riflessione dal Diario',
+                                text: shareText,
+                                url: shareUrl
+                            });
+                            aggiungiMessaggio('✅ Messaggio condiviso!', 'assistant');
+                            return;
+                        } catch (err) {
+                            if (err.name !== 'AbortError') {
+                                console.log('Web Share fallito, uso fallback');
+                            }
+                        }
+                    }
+                    
+                    // Fallback: copia negli appunti
+                    await navigator.clipboard.writeText(shareUrl);
+                    aggiungiMessaggio(`✅ Link copiato negli appunti!\n\n${shareUrl}\n\n📱 Condividi su:\n• Twitter: twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}\n• WhatsApp: wa.me/?text=${encodeURIComponent(shareUrl)}`, 'assistant');
+                } else {
+                    aggiungiMessaggio('❌ Errore nella condivisione. Riprova.', 'assistant');
+                }
+            } catch (error) {
+                console.error('Errore condivisione:', error);
+                aggiungiMessaggio('❌ Errore durante la condivisione.', 'assistant');
+            }
         }
 
         async function caricaObiettivi() {

@@ -61,15 +61,16 @@ class DiarioGiornaliero(db.Model):
         """Ottiene le riflessioni come lista"""
         return json.loads(self.riflessioni) if self.riflessioni else []
     
-    def generate_share_token(self):
-        """Genera un token univoco per la condivisione"""
-        if not self.share_token:
-            self.share_token = secrets.token_urlsafe(32)
-        return self.share_token
-    
-    def get_share_url(self, base_url=''):
-        """Ottiene l'URL di condivisione"""
-        if not self.share_token:
-            self.generate_share_token()
-        return f"{base_url}/shared/diary/{self.share_token}"
+    # FUNZIONI CONDIVISIONE - TEMPORANEAMENTE DISABILITATE
+    # def generate_share_token(self):
+    #     """Genera un token univoco per la condivisione"""
+    #     if not self.share_token:
+    #         self.share_token = secrets.token_urlsafe(32)
+    #     return self.share_token
+    # 
+    # def get_share_url(self, base_url=''):
+    #     """Ottiene l'URL di condivisione"""
+    #     if not self.share_token:
+    #         self.generate_share_token()
+    #     return f"{base_url}/shared/diary/{self.share_token}"
 

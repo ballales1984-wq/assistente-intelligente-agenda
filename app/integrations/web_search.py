@@ -14,6 +14,15 @@ from duckduckgo_search import DDGS
 logger = logging.getLogger(__name__)
 
 
+# Lazy import per evitare circular dependency
+def _get_cache():
+    try:
+        from app import cache
+        return cache
+    except:
+        return None
+
+
 class WebSearchService:
     """
     Servizio di ricerca web usando DuckDuckGo.
@@ -47,13 +56,19 @@ class WebSearchService:
         """
         # Check cache first (24h cache per query comuni)
         cache_key = f"search:{query.lower().replace(' ', '_')}"
-        cached_results = cache.get(cache_key)
-
-        if cached_results:
-            logger.info(f"✅ Cache HIT: {cache_key}")
-            return cached_results
-
-        logger.info(f"❌ Cache MISS: {cache_key}")
+        
+        try:
+            cache_inst = _get_cache()
+            cached_results = cache_inst.get(cache_key) if cache_inst else None
+            
+            if cached_results:
+                logger.info(f"✅ Cache HIT: {cache_key}")
+                return cached_results
+            
+            logger.info(f"❌ Cache MISS: {cache_key}")
+        except Exception:
+            # Cache not available, continue without
+            pass
 
         try:
             logger.info(f"🔍 DuckDuckGo search: '{query}' (max: {max_results})")
@@ -85,8 +100,14 @@ class WebSearchService:
 
             # Salva in cache (24 ore)
             if results:
-                cache.set(cache_key, results, timeout=86400)
-                logger.info(f"💾 Cache SET: {cache_key} (TTL: 24h)")
+                try:
+                    cache_inst = _get_cache()
+                    if cache_inst:
+                        cache_inst.set(cache_key, results, timeout=86400)
+                        logger.info(f"💾 Cache SET: {cache_key} (TTL: 24h)")
+                except Exception:
+                    # Cache not available, continue without
+                    pass
 
             return results
 
@@ -107,7 +128,8 @@ class WebSearchService:
         """
         # Check cache first (1 ora per news - aggiornamento frequente)
         cache_key = f"news:{query.lower().replace(' ', '_')}"
-        cached_results = cache.get(cache_key)
+        cache = _get_cache()
+        cached_results = cache.get(cache_key) if cache else None
 
         if cached_results:
             logger.info(f"✅ Cache HIT: {cache_key}")
@@ -139,7 +161,9 @@ class WebSearchService:
 
             # Salva in cache (1 ora - news cambiano spesso)
             if results:
-                cache.set(cache_key, results, timeout=3600)
+                cache = _get_cache()
+                if cache:
+                    cache.set(cache_key, results, timeout=3600)
                 logger.info(f"💾 Cache SET: {cache_key} (TTL: 1h)")
 
             return results

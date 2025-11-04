@@ -857,6 +857,54 @@ def cerca_diario():
     return jsonify([entry.to_dict() for entry in entries])
 
 
+@bp.route('/api/diario/<int:id>/share', methods=['POST'])
+def share_diario(id):
+    """Genera link di condivisione per una entry del diario"""
+    entry = DiarioGiornaliero.query.get_or_404(id)
+    
+    # Genera o recupera il token
+    token = entry.generate_share_token()
+    entry.is_public = True
+    
+    db.session.commit()
+    
+    # Crea URL completo
+    base_url = request.host_url.rstrip('/')
+    share_url = entry.get_share_url(base_url)
+    
+    return jsonify({
+        'success': True,
+        'share_url': share_url,
+        'share_token': token,
+        'message': 'Link di condivisione creato!'
+    })
+
+
+@bp.route('/api/diario/<int:id>/unshare', methods=['POST'])
+def unshare_diario(id):
+    """Rimuove la condivisione pubblica di una entry"""
+    entry = DiarioGiornaliero.query.get_or_404(id)
+    entry.is_public = False
+    db.session.commit()
+    
+    return jsonify({
+        'success': True,
+        'message': 'Condivisione rimossa'
+    })
+
+
+@bp.route('/shared/diary/<token>')
+def view_shared_diary(token):
+    """Visualizza una entry del diario condivisa pubblicamente"""
+    entry = DiarioGiornaliero.query.filter_by(share_token=token, is_public=True).first_or_404()
+    
+    # Incrementa il contatore di visualizzazioni
+    entry.share_count += 1
+    db.session.commit()
+    
+    return render_template('shared_diary.html', entry=entry)
+
+
 # ═══════════════════════════════════════════════════════════════
 # ENDPOINT TEMPORALI - Passato, Presente, Futuro
 # ═══════════════════════════════════════════════════════════════

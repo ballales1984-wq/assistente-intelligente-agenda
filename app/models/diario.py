@@ -2,6 +2,7 @@
 from app import db
 from datetime import datetime, date
 import json
+import secrets
 
 
 class DiarioGiornaliero(db.Model):
@@ -20,6 +21,11 @@ class DiarioGiornaliero(db.Model):
     parole_chiave = db.Column(db.String(500))  # Parole chiave separate da virgola
     sentiment = db.Column(db.String(20))  # positivo, neutro, negativo
     
+    # Condivisione
+    share_token = db.Column(db.String(64), unique=True, nullable=True, index=True)
+    is_public = db.Column(db.Boolean, default=False)
+    share_count = db.Column(db.Integer, default=0)
+    
     # Metadata
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -27,9 +33,9 @@ class DiarioGiornaliero(db.Model):
     def __repr__(self):
         return f'<DiarioGiornaliero {self.data}>'
     
-    def to_dict(self):
+    def to_dict(self, include_share=False):
         """Converte il diario in dizionario"""
-        return {
+        data = {
             'id': self.id,
             'data': self.data.isoformat() if self.data else None,
             'testo': self.testo,
@@ -38,6 +44,13 @@ class DiarioGiornaliero(db.Model):
             'sentiment': self.sentiment,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+        if include_share:
+            data.update({
+                'share_token': self.share_token,
+                'is_public': self.is_public,
+                'share_count': self.share_count
+            })
+        return data
     
     def set_riflessioni(self, riflessioni_list):
         """Imposta le riflessioni da una lista"""
@@ -46,4 +59,16 @@ class DiarioGiornaliero(db.Model):
     def get_riflessioni(self):
         """Ottiene le riflessioni come lista"""
         return json.loads(self.riflessioni) if self.riflessioni else []
+    
+    def generate_share_token(self):
+        """Genera un token univoco per la condivisione"""
+        if not self.share_token:
+            self.share_token = secrets.token_urlsafe(32)
+        return self.share_token
+    
+    def get_share_url(self, base_url=''):
+        """Ottiene l'URL di condivisione"""
+        if not self.share_token:
+            self.generate_share_token()
+        return f"{base_url}/shared/diary/{self.share_token}"
 

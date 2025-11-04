@@ -75,6 +75,69 @@ with app.app_context():
         except Exception as e:
             print(f"  last_seen: {e}")
     
+    # Add sharing columns to diario table
+    print("\n🔧 Adding sharing columns to diario...")
+    
+    with db.engine.connect() as conn:
+        # Check and add share_token
+        try:
+            result = conn.execute(text("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name='diario' AND column_name='share_token'
+            """))
+            
+            if not result.fetchone():
+                print("📝 Adding share_token column...")
+                conn.execute(text("ALTER TABLE diario ADD COLUMN share_token VARCHAR(64)"))
+                conn.commit()
+                print("✅ share_token added")
+            else:
+                print("✓ share_token exists")
+        except Exception as e:
+            print(f"  share_token: {e}")
+        
+        # Check and add is_public
+        try:
+            result = conn.execute(text("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name='diario' AND column_name='is_public'
+            """))
+            
+            if not result.fetchone():
+                print("📝 Adding is_public column...")
+                conn.execute(text("ALTER TABLE diario ADD COLUMN is_public BOOLEAN DEFAULT FALSE"))
+                conn.commit()
+                print("✅ is_public added")
+            else:
+                print("✓ is_public exists")
+        except Exception as e:
+            print(f"  is_public: {e}")
+        
+        # Check and add share_count
+        try:
+            result = conn.execute(text("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name='diario' AND column_name='share_count'
+            """))
+            
+            if not result.fetchone():
+                print("📝 Adding share_count column...")
+                conn.execute(text("ALTER TABLE diario ADD COLUMN share_count INTEGER DEFAULT 0"))
+                conn.commit()
+                print("✅ share_count added")
+            else:
+                print("✓ share_count exists")
+        except Exception as e:
+            print(f"  share_count: {e}")
+        
+        # Create unique index on share_token
+        try:
+            conn.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ix_diario_share_token ON diario (share_token)"))
+            conn.commit()
+            print("✅ Unique index on share_token created")
+        except Exception as e:
+            print(f"  index: {e}")
+    
     # Verify all tables now exist
     inspector = inspect(db.engine)
     final_tables = inspector.get_table_names()

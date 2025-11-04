@@ -307,6 +307,11 @@
                         <div class="page-sentiment">${sentiment}</div>
                         <div class="page-content">${entry.testo || entry.contenuto || 'Nessun testo disponibile'}</div>
                         ${entry.parole_chiave ? `<div class="page-tags">🏷️ ${entry.parole_chiave}</div>` : ''}
+                        <div style="margin-top: 20px; text-align: center;">
+                            <button onclick="condividiEntry(${entry.id}, event)" style="background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 50px; cursor: pointer; font-size: 0.9em; font-weight: 600;">
+                                🔗 Condividi
+                            </button>
+                        </div>
                         <div class="page-number">${index + 1}</div>
                     </div>
                 `;
@@ -390,6 +395,94 @@
                 
                 prevBtn.disabled = currentPage <= 0;
                 nextBtn.disabled = currentPage >= totalPages - 2;
+            }
+        }
+
+        // Funzione di condivisione
+        async function condividiEntry(entryId, event) {
+            event.stopPropagation(); // Previene il flip della pagina
+            
+            try {
+                // Chiama API per generare link di condivisione
+                const response = await fetch(`/api/diario/${entryId}/share`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const shareUrl = result.share_url;
+                    const shareText = '📖 Guarda questa riflessione dal mio Diario!';
+                    
+                    // Prova Web Share API (mobile)
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                title: 'Riflessione dal Diario',
+                                text: shareText,
+                                url: shareUrl
+                            });
+                            alert('✅ Condivisione completata!');
+                            return;
+                        } catch (err) {
+                            if (err.name !== 'AbortError') {
+                                console.log('Web Share fallito, uso fallback');
+                            }
+                        }
+                    }
+                    
+                    // Fallback: mostra opzioni di condivisione
+                    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+                    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+                    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+                    
+                    const choice = confirm(
+                        `🔗 Link creato!\n\n` +
+                        `Il tuo link di condivisione è pronto.\n\n` +
+                        `Premi OK per copiarlo negli appunti, o ANNULLA per aprire le opzioni social.`
+                    );
+                    
+                    if (choice) {
+                        // Copia negli appunti
+                        await navigator.clipboard.writeText(shareUrl);
+                        alert('✅ Link copiato negli appunti!\n\n' + shareUrl);
+                    } else {
+                        // Mostra opzioni social
+                        const socialChoice = prompt(
+                            `Scegli dove condividere:\n\n` +
+                            `1 - Twitter\n` +
+                            `2 - WhatsApp\n` +
+                            `3 - Facebook\n` +
+                            `4 - Copia link\n\n` +
+                            `Digita il numero:`
+                        );
+                        
+                        switch(socialChoice) {
+                            case '1':
+                                window.open(twitterUrl, '_blank');
+                                break;
+                            case '2':
+                                window.open(whatsappUrl, '_blank');
+                                break;
+                            case '3':
+                                window.open(facebookUrl, '_blank');
+                                break;
+                            case '4':
+                                await navigator.clipboard.writeText(shareUrl);
+                                alert('✅ Link copiato!\n\n' + shareUrl);
+                                break;
+                            default:
+                                // Copia comunque il link
+                                await navigator.clipboard.writeText(shareUrl);
+                                alert('Link copiato!\n\n' + shareUrl);
+                        }
+                    }
+                } else {
+                    alert('❌ Errore nella creazione del link di condivisione');
+                }
+            } catch (error) {
+                console.error('Errore condivisione:', error);
+                alert('❌ Errore durante la condivisione. Riprova.');
             }
         }
 

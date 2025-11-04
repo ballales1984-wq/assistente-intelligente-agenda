@@ -2,6 +2,14 @@
 
 # 🧠 Assistente Intelligente
 
+### 🌟 **NEW:** Building the First Social Network That Makes You Better
+
+**Join us in creating a community platform where people share real thoughts, support each other's growth, and actually improve their lives—no toxic algorithms, no fake likes, no manipulation.**
+
+> [Read the full VISION](VISION.md) | [See the ROADMAP](ROADMAP_COMMUNITY.md) | [Start Contributing](CONTRIBUTING.md)
+
+---
+
 ### Il tuo compagno AI per organizzare vita, studio e obiettivi
 
 [![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge&logo=render)](https://assistente-intelligente-agenda.onrender.com/)
@@ -320,7 +328,91 @@ Vedi [NEXT_LEVEL_ROADMAP.md](NEXT_LEVEL_ROADMAP.md) per dettagli completi.
 
 ---
 
-## 🤝 Come Contribuire
+## 🤝 Contributors Welcome!
+
+**We're building something special and we need YOU!** 🚀
+
+### 🌟 The Big Vision
+
+We're transforming this personal productivity app into a **community platform** where people:
+- Share real reflections (not fake social media)
+- Support each other's growth
+- Track goals together
+- Build accountability circles
+- Actually improve their mental health
+
+Think: **"Facebook for genuine thoughts"** or **"BeReal for personal growth"**
+
+[👉 Read the full VISION](VISION.md)
+
+### 🛠️ How to Help
+
+**We need:**
+- 💻 Developers (Python, JavaScript, Mobile)
+- 🎨 Designers (UI/UX for community features)
+- 🌍 Translators (we have 7 languages, let's make it 20+!)
+- 📝 Writers (docs, blog posts, tutorials)
+- 🧪 Testers (try features, report bugs)
+- 💬 Community Managers (when we launch!)
+
+**No experience?** No problem! Look for `good-first-issue` label.
+
+[👉 Start Contributing Guide](CONTRIBUTING.md)
+
+### 🗺️ Roadmap
+
+**Phase 1 (Next 3 months):** Community MVP
+- Reflection sharing (opt-in)
+- Community feed
+- Accountability circles
+- Thoughtful reactions (no toxic likes!)
+
+**Phase 2 (3-6 months):** Growth Features
+- Matching algorithm (find similar journeys)
+- Monthly challenges
+- Advanced analytics
+
+**Phase 3 (6-12 months):** Scale
+- Premium tier
+- B2B for coaches/therapists
+- Mobile apps
+- 20+ languages
+
+[👉 Full Technical Roadmap](ROADMAP_COMMUNITY.md)
+
+### 🏆 Why Contribute?
+
+- ✨ Build something that **actually helps people**
+- 🌍 Reach **billions** (7 languages, expanding)
+- 💡 Learn from **real production code**
+- 🤝 Join an **awesome community**
+- 📈 Potential revenue share for core contributors
+- 😊 Feel good making the internet better!
+
+### 🚀 Quick Start
+
+```bash
+git clone https://github.com/ballales1984-wq/assistente-intelligente-agenda.git
+cd assistente-intelligente-agenda
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python run.py
+# Visit http://localhost:5000
+```
+
+[See full setup guide](CONTRIBUTING.md#getting-started)
+
+### 💬 Join the Discussion
+
+- 📋 [GitHub Issues](https://github.com/ballales1984-wq/assistente-intelligente-agenda/issues) - Bug reports & feature requests
+- 💡 [GitHub Discussions](https://github.com/ballales1984-wq/assistente-intelligente-agenda/discussions) - Ideas & questions
+- 🎯 [Project Board](https://github.com/users/ballales1984-wq/projects) - What we're working on
+- 💬 Discord - Coming soon!
+
+---
+
+## 🎯 Original Features (Already Built!)
 
 Contributi benvenuti! ❤️
 

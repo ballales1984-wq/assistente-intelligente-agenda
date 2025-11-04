@@ -79,54 +79,29 @@ with app.app_context():
     print("\n🔧 Adding sharing columns to diario...")
     
     with db.engine.connect() as conn:
-        # Check and add share_token
+        # Try PostgreSQL-safe approach
         try:
-            result = conn.execute(text("""
-                SELECT column_name FROM information_schema.columns 
-                WHERE table_name='diario' AND column_name='share_token'
-            """))
-            
-            if not result.fetchone():
-                print("📝 Adding share_token column...")
-                conn.execute(text("ALTER TABLE diario ADD COLUMN share_token VARCHAR(64)"))
-                conn.commit()
-                print("✅ share_token added")
-            else:
-                print("✓ share_token exists")
+            # Per PostgreSQL: usa IF NOT EXISTS (PostgreSQL 9.6+)
+            print("📝 Adding share_token column...")
+            conn.execute(text("ALTER TABLE diario ADD COLUMN IF NOT EXISTS share_token VARCHAR(64)"))
+            conn.commit()
+            print("✅ share_token added or already exists")
         except Exception as e:
             print(f"  share_token: {e}")
         
-        # Check and add is_public
         try:
-            result = conn.execute(text("""
-                SELECT column_name FROM information_schema.columns 
-                WHERE table_name='diario' AND column_name='is_public'
-            """))
-            
-            if not result.fetchone():
-                print("📝 Adding is_public column...")
-                conn.execute(text("ALTER TABLE diario ADD COLUMN is_public BOOLEAN DEFAULT FALSE"))
-                conn.commit()
-                print("✅ is_public added")
-            else:
-                print("✓ is_public exists")
+            print("📝 Adding is_public column...")
+            conn.execute(text("ALTER TABLE diario ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE"))
+            conn.commit()
+            print("✅ is_public added or already exists")
         except Exception as e:
             print(f"  is_public: {e}")
         
-        # Check and add share_count
         try:
-            result = conn.execute(text("""
-                SELECT column_name FROM information_schema.columns 
-                WHERE table_name='diario' AND column_name='share_count'
-            """))
-            
-            if not result.fetchone():
-                print("📝 Adding share_count column...")
-                conn.execute(text("ALTER TABLE diario ADD COLUMN share_count INTEGER DEFAULT 0"))
-                conn.commit()
-                print("✅ share_count added")
-            else:
-                print("✓ share_count exists")
+            print("📝 Adding share_count column...")
+            conn.execute(text("ALTER TABLE diario ADD COLUMN IF NOT EXISTS share_count INTEGER DEFAULT 0"))
+            conn.commit()
+            print("✅ share_count added or already exists")
         except Exception as e:
             print(f"  share_count: {e}")
         

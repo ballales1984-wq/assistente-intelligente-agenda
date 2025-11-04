@@ -3,18 +3,29 @@
 import os
 from flask import Flask, render_template, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_caching import Cache
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 from config import Config
 
 db = SQLAlchemy()
+cache = Cache()
+
 
 # Rate Limiter (protezione DDoS)
+# Usa Redis se disponibile, altrimenti memory
+def get_limiter_storage_uri():
+    redis_url = os.getenv("REDIS_URL")
+    if redis_url:
+        return redis_url
+    return "memory://"
+
+
 limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per day", "50 per hour"],
-    storage_uri="memory://",  # Per production: usa Redis
+    storage_uri=get_limiter_storage_uri(),
 )
 
 
@@ -113,6 +124,30 @@ def create_app(config_class=Config):
     # DATABASE
     # ========================================
     db.init_app(app)
+
+    # ========================================
+    # REDIS CACHING
+    # ========================================
+    redis_url = os.getenv("REDIS_URL")
+
+    if redis_url:
+        # Production: usa Redis
+        cache.init_app(
+            app,
+            config={
+                "CACHE_TYPE": "redis",
+                "CACHE_REDIS_URL": redis_url,
+                "CACHE_DEFAULT_TIMEOUT": 300,  # 5 minuti default
+                "CACHE_KEY_PREFIX": "agenda_",
+            },
+        )
+        app.logger.info("🔴 Redis caching attivato!")
+    else:
+        # Development: usa SimpleCache (memory)
+        cache.init_app(
+            app, config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 300}
+        )
+        app.logger.info("💾 SimpleCache attivato (dev mode)")
 
     # ========================================
     # BLUEPRINTS

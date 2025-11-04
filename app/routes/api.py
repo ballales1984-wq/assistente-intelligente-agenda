@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request, jsonify, render_template
 from datetime import datetime, timedelta, date
-from app import db, limiter
+from app import db, limiter, cache
 from app.models import UserProfile, Obiettivo, Impegno, DiarioGiornaliero, Spesa
 from app.core import InputManager, AgendaDinamica, MotoreAdattivo, DiarioManager
 from app.managers import PassatoManager, PresenteManager, FuturoManager, SpeseManager
@@ -872,6 +872,7 @@ def impegni_giorno(data):
 
 
 @bp.route("/api/statistiche", methods=["GET"])
+@cache.cached(timeout=300, key_prefix="stats")  # 5 min cache
 def statistiche():
     """Statistiche produttività"""
     profilo = UserProfile.query.first()
@@ -1264,6 +1265,7 @@ def simula_giorno_futuro(data):
 
 
 @bp.route("/api/futuro/giovedi", methods=["GET"])
+@cache.cached(timeout=3600, key_prefix="predictions_thursday")  # 1 ora cache
 def come_sara_giovedi():
     """Simula il prossimo giovedì"""
     profilo = UserProfile.query.first()
@@ -1295,6 +1297,7 @@ def proietta_competenze():
 
 
 @bp.route("/api/futuro/prossima-settimana", methods=["GET"])
+@cache.cached(timeout=3600, key_prefix="predictions")  # 1 ora cache
 def prevedi_prossima_settimana():
     """Previsione settimana prossima"""
     profilo = UserProfile.query.first()

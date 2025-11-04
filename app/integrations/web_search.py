@@ -45,6 +45,16 @@ class WebSearchService:
             >>> for r in results:
             >>>     print(f"{r['title']}: {r['href']}")
         """
+        # Check cache first (24h cache per query comuni)
+        cache_key = f"search:{query.lower().replace(' ', '_')}"
+        cached_results = cache.get(cache_key)
+
+        if cached_results:
+            logger.info(f"✅ Cache HIT: {cache_key}")
+            return cached_results
+
+        logger.info(f"❌ Cache MISS: {cache_key}")
+
         try:
             logger.info(f"🔍 DuckDuckGo search: '{query}' (max: {max_results})")
 
@@ -72,6 +82,12 @@ class WebSearchService:
                 )
 
             logger.info(f"✅ Found {len(results)} results")
+
+            # Salva in cache (24 ore)
+            if results:
+                cache.set(cache_key, results, timeout=86400)
+                logger.info(f"💾 Cache SET: {cache_key} (TTL: 24h)")
+
             return results
 
         except Exception as e:
@@ -89,6 +105,16 @@ class WebSearchService:
         Returns:
             list: Lista di notizie recenti
         """
+        # Check cache first (1 ora per news - aggiornamento frequente)
+        cache_key = f"news:{query.lower().replace(' ', '_')}"
+        cached_results = cache.get(cache_key)
+
+        if cached_results:
+            logger.info(f"✅ Cache HIT: {cache_key}")
+            return cached_results
+
+        logger.info(f"❌ Cache MISS: {cache_key}")
+
         try:
             logger.info(f"📰 DuckDuckGo news: '{query}' (max: {max_results})")
 
@@ -110,6 +136,12 @@ class WebSearchService:
                 )
 
             logger.info(f"✅ Found {len(results)} news")
+
+            # Salva in cache (1 ora - news cambiano spesso)
+            if results:
+                cache.set(cache_key, results, timeout=3600)
+                logger.info(f"💾 Cache SET: {cache_key} (TTL: 1h)")
+
             return results
 
         except Exception as e:

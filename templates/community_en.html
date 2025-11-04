@@ -149,6 +149,164 @@ Share your genuine thoughts. The community will listen." maxlength="5000"></text
     </div>
 
     <script>
+        // ========================================
+        // State
+        // ========================================
+        let reflections = [];
+
+        // ========================================
+        // Load Stats
+        // ========================================
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/community/stats');
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('totalReflections').textContent = result.data.total_reflections;
+                    document.getElementById('totalComments').textContent = result.data.total_comments;
+                    document.getElementById('totalCircles').textContent = result.data.total_circles;
+                    document.getElementById('totalReactions').textContent = result.data.total_reactions;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // ========================================
+        // Load Feed
+        // ========================================
+        async function loadFeed() {
+            try {
+                const response = await fetch('/api/community/reflections?language=en&limit=20');
+                const result = await response.json();
+                
+                if (result.success) {
+                    reflections = result.data;
+                    renderFeed();
+                }
+            } catch (error) {
+                console.error('Error loading feed:', error);
+                document.getElementById('feed').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">😔</div>
+                        <p>Error loading feed. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ========================================
+        // Render Feed
+        // ========================================
+        function renderFeed() {
+            const feedEl = document.getElementById('feed');
+            
+            if (reflections.length === 0) {
+                feedEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🌱</div>
+                        <p>No reflections yet.</p>
+                        <p style="margin-top: 10px;">Be the first to share!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            feedEl.innerHTML = reflections.map(r => `
+                <div class="reflection ${r.sentiment || ''}">
+                    <div class="reflection-header">
+                        <div>
+                            <strong>${r.user.name}</strong> • 
+                            <span class="reflection-category">${formatCategory(r.category)}</span>
+                        </div>
+                        <div style="font-size: 0.85em;">
+                            ${formatDate(r.created_at)}
+                        </div>
+                    </div>
+                    
+                    <div class="reflection-text">
+                        ${escapeHtml(r.text)}
+                    </div>
+                    
+                    <div class="reactions">
+                        <button class="reaction-btn" onclick="react(${r.id}, 'support')">
+                            ❤️ Support
+                        </button>
+                        <button class="reaction-btn" onclick="react(${r.id}, 'me_too')">
+                            🤝 Me Too
+                        </button>
+                        <button class="reaction-btn" onclick="react(${r.id}, 'insightful')">
+                            💡 Insightful
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ========================================
+        // Helper Functions
+        // ========================================
+        function formatCategory(cat) {
+            const labels = {
+                'personal_growth': '🌱 Growth',
+                'mental_health': '🧠 Mental Health',
+                'goals': '🎯 Goals',
+                'relationships': '❤️ Relationships',
+                'work': '💼 Work',
+                'health': '🏃 Health',
+                'creativity': '🎨 Creativity',
+                'spirituality': '🙏 Spirituality'
+            };
+            return labels[cat] || cat;
+        }
+
+        function formatDate(isoDate) {
+            if (!isoDate) return '';
+            const date = new Date(isoDate);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Now';
+            if (diffMins < 60) return `${diffMins} min ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function react(reflectionId, reactionType) {
+            try {
+                const response = await fetch('/api/community/react', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        reflection_id: reflectionId,
+                        reaction_type: reactionType
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    await loadFeed();
+                    // await loadStats(); // TODO: Add stats HTML section
+                }
+            } catch (error) {
+                console.error('Error reacting:', error);
+            }
+        }
+
+        // ========================================
+        // Share Reflection
+        // ========================================
         async function shareReflection() {
             const text = document.getElementById('reflectionText').value.trim();
             if (text.length < 20) {
@@ -175,7 +333,13 @@ Share your genuine thoughts. The community will listen." maxlength="5000"></text
                     document.getElementById('agreeGuidelines').checked = false;
                     checkFormValidity();
                     alert('✅ Reflection shared!');
-                    location.reload();
+                    
+                    // ✅ RELOAD FEED!
+                    await loadFeed();
+                    // await loadStats(); // TODO: Add stats HTML section
+                    
+                    // Scroll to feed
+                    document.getElementById('feed').scrollIntoView({ behavior: 'smooth' });
                 } else {
                     if (result.crisis_detected) {
                         alert(result.message);
@@ -201,7 +365,14 @@ Share your genuine thoughts. The community will listen." maxlength="5000"></text
         document.getElementById('agreeGuidelines').addEventListener('change', checkFormValidity);
         document.getElementById('reflectionText').addEventListener('input', checkFormValidity);
 
-        window.addEventListener('load', checkFormValidity);
+        // ========================================
+        // Initialize on Load
+        // ========================================
+        window.addEventListener('load', function() {
+            // loadStats(); // TODO: Add stats HTML section
+            loadFeed();
+            checkFormValidity();
+        });
     </script>
 </body>
 </html>

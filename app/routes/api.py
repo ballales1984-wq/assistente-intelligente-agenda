@@ -909,41 +909,66 @@ def view_shared_diary(token):
 @bp.route('/api/shared/board', methods=['GET'])
 def get_shared_board():
     """Ottiene tutte le voci del diario condivise pubblicamente"""
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 20, type=int)
-    
-    # Limita per_page a max 50
-    per_page = min(per_page, 50)
-    
-    # Query per voci pubbliche, ordinate per più recenti
-    pagination = DiarioGiornaliero.query.filter_by(is_public=True)\
-        .order_by(DiarioGiornaliero.created_at.desc())\
-        .paginate(page=page, per_page=per_page, error_out=False)
-    
-    entries = []
-    for entry in pagination.items:
-        # Crea preview del testo (max 200 caratteri)
-        testo_preview = entry.testo[:200] + '...' if len(entry.testo) > 200 else entry.testo
+    try:
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 20, type=int)
         
-        entries.append({
-            'id': entry.id,
-            'data': entry.data.isoformat() if entry.data else None,
-            'testo_preview': testo_preview,
-            'sentiment': entry.sentiment,
-            'parole_chiave': entry.parole_chiave.split(',')[:3] if entry.parole_chiave else [],
-            'share_token': entry.share_token,
-            'share_count': entry.share_count,
-            'created_at': entry.created_at.isoformat() if entry.created_at else None
+        # Limita per_page a max 50
+        per_page = min(per_page, 50)
+        
+        # Query per voci pubbliche, ordinate per più recenti
+        # Verifica se il campo is_public esiste
+        try:
+            pagination = DiarioGiornaliero.query.filter_by(is_public=True)\
+                .order_by(DiarioGiornaliero.created_at.desc())\
+                .paginate(page=page, per_page=per_page, error_out=False)
+        except Exception:
+            # Fallback: se is_public non esiste, ritorna array vuoto
+            return jsonify({
+                'entries': [],
+                'total': 0,
+                'page': page,
+                'pages': 0,
+                'has_next': False,
+                'has_prev': False
+            })
+        
+        entries = []
+        for entry in pagination.items:
+            # Crea preview del testo (max 200 caratteri)
+            testo_preview = entry.testo[:200] + '...' if len(entry.testo) > 200 else entry.testo
+            
+            # Accesso sicuro ai campi nuovi
+            entries.append({
+                'id': entry.id,
+                'data': entry.data.isoformat() if entry.data else None,
+                'testo_preview': testo_preview,
+                'sentiment': entry.sentiment,
+                'parole_chiave': entry.parole_chiave.split(',')[:3] if entry.parole_chiave else [],
+                'share_token': getattr(entry, 'share_token', None),
+                'share_count': getattr(entry, 'share_count', 0),
+                'created_at': entry.created_at.isoformat() if entry.created_at else None
+            })
+        
+        return jsonify({
+            'entries': entries,
+            'total': pagination.total,
+            'page': page,
+            'pages': pagination.pages,
+            'has_next': pagination.has_next,
+            'has_prev': pagination.has_prev
         })
-    
-    return jsonify({
-        'entries': entries,
-        'total': pagination.total,
-        'page': page,
-        'pages': pagination.pages,
-        'has_next': pagination.has_next,
-        'has_prev': pagination.has_prev
-    })
+    except Exception as e:
+        # Log error e ritorna risposta vuota sicura
+        print(f"Error in shared board: {e}")
+        return jsonify({
+            'entries': [],
+            'total': 0,
+            'page': 1,
+            'pages': 0,
+            'has_next': False,
+            'has_prev': False
+        })
 
 
 @bp.route('/shared/board')

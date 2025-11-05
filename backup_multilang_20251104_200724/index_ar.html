@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="ehc2rdX_ZZQV4CI5Ro2pKbgUuM5IbRIR0tTRnVmxjV0" />
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="رفيقك لتنظيم الحياة والدراسة والأهداف">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+    <title>🧠 المساعد الذكي</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCZ9CM8HDG">
+
+        // ========================================
+        // 🔄 AUTO-SYNCED FUNCTIONS (sync_multilang.py)
+        // Date: 2025-11-04 15:45:00
+        // ========================================
+
+        // Function: aggiornaGrafici
+        function aggiornaGrafici() {
+                    await creaGraficoSpese();
+                    await creaGraficoObiettivi();
+                    await creaGraficoTrendSpese();
+                }
+
+        // Function: aggiungiMessaggio
+        function aggiungiMessaggio(testo, tipo, diarioId = null) {
+                    const container = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${tipo}`;
+                    
+                    // Aggiungi highlight per risposte assistente
+                    if (tipo === 'assistant') {
+                        messageDiv.classList.add('highlight');
+                    }
+                    
+                    // Usa innerHTML per supportare formattazione (safe perché controlliamo i dati)
+                    messageDiv.innerHTML = testo.replace(/\n/g, '<br>');
+                    
+                    // Aggiungi bottone condividi se è un messaggio di diario
+                    if (diarioId && tipo === 'user') {
+                        const shareBtn = document.createElement('button');
+                        shareBtn.className = 'share-message-btn';
+                        shareBtn.innerHTML = '🔗 Condividi';
+                        shareBtn.onclick = () => condividiMessaggioDiario(diarioId);
+                        messageDiv.appendChild(shareBtn);
+                    }
+                    
+                    container.appendChild(messageDiv);
+                    // Scroll smooth per vedere la risposta
+                    container.scrollTop = container.scrollHeight;
+                }
+
+        // Function: autoDetectLanguage
+        function autoDetectLanguage() {
+                    // Skip if user already selected a language
+                    if (localStorage.getItem('lingua')) {
+                        return;
+                    }
+        
+                    // Skip if not on root path
+                    if (window.location.pathname !== '/') {
+                        return;
+                    }
+        
+                    // Get browser language
+                    const browserLang = navigator.language || navigator.userLanguage;
+                    const langCode = browserLang.split('-')[0].toLowerCase();
+        
+                    // Map to supported languages
+                    const langMap = {
+                        'it': '/',
+                        'en': '/en',
+                        'es': '/es',
+                        'zh': '/zh',
+                        'ru': '/ru',
+                        'hi': '/hi'
+                    };
+        
+                    // Redirect if we support the browser language
+                    if (langMap[langCode] && langMap[langCode] !== '/') {
+                        console.log('🌍 Auto-detected language:', langCode);
+                        localStorage.setItem('lingua', langCode);
+                        localStorage.setItem('lang_auto_detected', 'true');
+                        window.location.href = langMap[langCode];
+                    }
+                }
+
+        // Function: cambiaMese
+        function cambiaMese(offset) {
+                    if (offset === 0) {
+                        meseOffset = 0;
+                    } else {
+                        meseOffset += offset;
+                    }
+                    caricaCalendarioMensile();
+                }
+
+        // Function: cambiaSettimana
+        function cambiaSettimana(offset) {
+                    if (offset === 0) {
+                        settimanaOffset = 0;
+                    } else {
+                        settimanaOffset += offset;
+                    }
+                    caricaCalendario();
+                }
+
+        // Function: caricaStatistiche
+        function caricaStatistiche() {
+                    try {
+                        const response = await fetch('/api/statistiche');
+                        const stats = await response.json();
+        
+                        document.getElementById('statObiettivi').textContent = stats.obiettivi_totali || 0;
+                        document.getElementById('statOre').textContent = `${(stats.ore_completate || 0).toFixed(1)}h`;
+                        document.getElementById('statCompletamento').textContent = `${(stats.tasso_completamento || 0).toFixed(0)}%`;
+                    } catch (error) {
+                        console.error('Errore nel caricamento statistiche:', error);
+                    }
+                }
+
+        // Function: chiudiOnboarding
+        function chiudiOnboarding() {
+                    document.getElementById('onboardingOverlay').style.display = 'none';
+                    localStorage.setItem('onboarding_completato', 'true');
+                }
+
+        // Function: eliminaDiario
+        function eliminaDiario(id) {
+                    // Conferma eliminazione
+                    if (!confirm('Sei sicuro di voler eliminare questa nota dal diario?')) {
+                        return;
+                    }
+        
+                    try {
+                        const response = await fetch(`/api/diario/${id}`, {
+                            method: 'DELETE'
+                        });
+        
+                        if (response.ok) {
+                            // Mostra messaggio successo
+                            alert('✅ Nota eliminata con successo!');
+                            // Ricarica diario
+                            caricaDiario();
+                        } else {
+                            alert('❌ Errore nell\'eliminazione della nota');
+                        }
+                    } catch (error) {
+                        console.error('Errore eliminazione diario:', error);
+                        alert('❌ Errore nell\'eliminazione della nota');
+                    }
+                }
+
+        // Function: eliminaImpegno
+        function eliminaImpegno(id) {
+                    // Conferma eliminazione
+                    if (!confirm('Sei sicuro di voler eliminare questo impegno?')) {
+                        return;
+                    }
+        
+                    try {
+                        const response = await fetch(`/api/impegni/${id}`, {
+                            method: 'DELETE'
+                        });
+        
+                        if (response.ok) {
+                            // Mostra messaggio successo
+                            alert('✅ Impegno eliminato con successo!');
+                            // Ricarica calendario
+                            caricaCalendario();
+                        } else {
+                            alert('❌ Errore nell\'eliminazione dell\'impegno');
+                        }
+                    } catch (error) {
+                        console.error('Errore eliminazione impegno:', error);
+                        alert('❌ Errore nell\'eliminazione dell\'impegno');
+                    }
+                }
+
+        // Function: exportaImpegni
+        function exportaImpegni() {
+                    try {
+                        const response = await fetch('/api/export/impegni');
+                        const data = await response.json();
+                        
+                        // Converti in CSV
+                        const csv = convertiInCSV(data.impegni, ['nome', 'data_inizio', 'data_fine', 'tipo']);
+                        const blob = new Blob([csv], { type: 'text/csv' });
+                        
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `impegni-${new Date().toISOString().split('T')[0]}.csv`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        
+                        aggiungiMessaggio(`📅 Export ${data.count} impegni completato!`, 'assistant');
+                    } catch (error) {
+                        console.error('Errore export impegni:', error);
+                    }
+                }
+
+        // Function: exportaSpese
+        function exportaSpese() {
+                    try {
+                        const response = await fetch('/api/export/spese');
+                        const data = await response.json();
+                        
+                        // Converti in CSV
+                        const csv = convertiInCSV(data.spese, ['data', 'descrizione', 'importo', 'categoria']);
+                        const blob = new Blob([csv], { type: 'text/csv' });
+                        
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `spese-${new Date().toISOString().split('T')[0]}.csv`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        
+                        aggiungiMessaggio(`💰 Export ${data.count} spese completato!`, 'assistant');
+                    } catch (error) {
+                        console.error('Errore export spese:', error);
+                    }
+                }
+
+        // Function: exportaTutto
+        function exportaTutto() {
+                    try {
+                        const response = await fetch('/api/export/tutto');
+                        const data = await response.json();
+                        
+                        // Crea file JSON
+                        const dataStr = JSON.stringify(data, null, 2);
+                        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                        
+                        // Download automatico
+                        const url = URL.createObjectURL(dataBlob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `agenda-backup-${new Date().toISOString().split('T')[0]}.json`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        
+                        aggiungiMessaggio(`📦 Export completato! ${data.impegni.length} impegni, ${data.spese.length} spese, ${data.obiettivi.length} obiettivi.`, 'assistant');
+                    } catch (error) {
+                        console.error('Errore export:', error);
+                        aggiungiMessaggio('❌ Errore durante l\'export', 'assistant');
+                    }
+                }
+
+        // Function: formatoICalDate
+        function formatoICalDate(date) {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+                }
+
+        // Function: handleKeyPress
+        function handleKeyPress(event) {
+                    if (event.key === 'Enter') {
+                        inviaMessaggio();
+                    }
+                }
+
+        // Function: inizia
+        function inizia() {
+                    chiudiOnboarding();
+                    scrollToChat();
+                    // Focus sul campo input
+                    setTimeout(() => {
+                        document.querySelector('.chat-input input').focus();
+                    }, 500);
+                }
+
+        // Function: mostraEsempiComandi
+        function mostraEsempiComandi() {
+                    toggleQuickTour();
+                    scrollToChat();
+                    
+                    setTimeout(() => {
+                        const esempi = `💡 **Esempi di Comandi:**\n\n` +
+                            `📚 OBIETTIVI:\n` +
+                            `• "Voglio studiare Python 3 ore a settimana"\n` +
+                            `• "Voglio leggere 2 libri al mese"\n\n` +
+                            `📅 IMPEGNI:\n` +
+                            `• "Lunedì riunione dalle 10 alle 12"\n` +
+                            `• "Giovedì palestra ore 18"\n` +
+                            `• "Domenica pranzo con Sara alle 13"\n\n` +
+                            `📔 DIARIO:\n` +
+                            `• "Oggi mi sento motivato!"\n` +
+                            `• "Ho parlato con Maria, mi sento felice"\n\n` +
+                            `💰 SPESE:\n` +
+                            `• "Speso 12€ per pranzo"\n` +
+                            `• "Pagato 50€ abbonamento palestra"\n\n` +
+                            `⏰ TEMPO:\n` +
+                            `• "Cosa devo fare oggi?"\n` +
+                            `• "Quanto tempo libero ho domani?"\n\n` +
+                            `💡 Prova uno di questi comandi nella chat!`;
+                        
+                        aggiungiMessaggio(esempi, 'assistant');
+                        document.getElementById('chatInput').focus();
+                    }, 800);
+                }
+
+        // Function: mostraNotifica
+        function mostraNotifica(titolo, messaggio, icona = '🔔') {
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        const notifica = new Notification(titolo, {
+                            body: messaggio,
+                            icon: '/static/icon.png', // Fallback a icona se esiste
+                            badge: '/static/badge.png',
+                            requireInteraction: false,
+                            silent: false
+                        });
+                        
+                        // Leggi anche con voce
+                        parla(messaggio);
+                        
+                        notifica.onclick = () => {
+                            window.focus();
+                            notifica.close();
+                        };
+                        
+                        // Auto-chiudi dopo 10 secondi
+                        setTimeout(() => notifica.close(), 10000);
+                    }
+                }
+
+        // Function: mostraOnboarding
+        function mostraOnboarding() {
+                    // Controlla se è la prima visita
+                    const giaMostrato = localStorage.getItem('onboarding_completato');
+                    if (!giaMostrato) {
+                        document.getElementById('onboardingOverlay').style.display = 'flex';
+                    }
+                }
+
+        // Function: parla
+        function parla(testo) {
+                    // Ferma eventuali letture in corso
+                    synth.cancel();
+                    
+                    currentUtterance = new SpeechSynthesisUtterance(testo);
+                    
+                    // ============================================
+                    // AUTO-DETECTION LINGUA
+                    // ============================================
+                    const pageLang = 'it'; // Lingua della pagina corrente
+                    const langCode = 'it-IT';
+                    
+                    currentUtterance.lang = langCode;
+                    currentUtterance.rate = 0.9;
+                    currentUtterance.pitch = 1.0;
+                    
+                    // ============================================
+                    // Seleziona VOCE NELLA LINGUA CORRETTA
+                    // ============================================
+                    const voci = synth.getVoices();
+                    
+                    // Cerca voce nella lingua della pagina
+                    let voceSelezionata = voci.find(v => v.lang.startsWith(pageLang));
+                    
+                    // Fallback: cerca varianti della lingua
+                    if (!voceSelezionata) {
+                        voceSelezionata = voci.find(v => 
+                            v.lang.toLowerCase().includes(pageLang)
+                        );
+                    }
+                    
+                    // Fallback finale: prima voce disponibile
+                    if (!voceSelezionata && voci.length > 0) {
+                        voceSelezionata = voci[0];
+                    }
+                    
+                    if (voceSelezionata) {
+                        currentUtterance.voice = voceSelezionata;
+                        console.log('🔊 Voce selezionata:', voceSelezionata.name, '(' + voceSelezionata.lang + ')');
+                    }
+                    
+                    // Event listener per quando finisce
+                    currentUtterance.onend = () => {
+                        console.log('Lettura completata');
+                    };
+                    
+                    currentUtterance.onerror = (event) => {
+                        console.error('Errore lettura vocale:', event);
+                    };
+                    
+                    synth.speak(currentUtterance);
+                }
+
+        // Function: prossimoStep
+        function prossimoStep() {
+                    const steps = document.querySelectorAll('.onboarding-step');
+                    const dots = document.querySelectorAll('.onboarding-dot');
+                    
+                    if (currentOnboardingStep < steps.length) {
+                        // Nascondi step corrente
+                        steps[currentOnboardingStep - 1].classList.remove('active');
+                        dots[currentOnboardingStep - 1].classList.remove('active');
+                        
+                        // Mostra prossimo step
+                        currentOnboardingStep++;
+                        steps[currentOnboardingStep - 1].classList.add('active');
+                        dots[currentOnboardingStep - 1].classList.add('active');
+                    }
+                }
+
+        // Function: scrollToChat
+        function scrollToChat() {
+                    const chatElement = document.querySelector('.chat-container');
+                    chatElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+
+        // Function: setLanguage
+        function setLanguage(lang, url) {
+                    localStorage.setItem('lingua', lang);
+                    window.location.href = url;
+                }
+
+        // Function: stepPrecedente
+        function stepPrecedente() {
+                    const steps = document.querySelectorAll('.onboarding-step');
+                    const dots = document.querySelectorAll('.onboarding-dot');
+                    
+                    if (currentOnboardingStep > 1) {
+                        // Nascondi step corrente
+                        steps[currentOnboardingStep - 1].classList.remove('active');
+                        dots[currentOnboardingStep - 1].classList.remove('active');
+                        
+                        // Mostra step precedente
+                        currentOnboardingStep--;
+                        steps[currentOnboardingStep - 1].classList.add('active');
+                        dots[currentOnboardingStep - 1].classList.add('active');
+                    }
+                }
+
+        // Function: stopLettura
+        function stopLettura() {
+                    synth.cancel();
+                    aggiungiMessaggio('⏹️ Lettura interrotta.', 'assistant');
+                }
+
+        // Function: switchTab
+        function switchTab(tabName) {
+                    // Rimuovi active da tutti i tab
+                    document.querySelectorAll('.tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Attiva il tab cliccato
+                    const tabButton = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+                    if (tabButton) {
+                        tabButton.classList.add('active');
+                    }
+                    
+                    // Scroll alla sezione corrispondente
+                    let targetElement;
+                    
+                    switch(tabName) {
+                        case 'chat':
+                            targetElement = document.querySelector('.chat-container');
+                            setTimeout(() => {
+                                document.getElementById('chatInput').focus();
+                            }, 600);
+                            break;
+                            
+                        case 'calendario':
+                            targetElement = document.getElementById('pianoSettimanale');
+                            if (!targetElement) {
+                                // Fallback: cerca la card del calendario
+                                targetElement = Array.from(document.querySelectorAll('.card')).find(
+                                    card => card.querySelector('h2')?.textContent.includes('Piano')
+                                );
+                            }
+                            break;
+                            
+                        case 'diario':
+                            // Apri diario-book in una nuova tab
+                            window.open('/diario-book', '_blank');
+                            return;
+                            
+                        case 'spese':
+                            // Cerca la sezione spese
+                            targetElement = Array.from(document.querySelectorAll('.card')).find(
+                                card => card.querySelector('h2')?.textContent.includes('Spese') ||
+                                       card.querySelector('h2')?.textContent.includes('Budget')
+                            );
+                            break;
+                            
+                        case 'analytics':
+                            targetElement = document.getElementById('analyticsDashboard');
+                            if (!targetElement) {
+                                // Fallback: cerca card con grafici
+                                targetElement = Array.from(document.querySelectorAll('.card')).find(
+                                    card => card.querySelector('canvas')
+                                );
+                            }
+                            break;
+                    }
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Highlight temporaneo
+                        targetElement.classList.add('section-highlight');
+                        setTimeout(() => {
+                            targetElement.classList.remove('section-highlight');
+                        }, 2500);
+                    }
+                }
+
+        // Function: switchVistaCalendario
+        function switchVistaCalendario(vista) {
+                    vistaCalendario = vista;
+                    
+                    const vistaSettimana = document.getElementById('vistaSettimana');
+                    const vistaMese = document.getElementById('vistaMese');
+                    const btnSettimana = document.getElementById('vistaSettimanaBtn');
+                    const btnMese = document.getElementById('vistaMeseBtn');
+                    
+                    if (vista === 'settimana') {
+                        vistaSettimana.style.display = 'block';
+                        vistaMese.style.display = 'none';
+                        btnSettimana.className = 'btn btn-primary';
+                        btnMese.className = 'btn btn-secondary';
+                        caricaCalendario();
+                    } else {
+                        vistaSettimana.style.display = 'none';
+                        vistaMese.style.display = 'block';
+                        btnSettimana.className = 'btn btn-secondary';
+                        btnMese.className = 'btn btn-primary';
+                        caricaCalendarioMensile();
+                    }
+                }
+
+        // Function: testaTTS
+        function testaTTS() {
+                    toggleQuickTour();
+                    aggiungiMessaggio('🔊 Test lettura vocale: Ciao! Sono il tuo assistente intelligente. Posso leggere i tuoi impegni ad alta voce!', 'assistant');
+                    setTimeout(() => {
+                        parla('Ciao! Sono il tuo assistente intelligente. Posso leggere i tuoi impegni ad alta voce!');
+                    }, 500);
+                }
+
+        // Function: toggleDarkMode
+        function toggleDarkMode() {
+                    const body = document.body;
+                    const icon = document.getElementById('themeIcon');
+                    
+                    body.classList.toggle('dark-mode');
+                    
+                    if (body.classList.contains('dark-mode')) {
+                        icon.textContent = '☀️';
+                        localStorage.setItem('tema', 'dark');
+                    } else {
+                        icon.textContent = '🌙';
+                        localStorage.setItem('tema', 'light');
+                    }
+                    
+                    // Ricarica grafici per aggiornare colori
+                    setTimeout(aggiornaGrafici, 300);
+                }
+
+        // Function: toggleQuickTour
+        function toggleQuickTour() {
+                    const menu = document.getElementById('quickTourMenu');
+                    menu.classList.toggle('active');
+                }
+
+        // Function: usaEsempio
+        function usaEsempio(testo) {
+                    document.getElementById('chatInput').value = testo;
+                }
+
+</script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-ZCZ9CM8HDG');
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* RTL Support */
+        body[dir="rtl"] {
+            direction: rtl;
+            text-align: right;
+        }
+
+        body {
+            font-family: 'Noto Sans Arabic', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, rgba(59, 130, 246, 0.3), transparent),
+                radial-gradient(2px 2px at 60% 70%, rgba(59, 130, 246, 0.2), transparent),
+                radial-gradient(1px 1px at 50% 50%, rgba(59, 130, 246, 0.15), transparent),
+                radial-gradient(1px 1px at 80% 10%, rgba(59, 130, 246, 0.2), transparent),
+                radial-gradient(2px 2px at 90% 60%, rgba(59, 130, 246, 0.25), transparent);
+            background-size: 200% 200%;
+            animation: starsMove 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes starsMove {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Language Selector - RTL adjusted */
+        .lang-selector {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .lang-selector .lang-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .lang-selector .lang-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .lang-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 10px 0;
+            min-width: 150px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .lang-menu.active {
+            display: block;
+        }
+
+        .lang-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .lang-menu a:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 800;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .hero .subtitle {
+            font-size: 1.4em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        /* Input & Buttons */
+        input, textarea, button {
+            font-family: inherit;
+            border-radius: 10px;
+            padding: 12px 20px;
+            border: none;
+            margin: 5px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        /* Dark mode support */
+        body.dark-mode {
+            background: linear-gradient(135deg, #0a0e1a 0%, #151a28 50%, #0a0e1a 100%);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-top: 60px;
+            opacity: 0.8;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body dir="rtl">
+    <!-- Language Selector -->
+    <div class="lang-selector">
+        <button class="lang-toggle" onclick="toggleLangMenu()" title="تغيير اللغة">
+            <span id="langIcon">🇸🇦 AR</span>
+        </button>
+        <div class="lang-menu" id="langMenu">
+            <a href="/" data-lang="it">🇮🇹 Italiano</a>
+            <a href="/en" data-lang="en">🇬🇧 English</a>
+            <a href="/es" data-lang="es">🇪🇸 Español</a>
+            <a href="/zh" data-lang="zh">🇨🇳 中文</a>
+            <a href="/ru" data-lang="ru">🇷🇺 Русский</a>
+            <a href="/hi" data-lang="hi">🇮🇳 हिन्दी</a>
+            <a href="/ar" data-lang="ar" class="active">🇸🇦 العربية</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-badge">✨ مجاني • ذكي • بالعربية 🇸🇦</div>
+            <h1>🧠 المساعد الذكي</h1>
+            <p class="subtitle">نظم حياتك ودراستك وأهدافك بالذكاء الاصطناعي. كل شيء بلغة طبيعية.</p>
+            <button class="hero-cta" onclick="document.getElementById('chatInput').focus()">ابدأ الآن - مجاناً!</button>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="card">
+            <h2>💬 المحادثة</h2>
+            <p style="margin-bottom: 15px;">مرحباً! أنا مساعدك الشخصي. أخبرني ماذا تريد أن تفعل!</p>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="chatInput" placeholder="اكتب هنا..." style="flex: 1;">
+                <button onclick="sendMessage()">إرسال</button>
+            </div>
+            <div id="chatMessages" style="margin-top: 20px; min-height: 200px;"></div>
+        </div>
+
+        <!-- Objectives -->
+        <div class="card">
+            <h2>🎯 أهدافك</h2>
+            <p>لا توجد أهداف بعد. ابدأ بالتحدث مع المساعد!</p>
+            <div id="objectives"></div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="card">
+            <h2>📅 التقويم</h2>
+            <p>جاري التحميل...</p>
+            <div id="calendar"></div>
+        </div>
+
+        <!-- Budget -->
+        <div class="card">
+            <h2>💰 الميزانية والمصاريف</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2em;">€0</div>
+                    <div>اليوم</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2em;">€0</div>
+                    <div>هذا الأسبوع</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2em;">€0</div>
+                    <div>هذا الشهر</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diary -->
+        <div class="card">
+            <h2>📔 يومياتي الشخصية</h2>
+            <p>لا توجد تأملات بعد. اكتب في المحادثة!</p>
+            <div id="diary"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <h3>🧠 المساعد الذكي</h3>
+        <p>رفيقك الذكي لتنظيم الحياة والدراسة والأهداف</p>
+        <p style="margin-top: 20px;">
+            <a href="/privacy">الخصوصية</a> • 
+            <a href="/terms">الشروط</a> • 
+            <a href="/about">من نحن</a> • 
+            <a href="https://github.com/ballales1984-wq/assistente-intelligente-agenda">GitHub</a>
+        </p>
+        <p style="margin-top: 20px;">صُنع بـ ❤️ و ☕ في إيطاليا 🇮🇹</p>
+        <p>© 2025 المساعد الذكي • رخصة AGPL v3</p>
+        <p style="font-size: 0.9em; margin-top: 10px;">مجاني للأبد • الخصوصية أولاً • بدون تتبع متطفل</p>
+    </footer>
+
+    <script>
+        // Language menu toggle
+        function toggleLangMenu() {
+            document.getElementById('langMenu').classList.toggle('active');
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const langSelector = document.querySelector('.lang-selector');
+            if (langSelector && !langSelector.contains(event.target)) {
+                document.getElementById('langMenu').classList.remove('active');
+            }
+        });
+
+        // Chat functionality (basic)
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageEl = document.createElement('div');
+            messageEl.style.background = 'rgba(255,255,255,0.1)';
+            messageEl.style.padding = '10px';
+            messageEl.style.borderRadius = '10px';
+            messageEl.style.marginBottom = '10px';
+            messageEl.textContent = message;
+            messagesDiv.appendChild(messageEl);
+
+            input.value = '';
+
+            // Send to API
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messaggio: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const replyEl = document.createElement('div');
+                replyEl.style.background = 'rgba(102, 126, 234, 0.3)';
+                replyEl.style.padding = '10px';
+                replyEl.style.borderRadius = '10px';
+                replyEl.style.marginBottom = '10px';
+                replyEl.textContent = data.risposta || 'حسناً!';
+                messagesDiv.appendChild(replyEl);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Enter to send
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Load initial data
+        window.addEventListener('load', function() {
+            console.log('Arabic version loaded ✅');
+        });
+    </script>
+</body>
+</html>
+

@@ -322,12 +322,16 @@ class OllamaManager:
         - gemma (7B) - Google, ottimo per ragionamento
         """
         try:
-            print(f"📥 Downloading {model_name}... (può richiedere qualche minuto)")
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"📥 Downloading {model_name}... (può richiedere qualche minuto)")
             ollama.pull(model_name)
-            print(f"✅ {model_name} scaricato!")
+            logger.info(f"✅ {model_name} scaricato!")
             return True
         except Exception as e:
-            print(f"❌ Errore download: {e}")
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"❌ Errore download: {e}")
             return False
     
     @staticmethod

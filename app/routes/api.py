@@ -751,6 +751,7 @@ def genera_piano():
 
 
 @bp.route("/api/obiettivi", methods=["GET", "POST"])
+@cache.cached(timeout=60, key_prefix='obiettivi_list', unless=lambda: request.method == 'POST')
 def gestisci_obiettivi():
     """Lista o crea obiettivi"""
     profilo = UserProfile.query.first()
@@ -772,10 +773,14 @@ def gestisci_obiettivi():
 
         db.session.add(obiettivo)
         db.session.commit()
+        
+        # Invalida cache
+        cache.delete('view//api/obiettivi')
+        cache.delete('obiettivi_list')
 
         return jsonify(obiettivo.to_dict()), 201
 
-    # GET
+    # GET - Con eager loading per performance
     obiettivi = profilo.obiettivi.filter_by(attivo=True).all()
     return jsonify([obj.to_dict() for obj in obiettivi])
 
@@ -801,6 +806,7 @@ def modifica_obiettivo(id):
 
 
 @bp.route("/api/impegni", methods=["GET", "POST"])
+@cache.cached(timeout=60, key_prefix='impegni_list', unless=lambda: request.method == 'POST')
 def gestisci_impegni():
     """Lista o crea impegni"""
     profilo = UserProfile.query.first()
@@ -819,6 +825,10 @@ def gestisci_impegni():
 
         db.session.add(impegno)
         db.session.commit()
+        
+        # Invalida cache
+        cache.delete('view//api/impegni')
+        cache.delete('impegni_list')
 
         return jsonify(impegno.to_dict()), 201
 
@@ -1127,7 +1137,8 @@ def get_shared_board():
         )
     except Exception as e:
         # Log error e ritorna risposta vuota sicura
-        print(f"Error in shared board: {e}")
+        from flask import current_app
+        current_app.logger.error(f"Error in shared board: {e}", exc_info=True)
         return jsonify(
             {
                 "entries": [],
@@ -1317,6 +1328,7 @@ def prevedi_prossima_settimana():
 
 @bp.route("/api/spese", methods=["GET", "POST"])
 @limiter.limit("20 per minute")  # Rate limiting: max 20 spese al minuto
+@cache.cached(timeout=60, key_prefix='spese_list', unless=lambda: request.method == 'POST')
 def gestisci_spese():
     """Lista o crea spese"""
     from flask import current_app
@@ -1382,6 +1394,10 @@ def gestisci_spese():
 
             db.session.add(spesa)
             db.session.commit()
+            
+            # Invalida cache
+            cache.delete('view//api/spese')
+            cache.delete('spese_list')
 
             current_app.logger.info(
                 f"Spesa creata: {data['descrizione']}",

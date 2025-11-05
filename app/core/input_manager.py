@@ -11,7 +11,8 @@ class InputManager:
 
     # Pattern per riconoscere intenzioni comuni (migliorati!)
     PATTERNS = {
-        "obiettivo_ore": r"(?:studiare|fare|dedicare|imparare|allenarmi|esercitarmi|lavorare su|praticare)\s+(.+?)\s+(\d+)\s*(?:ore?|h)\s*(?:a|alla|per|ogni|alla|al)?\s*settimana",
+        "obiettivo_ore_semplice": r"(?:voglio\s+)?(?:allenarmi|esercitarmi)\s+(\d+)\s*(?:ore?|h)\s*(?:a|alla|per|ogni|alla|al)?\s*settimana",
+        "obiettivo_ore": r"(?:voglio\s+)?(?:studiare|fare|dedicare|imparare|lavorare\s+su|praticare)\s+(.+?)\s+(\d+)\s*(?:ore?|h)\s*(?:a|alla|per|ogni|alla|al)?\s*settimana",
         "obiettivo_durata": r"(?:voglio|devo|vorrei|mi piacerebbe)\s+(.+?)\s+per\s+(\d+)\s*(?:giorni|settimane|mesi)",
         "impegno_specifico": r"(.+?)\s+(?:dalle|dal|alle|al|dalle\s+ore|alle\s+ore)\s+(\d{1,2}):?(\d{2})?\s*(?:alle|al|-|–)?\s*(\d{1,2})?:?(\d{2})?",
         "impegno_oggi_domani": r"(?:oggi|domani)\s+(.+?)\s+(?:alle|dalle|al|\s)(\d{1,2}):?(\d{2})?(?:\s*-\s*(\d{1,2}):?(\d{2})?)?",
@@ -60,6 +61,20 @@ class InputManager:
             }
             return risultato
 
+        # Riconosci obiettivo semplice (es. "allenarmi 4 ore a settimana")
+        match_semplice = re.search(InputManager.PATTERNS["obiettivo_ore_semplice"], testo, re.IGNORECASE)
+        if match_semplice:
+            # Estrai il verbo dall'input originale
+            verbo_match = re.search(r"(allenarmi|esercitarmi)", testo, re.IGNORECASE)
+            verbo = verbo_match.group(1) if verbo_match else "Allenamento"
+            risultato["tipo"] = "obiettivo"
+            risultato["dati"] = {
+                "nome": verbo.capitalize(),
+                "durata_settimanale": float(match_semplice.group(1)),
+                "tipo": "sport",
+            }
+            return risultato
+        
         # Riconosci obiettivo con ore settimanali
         match = re.search(InputManager.PATTERNS["obiettivo_ore"], testo, re.IGNORECASE)
         if match:

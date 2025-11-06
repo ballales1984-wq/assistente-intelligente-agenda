@@ -36,7 +36,7 @@
             min-height: 100vh;
             padding: 20px;
             position: relative;
-            color: #1e293b;
+            color: #0f172a;
         }
         
         /* Effetto stelle futuristico LIGHT MODE */
@@ -74,10 +74,15 @@
         /* Hero Section */
         .hero {
             text-align: center;
-            color: #1e293b;
+            color: #0f172a;
             margin-bottom: 40px;
             padding: 60px 20px;
             position: relative;
+        }
+        
+        .hero h1 {
+            color: #0f172a;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .hero-badge {
@@ -535,17 +540,21 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(59, 130, 246, 0.15);
+            border: 2px solid rgba(59, 130, 246, 0.3);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.08),
-                0 0 20px rgba(59, 130, 246, 0.05),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+                0 10px 30px rgba(0, 0, 0, 0.12),
+                0 4px 15px rgba(59, 130, 246, 0.15);
             transition: all 0.3s ease;
-            color: #1e293b;
+            color: #0f172a;
+        }
+        
+        .card h2, .card h3 {
+            color: #0f172a;
+            font-weight: 700;
         }
         
         .card:hover {
@@ -751,12 +760,13 @@
         }
 
         .message.assistant {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(59, 130, 246, 0.25);
+            border: 2px solid rgba(59, 130, 246, 0.3);
             border-left: 4px solid #3b82f6;
-            color: #1e293b;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+            color: #0f172a;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+            font-weight: 500;
         }
 
         .chat-input-container {
@@ -767,13 +777,20 @@
         .chat-input {
             flex: 1;
             padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border: 2px solid rgba(59, 130, 246, 0.2);
+            border: 2px solid rgba(59, 130, 246, 0.4);
             border-radius: 12px;
             font-size: 1em;
-            color: #1e293b;
+            color: #0f172a;
+            font-weight: 500;
             transition: all 0.3s ease;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
         .chat-input::placeholder {
@@ -890,13 +907,14 @@
 
         .quick-action {
             padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: 2px solid rgba(59, 130, 246, 0.35);
             border-radius: 25px;
             cursor: pointer;
             font-size: 0.9em;
-            color: #475569;
+            color: #1e293b;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
 

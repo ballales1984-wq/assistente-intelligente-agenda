@@ -19,6 +19,11 @@ MESSAGES = {
         'today': 'Oggi',
         'not_understood': "🤔 Non ho capito bene questo formato.\n\n💡 **OPZIONI:**\n1️⃣ Riformula in modo più specifico:\n   • 'Voglio studiare Python 3 ore a settimana'\n   • 'Domani meeting 10-12'\n   • '50 euro benzina'\n\n2️⃣ Usa la Chat AI (🤖 in arrivo!) per linguaggio naturale completo\n\n3️⃣ Oppure scrivi una riflessione libera per il diario!",
         'question_understood': "❓ Ho capito che vuoi sapere qualcosa!\n\n💡 Usa i pulsanti Quick Actions per risposte immediate, oppure attiva la chat AI per conversazioni naturali!",
+        # Expense insights
+        'main_category': "📊 Categoria principale: {cat} (€{amount:.2f}, {perc:.1f}%)",
+        'daily_average': "💰 Media giornaliera: €{avg:.2f}",
+        'good_balance': "✅ Buon equilibrio: {perc:.1f}% voluttuarie",
+        'reduce_optional': "💡 {perc:.1f}% di spese voluttuarie - Considera di ridurre",
     },
     'en': {
         'no_events_today': 'No events for today',
@@ -38,6 +43,11 @@ MESSAGES = {
         'today': 'Today',
         'not_understood': "🤔 I didn't quite understand this format.\n\n💡 **OPTIONS:**\n1️⃣ Rephrase more specifically:\n   • 'I want to study Python 3 hours a week'\n   • 'Tomorrow meeting 10-12'\n   • '50 dollars gas'\n\n2️⃣ Use AI Chat (🤖 coming soon!) for complete natural language\n\n3️⃣ Or write a free reflection for your diary!",
         'question_understood': "❓ I understand you want to know something!\n\n💡 Use Quick Actions buttons for immediate answers, or activate AI chat for natural conversations!",
+        # Expense insights
+        'main_category': "📊 Main category: {cat} (€{amount:.2f}, {perc:.1f}%)",
+        'daily_average': "💰 Daily average: €{avg:.2f}",
+        'good_balance': "✅ Good balance: {perc:.1f}% optional",
+        'reduce_optional': "💡 {perc:.1f}% optional expenses - Consider reducing",
     },
     'es': {
         'no_events_today': 'No hay eventos para hoy',
@@ -57,6 +67,11 @@ MESSAGES = {
         'today': 'Hoy',
         'not_understood': "🤔 No entendí bien este formato.\n\n💡 **OPCIONES:**\n1️⃣ Reformula más específicamente:\n   • 'Quiero estudiar Python 3 horas a la semana'\n   • 'Mañana reunión 10-12'\n   • '50 euros gasolina'\n\n2️⃣ ¡Usa el Chat AI (🤖 próximamente!) para lenguaje natural completo\n\n3️⃣ ¡O escribe una reflexión libre para tu diario!",
         'question_understood': "❓ ¡Entiendo que quieres saber algo!\n\n💡 ¡Usa los botones de Acciones Rápidas para respuestas inmediatas, o activa el chat AI para conversaciones naturales!",
+        # Expense insights
+        'main_category': "📊 Categoría principal: {cat} (€{amount:.2f}, {perc:.1f}%)",
+        'daily_average': "💰 Promedio diario: €{avg:.2f}",
+        'good_balance': "✅ Buen equilibrio: {perc:.1f}% opcionales",
+        'reduce_optional': "💡 {perc:.1f}% de gastos opcionales - Considera reducir",
     },
     'zh': {
         'no_events_today': '今天没有活动',

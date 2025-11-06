@@ -2,6 +2,7 @@
 from datetime import date, datetime, timedelta
 from typing import Dict, Any, List
 from sqlalchemy import func
+from app.i18n import get_message
 from app.models import UserProfile, Spesa, CATEGORIE_SPESE
 
 
@@ -41,7 +42,8 @@ class SpeseManager:
     def analizza_spese_periodo(
         self, 
         data_inizio: date, 
-        data_fine: date
+        data_fine: date,
+        lang: str = 'it'
     ) -> Dict[str, Any]:
         """
         Analizza le spese di un periodo
@@ -95,7 +97,8 @@ class SpeseManager:
             per_categoria, 
             media_giornaliera,
             necessarie,
-            voluttuarie
+            voluttuarie,
+            lang=lang
         )
         
         return {
@@ -316,7 +319,8 @@ class SpeseManager:
         per_categoria: Dict[str, float],
         media_giornaliera: float,
         necessarie: float,
-        voluttuarie: float
+        voluttuarie: float,
+        lang: str = 'it'
     ) -> List[str]:
         """Genera insights sulle spese"""
         insights = []
@@ -328,7 +332,7 @@ class SpeseManager:
             percentuale = (importo_max / totale * 100) if totale > 0 else 0
             
             insights.append(
-                f"📊 Categoria principale: {cat_max} (€{importo_max:.2f}, {percentuale:.1f}%)"
+                get_message('main_category', lang, cat=cat_max, amount=importo_max, perc=percentuale)
             )
         
         # Insight su necessarie vs voluttuarie
@@ -336,15 +340,15 @@ class SpeseManager:
             perc_voluttuarie = (voluttuarie / totale * 100) if totale > 0 else 0
             if perc_voluttuarie > 40:
                 insights.append(
-                    f"💡 {perc_voluttuarie:.1f}% di spese voluttuarie - Considera di ridurre"
+                    get_message('reduce_optional', lang, perc=perc_voluttuarie)
                 )
             else:
                 insights.append(
-                    f"✅ Buon equilibrio: {perc_voluttuarie:.1f}% voluttuarie"
+                    get_message('good_balance', lang, perc=perc_voluttuarie)
                 )
         
         # Insight su media giornaliera
-        insights.append(f"💰 Media giornaliera: €{media_giornaliera:.2f}")
+        insights.append(get_message('daily_average', lang, avg=media_giornaliera))
         
         return insights
     

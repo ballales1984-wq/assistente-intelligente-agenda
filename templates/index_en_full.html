@@ -3265,21 +3265,21 @@
                 let risposta = '';
 
                 if (tipo === 'oggi') {
-                    risposta = `💰 **Spese di Oggi**\n\n`;
+                    risposta = `💰 **Today's Expenses**\n\n`;
                 } else if (tipo === 'settimana') {
-                    risposta = `📊 **Spese della Settimana**\n\n`;
+                    risposta = `📊 **This Week's Expenses**\n\n`;
                     risposta += `📅 ${data.periodo.inizio} → ${data.periodo.fine}\n\n`;
                 } else if (tipo === 'mese') {
-                    risposta = `📈 **Spese del Mese**\n\n`;
+                    risposta = `📈 **This Month's Expenses**\n\n`;
                     risposta += `📅 ${data.periodo.inizio} → ${data.periodo.fine}\n\n`;
                 }
 
-                risposta += `💵 Totale: €${data.totale}\n`;
-                risposta += `📌 Numero spese: ${data.num_spese}\n`;
-                risposta += `📊 Media giornaliera: €${data.media_giornaliera}\n\n`;
+                risposta += `💵 Total: €${data.totale}\n`;
+                risposta += `📌 Number of expenses: ${data.num_spese}\n`;
+                risposta += `📊 Daily average: €${data.media_giornaliera}\n\n`;
 
                 if (data.per_categoria && Object.keys(data.per_categoria).length > 0) {
-                    risposta += `🏷️ Per categoria:\n`;
+                    risposta += `🏷️ By category:\n`;
                     Object.entries(data.per_categoria).forEach(([cat, importo]) => {
                         risposta += `  • ${cat}: €${importo}\n`;
                     });

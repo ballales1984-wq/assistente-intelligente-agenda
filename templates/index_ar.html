@@ -1576,7 +1576,7 @@
     <!-- Language Selector Dropdown -->
         <!-- Language Carousel -->
     <div class="lang-carousel">
-        <button class="carousel-arrow" onclick="scrollLangCarousel(-1)" title="Previous">‹</button>
+        <button class="carousel-arrow" onclick="scrollLangCarousel(-1)" title="السابق">‹</button>
         <div class="carousel-container" id="langCarousel">
             <a href="/" class="flag-btn " data-lang="it" title="Italiano">🇮🇹</a>
             <a href="/en" class="flag-btn " data-lang="en" title="English">🇬🇧</a>
@@ -1585,7 +1585,7 @@
             <a href="/ru" class="flag-btn " data-lang="ru" title="Русский">🇷🇺</a>
             <a href="/ar" class="flag-btn active" data-lang="ar" title="العربية">🇸🇦</a>
         </div>
-        <button class="carousel-arrow" onclick="scrollLangCarousel(1)" title="Next">›</button>
+        <button class="carousel-arrow" onclick="scrollLangCarousel(1)" title="التالي">›</button>
     </div>
     
     <!-- Onboarding Modal -->
@@ -1595,15 +1595,15 @@
             
             <!-- Step 1 -->
             <div class="onboarding-step active" data-step="1">
-                <h2>👋 Welcome!</h2>
+                <h2>👋 مرحباً!</h2>
                 <p>Hi! I'm your personal <strong>Smart Assistant</strong>.</p>
                 <p>I'll help you organize <strong>goals</strong>, <strong>commitments</strong>, <strong>expenses</strong>, and much more using artificial intelligence.</p>
                 <div class="onboarding-example">
                     💡 <strong>Tip:</strong> Talk to me in natural language! No complicated commands needed.
                 </div>
                 <div class="onboarding-buttons">
-                    <button class="onboarding-btn onboarding-btn-secondary" onclick="chiudiOnboarding()">Skip</button>
-                    <button class="onboarding-btn onboarding-btn-primary" onclick="prossimoStep()">Next →</button>
+                    <button class="onboarding-btn onboarding-btn-secondary" onclick="chiudiOnboarding()">تخطي</button>
+                    <button class="onboarding-btn onboarding-btn-primary" onclick="prossimoStep()">التالي →</button>
                 </div>
                 <div class="onboarding-dots">
                     <div class="onboarding-dot active"></div>
@@ -1618,7 +1618,7 @@
                 <p>It's super simple! Type in the chat what you want to do:</p>
                 <div class="onboarding-example">
                     <strong>Examples:</strong><br>
-                    📚 "I want to study Python 3 hours a week"<br>
+                    📚 "أريد دراسة Python 3 ساعات في الأسبوع"<br>
                     📅 "Tomorrow gym at 6pm"<br>
                     💰 "Spent $50 on groceries"<br>
                     📔 "Today I feel motivated!"
@@ -1626,7 +1626,7 @@
                 <p>I understand what you want and organize it automatically! 🎯</p>
                 <div class="onboarding-buttons">
                     <button class="onboarding-btn onboarding-btn-secondary" onclick="stepPrecedente()">← Back</button>
-                    <button class="onboarding-btn onboarding-btn-primary" onclick="prossimoStep()">Next →</button>
+                    <button class="onboarding-btn onboarding-btn-primary" onclick="prossimoStep()">التالي →</button>
                 </div>
                 <div class="onboarding-dots">
                     <div class="onboarding-dot"></div>
@@ -1637,7 +1637,7 @@
 
             <!-- Step 3 -->
             <div class="onboarding-step" data-step="3">
-                <h2>🚀 Ready to Start?</h2>
+                <h2>🚀 Ready to ابدأ?</h2>
                 <p>You have everything under control:</p>
                 <div class="onboarding-example">
                     ✅ <strong>Calendar</strong> - View all your commitments<br>
@@ -1649,7 +1649,7 @@
                 <p><strong>Try now!</strong> Click one of the examples in the chat to get started! 🎉</p>
                 <div class="onboarding-buttons">
                     <button class="onboarding-btn onboarding-btn-secondary" onclick="stepPrecedente()">← Back</button>
-                    <button class="onboarding-btn onboarding-btn-primary" onclick="inizia()">Start! 🚀</button>
+                    <button class="onboarding-btn onboarding-btn-primary" onclick="inizia()">ابدأ! 🚀</button>
                 </div>
                 <div class="onboarding-dots">
                     <div class="onboarding-dot"></div>
@@ -1786,7 +1786,7 @@
                 <div class="chat-messages" id="chatMessages">
                     <div class="message assistant">
                         Hi! I'm your personal assistant. Tell me what you want to do! 
-                        For example: "I want to study Python 3 hours a week" or "Sunday I'm going to the beach from 4pm to 8pm".
+                        For example: "أريد دراسة Python 3 ساعات في الأسبوع" or "Sunday I'm going to the beach from 4pm to 8pm".
                     </div>
                 </div>
                 <div class="chat-input-container">
@@ -1800,20 +1800,20 @@
                     <button class="btn btn-primary" onclick="inviaMessaggio()">Send</button>
                 </div>
                 <div class="quick-actions">
-                    <button class="quick-action" onclick="usaEsempio('I want to study Python 3 hours a week')">
-                        📚 Example: Study
+                    <button class="quick-action" onclick="usaEsempio('أريد دراسة Python 3 ساعات في الأسبوع')">
+                        📚 مثال: الدراسة
                     </button>
-                    <button class="quick-action" onclick="usaEsempio('Sunday beach from 4pm to 8pm')">
-                        🏖️ Example: Commitment
+                    <button class="quick-action" onclick="usaEsempio('الأحد الشاطئ من 4 إلى 8 مساءً')">
+                        🏖️ مثال: التزام
                     </button>
-                    <button class="quick-action" onclick="usaEsempio('I feel tired')">
-                        😴 Example: Mood
+                    <button class="quick-action" onclick="usaEsempio('أشعر بالتعب')">
+                        😴 مثال: المزاج
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Today I talked with Sara and understood for loops in Python. I feel motivated!')">
-                        📔 Example: Diary
+                        📔 مثال: اليوميات
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Spent $12 for lunch')">
-                        💰 Example: Expense
+                        💰 مثال: النفقات
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
@@ -2027,15 +2027,15 @@
                 <!-- Vista Settimanale -->
                 <div id="vistaSettimana">
                     <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                        <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ Previous</button>
+                        <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ السابق</button>
                         <span id="settimanaCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
-                            This week
+                            هذا الأسبوع
                         </span>
-                        <button class="btn btn-secondary" onclick="cambiaSettimana(1)">Next ▶</button>
+                        <button class="btn btn-secondary" onclick="cambiaSettimana(1)">التالي ▶</button>
                         <button class="btn btn-primary" onclick="cambiaSettimana(0)">Today</button>
                     </div>
                     <div id="calendarioContainer" style="overflow-x: auto;">
-                        <div class="loading" id="calendarioLoading">Loading calendar...</div>
+                        <div class="loading" id="calendarioLoading">جار تحميل التقويم...</div>
                         <div id="calendarioGrid"></div>
                     </div>
                 </div>
@@ -2043,15 +2043,15 @@
                 <!-- Vista Mensile -->
                 <div id="vistaMese" style="display: none;">
                     <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                        <button class="btn btn-secondary" onclick="cambiaMese(-1)">◀ Previous Month</button>
+                        <button class="btn btn-secondary" onclick="cambiaMese(-1)">◀ السابق Month</button>
                         <span id="meseCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
-                            This month
+                            هذا الشهر
                         </span>
-                        <button class="btn btn-secondary" onclick="cambiaMese(1)">Next Month ▶</button>
+                        <button class="btn btn-secondary" onclick="cambiaMese(1)">التالي Month ▶</button>
                         <button class="btn btn-primary" onclick="cambiaMese(0)">Today</button>
                     </div>
                     <div id="calendarioMensileContainer">
-                        <div class="loading" id="calendarioMensileLoading">Loading month...</div>
+                        <div class="loading" id="calendarioMensileLoading">جار تحميل الشهر...</div>
                         <div id="calendarioMensileGrid"></div>
                     </div>
                 </div>
@@ -2059,7 +2059,7 @@
 
             <!-- Grafici Visuali -->
             <div class="card" style="grid-column: 1 / -1;">
-                <h2>📊 Dashboard Analytics</h2>
+                <h2>📊 لوحة التحليلات</h2>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div>
                         <h3 style="color: #667eea; margin-bottom: 15px;">💰 Spese per Categoria (Mese)</h3>
@@ -2888,7 +2888,7 @@
                         html += '<div class="calendario-mensile-impegni">';
                         impegniPerGiorno[dataStr].forEach(imp => {
                             const oraInizio = new Date(imp.data_inizio).getHours();
-                            const minInizio = String(new Date(imp.data_inizio).getMinutes()).padStart(2, '0');
+                            const minInizio = String(new Date(imp.data_inizio).getMinutes()).padابدأ(2, '0');
                             html += `<div class="calendario-mensile-impegno" title="${imp.nome} - ${oraInizio}:${minInizio}">
                                 ${oraInizio}:${minInizio} ${imp.nome}
                             </div>`;
@@ -3000,7 +3000,7 @@
                     // Colonna ora
                     const timeCell = document.createElement('div');
                     timeCell.className = 'calendario-cell time-cell';
-                    timeCell.textContent = `${String(ora).padStart(2, '0')}:00`;
+                    timeCell.textContent = `${String(ora).padابدأ(2, '0')}:00`;
                     calendarioDiv.appendChild(timeCell);
 
                     // Celle per ogni giorno
@@ -3565,7 +3565,7 @@
                 if (data.includes('/')) {
                     const parti = data.split('/');
                     if (parti.length === 3) {
-                        dataFormattata = `${parti[2]}-${parti[1].padStart(2, '0')}-${parti[0].padStart(2, '0')}`;
+                        dataFormattata = `${parti[2]}-${parti[1].padابدأ(2, '0')}-${parti[0].padابدأ(2, '0')}`;
                     }
                 } else {
                     dataFormattata = data;
@@ -3972,12 +3972,12 @@
 
         // Auto-detect language on first visit
         function autoDetectLanguage() {
-            // Skip if user already selected a language
+            // تخطي if user already selected a language
             if (localStorage.getItem('lingua')) {
                 return;
             }
 
-            // Skip if not on root path
+            // تخطي if not on root path
             if (window.location.pathname !== '/') {
                 return;
             }
@@ -4211,14 +4211,14 @@
                     const fine = new Date(imp.data_fine);
                     
                     // Formato iCal: YYYYMMDDTHHMMSS
-                    const dtStart = formatoICalDate(inizio);
+                    const dtابدأ = formatoICalDate(inizio);
                     const dtEnd = formatoICalDate(fine);
                     const dtStamp = formatoICalDate(new Date());
                     
                     icalContent += 'BEGIN:VEVENT\r\n';
                     icalContent += `UID:${imp.id}@assistente-intelligente.local\r\n`;
                     icalContent += `DTSTAMP:${dtStamp}\r\n`;
-                    icalContent += `DTSTART:${dtStart}\r\n`;
+                    icalContent += `DTSTART:${dtابدأ}\r\n`;
                     icalContent += `DTEND:${dtEnd}\r\n`;
                     icalContent += `SUMMARY:${imp.nome}\r\n`;
                     icalContent += `DESCRIPTION:${imp.tipo || 'Impegno personale'}\r\n`;
@@ -4262,11 +4262,11 @@
 
         function formatoICalDate(date) {
             const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const seconds = String(date.getSeconds()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padابدأ(2, '0');
+            const day = String(date.getDate()).padابدأ(2, '0');
+            const hours = String(date.getHours()).padابدأ(2, '0');
+            const minutes = String(date.getMinutes()).padابدأ(2, '0');
+            const seconds = String(date.getSeconds()).padابدأ(2, '0');
             return `${year}${month}${day}T${hours}${minutes}${seconds}`;
         }
 
@@ -4672,7 +4672,7 @@
         <div class="mobile-menu-section">
             <h3>⚡ Quick Actions</h3>
             <div class="mobile-menu-grid">
-                <div class="mobile-menu-item" onclick="usaEsempio('I want to study Python 3 hours a week'); closeMobileMenu();">
+                <div class="mobile-menu-item" onclick="usaEsempio('أريد دراسة Python 3 ساعات في الأسبوع'); closeMobileMenu();">
                     📚 Study
                 </div>
                 <div class="mobile-menu-item" onclick="usaEsempio('Tomorrow meeting at 3pm'); closeMobileMenu();">

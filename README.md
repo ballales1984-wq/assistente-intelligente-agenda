@@ -13,7 +13,7 @@
 ### Il tuo compagno AI per organizzare vita, studio e obiettivi
 
 [![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge&logo=render)](https://assistente-intelligente-agenda.onrender.com/)
-[![Version](https://img.shields.io/badge/version-1.3.4-blue?style=for-the-badge)](https://github.com/ballales1984-wq/assistente-intelligente-agenda/releases)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue?style=for-the-badge)](https://github.com/ballales1984-wq/assistente-intelligente-agenda/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11-blue?style=for-the-badge&logo=python)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/flask-3.1.2-black?style=for-the-badge&logo=flask)](https://flask.palletsprojects.com/)
@@ -84,9 +84,11 @@ Scrivi in linguaggio naturale e l'AI capisce cosa vuoi fare, organizza il tuo te
 <td width="50%">
 
 ### 💬 **Chat Intelligente**
-- 🧠 NLP avanzato per comprensione italiana
-- 🔄 Distinzione automatica agenda/diario
-- 📝 12+ pattern riconosciuti
+- 🧠 **NEW:** AI Chat con Groq LLM (70B parametri!)
+- 🔄 Toggle NLP/AI: Scegli tra pattern o conversazione naturale
+- 🌍 6 lingue supportate (IT, EN, ES, ZH, RU, AR)
+- 📝 15 pattern NLP per comando rapido
+- ⚡ Groq: risposta in <1 secondo
 - 🎯 Suggerimenti contestuali
 
 ### 📅 **Calendario Dinamico**

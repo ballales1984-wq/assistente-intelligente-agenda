@@ -7,6 +7,7 @@ from app.models import UserProfile, Obiettivo, Impegno, DiarioGiornaliero, Spesa
 from app.core import InputManager, AgendaDinamica, MotoreAdattivo, DiarioManager
 from app.managers import PassatoManager, PresenteManager, FuturoManager, SpeseManager
 from app.i18n import get_message, detect_language_from_path
+from app.ai.groq_assistant import groq_assistant
 
 bp = Blueprint("api", __name__)
 
@@ -736,6 +737,64 @@ def chat():
         risposta["ai_suggestion"] = True
 
     return jsonify(risposta)
+
+
+@bp.route("/api/ai-chat", methods=["POST"])
+@limiter.limit("30 per minute")
+def ai_chat():
+    """
+    Endpoint dedicato per AI Chat con Groq
+    Conversation libera, non salva dati nel database
+    """
+    from flask import current_app
+    
+    data = request.json
+    messaggio = data.get("messaggio", "").strip()
+    lang = data.get("lang", "it")
+    
+    if not messaggio:
+        return jsonify({
+            "success": False,
+            "errore": get_message('empty_message', lang)
+        }), 400
+    
+    # Check Groq availability
+    if not groq_assistant.is_available():
+        return jsonify({
+            "success": False,
+            "errore": "⚠️ AI Chat non disponibile. Controlla che GROQ_API_KEY sia configurata.",
+            "available": False
+        }), 503
+    
+    # Call Groq
+    current_app.logger.info(f"🤖 AI Chat request: lang={lang}, message='{messaggio[:50]}...'")
+    
+    result = groq_assistant.chat(
+        messaggio=messaggio,
+        lang=lang,
+        model="llama-3.1-70b-versatile",  # Best quality model
+        max_tokens=1024,
+        temperature=0.7
+    )
+    
+    if result["success"]:
+        current_app.logger.info(f"✅ AI Chat success: {result['metadata']['tokens_used']} tokens")
+        return jsonify({
+            "success": True,
+            "risposta": result["risposta"],
+            "metadata": {
+                "provider": "groq",
+                "model": result["metadata"]["model"],
+                "tokens": result["metadata"]["tokens_used"]
+            }
+        })
+    else:
+        current_app.logger.error(f"❌ AI Chat failed: {result.get('error', 'Unknown error')}")
+        return jsonify({
+            "success": False,
+            "errore": result.get("risposta", "Errore temporaneo AI"),
+            "error_detail": result.get("error")
+        }), 500
 
 
 @bp.route("/api/piano", methods=["GET"])

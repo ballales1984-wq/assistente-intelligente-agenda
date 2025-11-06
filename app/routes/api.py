@@ -219,9 +219,12 @@ def chat():
 
     data = request.json
     messaggio = data.get("messaggio", "").strip()
+    
+    # Detect language from request or default to Italian
+    lang = data.get("lang") or detect_language_from_path(request.referrer or request.path)
 
     if not messaggio:
-        return jsonify({"errore": "Messaggio vuoto"}), 400
+        return jsonify({"errore": get_text('empty_message', lang)}), 400
 
     # Ottieni profilo utente
     profilo = UserProfile.query.first()
@@ -349,9 +352,12 @@ def chat():
         db.session.add(obiettivo)
         db.session.commit()
 
-        risposta["risposta"] = (
-            f"✅ Perfetto! Ho aggiunto l'obiettivo '{obiettivo.nome}' "
-            f"con {obiettivo.durata_settimanale}h a settimana."
+        risposta["risposta"] = get_text(
+            'goal_created',
+            lang,
+            nome=obiettivo.nome,
+            ore=obiettivo.durata_settimanale,
+            tipo=obiettivo.tipo
         )
         risposta["dati"] = obiettivo.to_dict()
 
@@ -526,10 +532,14 @@ def chat():
                         f"\n\n❌ **Eliminato:** '{mod['nome']}' ({mod['orario']})"
                     )
 
-        risposta["risposta"] = (
-            f"📅 Ho aggiunto l'impegno '{impegno.nome}' "
-            f"per {data_inizio.strftime('%d/%m/%Y alle %H:%M')}.{messaggio_modifiche}"
-        )
+        risposta["risposta"] = get_text(
+            'commitment_created',
+            lang,
+            nome=impegno.nome,
+            data=data_inizio.strftime('%d/%m/%Y'),
+            ora_inizio=data_inizio.strftime('%H:%M'),
+            ora_fine=data_fine.strftime('%H:%M')
+        ) + messaggio_modifiche
         risposta["dati"] = impegno.to_dict()
         if impegni_modificati:
             risposta["modifiche"] = impegni_modificati
@@ -675,11 +685,11 @@ def chat():
         sentiment_emoji = {"positivo": "😊", "neutro": "😐", "negativo": "😔"}
         emoji = sentiment_emoji.get(dati_diario["sentiment"], "📝")
 
-        risposta["risposta"] = (
-            f"{emoji} Ho salvato la tua riflessione nel diario!\n\n"
-            f"📌 Concetti chiave: {parole_chiave_str}\n"
-            f"💭 Sentiment: {dati_diario['sentiment']}"
-        )
+        risposta["risposta"] = get_text(
+            'diary_created',
+            lang,
+            sentiment=dati_diario['sentiment']
+        ) + f"\n\n📌 {parole_chiave_str}"
         risposta["dati"] = diario_entry.to_dict()
         risposta["diario_id"] = diario_entry.id  # Per il bottone condividi
 
@@ -703,13 +713,13 @@ def chat():
         spese_manager = SpeseManager(profilo)
         totale_oggi = spese_manager.quanto_ho_speso_oggi()
 
-        risposta["risposta"] = (
-            f"💰 Spesa registrata!\n\n"
-            f"💵 Importo: €{spesa.importo:.2f}\n"
-            f"📝 Descrizione: {spesa.descrizione}\n"
-            f"🏷️ Categoria: {spesa.categoria}\n\n"
-            f"📊 Totale oggi: €{totale_oggi['totale']:.2f}"
-        )
+        risposta["risposta"] = get_text(
+            'expense_created',
+            lang,
+            importo=spesa.importo,
+            descrizione=spesa.descrizione,
+            categoria=spesa.categoria
+        ) + f"\n\n📊 {get_text('today', lang)}: €{totale_oggi['totale']:.2f}"
         risposta["dati"] = spesa.to_dict()
 
     elif risultato["tipo"] == "domanda":

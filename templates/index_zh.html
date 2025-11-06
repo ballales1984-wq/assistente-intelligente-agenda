@@ -1163,7 +1163,84 @@
             background: #0f3460;
         }
 
-        /* Language Selector Dropdown */
+                /* Language Carousel */
+        .lang-carousel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: white;
+            border-radius: 30px;
+            padding: 8px 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            max-width: 180px;
+            padding: 2px 0;
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carousel-arrow {
+            background: transparent;
+            border: none;
+            color: rgba(102, 126, 234, 0.5);
+            font-size: 1.3em;
+            cursor: pointer;
+            padding: 0 3px;
+            transition: all 0.2s;
+            line-height: 1;
+            font-weight: bold;
+        }
+
+        .carousel-arrow:hover {
+            color: #667eea;
+            transform: scale(1.3);
+        }
+
+        .flag-btn {
+            font-size: 1.6em;
+            text-decoration: none;
+            opacity: 0.4;
+            transition: all 0.3s;
+            cursor: pointer;
+            filter: grayscale(70%);
+            flex-shrink: 0;
+        }
+
+        .flag-btn:hover {
+            opacity: 1;
+            transform: scale(1.15);
+            filter: grayscale(0%);
+        }
+
+        .flag-btn.active {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.25);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1.25); }
+            50% { transform: scale(1.35); }
+        }
+
+        body.dark-mode .lang-carousel {
+            background: #0f3460;
+        }
         .lang-selector {
             position: fixed;
             top: 80px;
@@ -1497,19 +1574,18 @@
     </button>
     
     <!-- Language Selector Dropdown -->
-    <div class="lang-selector">
-        <button class="lang-toggle" onclick="toggleLangMenu()" title="Change language">
-            <span id="langIcon">🇮🇹 IT</span>
-        </button>
-        <div class="lang-menu" id="langMenu">
-            <a href="/" data-lang="it" onclick="setLanguage('it', '/')">🇮🇹 Italiano</a>
-            <a href="/en" data-lang="en" onclick="setLanguage('en', '/en')">🇬🇧 English</a>
-            <a href="/es" data-lang="es" onclick="setLanguage('es', '/es')">🇪🇸 Español</a>
-            <a href="/zh" data-lang="zh" onclick="setLanguage('zh', '/zh')">🇨🇳 中文</a>
-            <a href="/ru" data-lang="ru" onclick="setLanguage('ru', '/ru')">🇷🇺 Русский</a>
-            <a href="/hi" data-lang="hi" onclick="setLanguage('hi', '/hi')">🇮🇳 हिन्दी</a>
-            <a href="/ar" data-lang="ar" onclick="setLanguage('ar', '/ar')">🇸🇦 العربية</a>
+        <!-- Language Carousel -->
+    <div class="lang-carousel">
+        <button class="carousel-arrow" onclick="scrollLangCarousel(-1)" title="Previous">‹</button>
+        <div class="carousel-container" id="langCarousel">
+            <a href="/" class="flag-btn " data-lang="it" title="Italiano">🇮🇹</a>
+            <a href="/en" class="flag-btn " data-lang="en" title="English">🇬🇧</a>
+            <a href="/es" class="flag-btn " data-lang="es" title="Español">🇪🇸</a>
+            <a href="/zh" class="flag-btn active" data-lang="zh" title="中文">🇨🇳</a>
+            <a href="/ru" class="flag-btn " data-lang="ru" title="Русский">🇷🇺</a>
+            <a href="/ar" class="flag-btn " data-lang="ar" title="العربية">🇸🇦</a>
         </div>
+        <button class="carousel-arrow" onclick="scrollLangCarousel(1)" title="Next">›</button>
     </div>
     
     <!-- Onboarding Modal -->
@@ -3872,9 +3948,11 @@
         // ============================================
         // LANGUAGE SELECTOR
         // ============================================
-        function toggleLangMenu() {
-            const menu = document.getElementById('langMenu');
-            menu.classList.toggle('active');
+                // Language Carousel Functions
+        function scrollLangCarousel(direction) {
+            const container = document.getElementById('langCarousel');
+            const scrollAmount = 50; // px per click
+            container.scrollLeft += direction * scrollAmount;
         }
 
         function setLanguage(lang, url) {
@@ -3882,15 +3960,13 @@
             window.location.href = url;
         }
 
-        // Close lang menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const langSelector = document.querySelector('.lang-selector');
-            const langMenu = document.getElementById('langMenu');
-            
-            if (langSelector && !langSelector.contains(event.target)) {
-                if (langMenu) {
-                    langMenu.classList.remove('active');
-                }
+        // Auto-scroll to active flag on load
+        window.addEventListener('DOMContentLoaded', function() {
+            const activeFlag = document.querySelector('.flag-btn.active');
+            if (activeFlag) {
+                setTimeout(() => {
+                    activeFlag.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }, 100);
             }
         });
 

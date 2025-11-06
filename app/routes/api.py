@@ -6,6 +6,7 @@ from app import db, limiter, cache
 from app.models import UserProfile, Obiettivo, Impegno, DiarioGiornaliero, Spesa
 from app.core import InputManager, AgendaDinamica, MotoreAdattivo, DiarioManager
 from app.managers import PassatoManager, PresenteManager, FuturoManager, SpeseManager
+from app.i18n import get_text, detect_language_from_path
 
 bp = Blueprint("api", __name__)
 

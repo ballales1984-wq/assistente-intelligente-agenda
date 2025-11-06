@@ -17,6 +17,8 @@ MESSAGES = {
         'expense_created': "✅ Perfetto! Ho registrato la spesa di €{importo:.2f} per '{descrizione}' (categoria: {categoria}).",
         'diary_created': "✅ Perfetto! Ho aggiunto la tua riflessione al diario. Sentiment: {sentiment}",
         'today': 'Oggi',
+        'not_understood': "🤔 Non ho capito bene questo formato.\n\n💡 **OPZIONI:**\n1️⃣ Riformula in modo più specifico:\n   • 'Voglio studiare Python 3 ore a settimana'\n   • 'Domani meeting 10-12'\n   • '50 euro benzina'\n\n2️⃣ Usa la Chat AI (🤖 in arrivo!) per linguaggio naturale completo\n\n3️⃣ Oppure scrivi una riflessione libera per il diario!",
+        'question_understood': "❓ Ho capito che vuoi sapere qualcosa!\n\n💡 Usa i pulsanti Quick Actions per risposte immediate, oppure attiva la chat AI per conversazioni naturali!",
     },
     'en': {
         'no_events_today': 'No events for today',
@@ -34,6 +36,8 @@ MESSAGES = {
         'expense_created': "✅ Perfect! I've recorded the expense of ${importo:.2f} for '{descrizione}' (category: {categoria}).",
         'diary_created': "✅ Perfect! I've added your reflection to the diary. Sentiment: {sentiment}",
         'today': 'Today',
+        'not_understood': "🤔 I didn't quite understand this format.\n\n💡 **OPTIONS:**\n1️⃣ Rephrase more specifically:\n   • 'I want to study Python 3 hours a week'\n   • 'Tomorrow meeting 10-12'\n   • '50 dollars gas'\n\n2️⃣ Use AI Chat (🤖 coming soon!) for complete natural language\n\n3️⃣ Or write a free reflection for your diary!",
+        'question_understood': "❓ I understand you want to know something!\n\n💡 Use Quick Actions buttons for immediate answers, or activate AI chat for natural conversations!",
     },
     'es': {
         'no_events_today': 'No hay eventos para hoy',

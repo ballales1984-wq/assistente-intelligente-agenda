@@ -727,25 +727,12 @@ def chat():
         # Gestisci domande con AI se disponibile
         tipo_domanda = risultato["dati"].get("tipo_domanda")
 
-        risposta["risposta"] = f"❓ Ho capito che vuoi sapere qualcosa!\n\n"
-        risposta[
-            "risposta"
-        ] += "💡 Usa i pulsanti Quick Actions per risposte immediate, oppure attiva la chat AI per conversazioni naturali!"
+        risposta["risposta"] = get_message('question_understood', lang)
         risposta["dati"] = {"tipo_domanda": tipo_domanda, "ai_suggested": True}
 
     else:
         # Input non riconosciuto - suggerisci AI chat
-        risposta["risposta"] = (
-            "🤔 Non ho capito bene questo formato.\n\n"
-            "💡 **OPZIONI:**\n"
-            "1️⃣ Riformula in modo più specifico:\n"
-            "   • 'Voglio studiare Python 3 ore a settimana'\n"
-            "   • 'Domani meeting 10-12'\n"
-            "   • '50 euro benzina'\n\n"
-            "2️⃣ Usa la Chat AI (🤖 in arrivo!) per linguaggio naturale completo\n\n"
-            "3️⃣ Oppure scrivi una riflessione libera per il diario!"
-        )
-
+        risposta["risposta"] = get_message('not_understood', lang)
         risposta["ai_suggestion"] = True
 
     return jsonify(risposta)

@@ -2266,34 +2266,34 @@
                 
                 if (result.success) {
                     const shareUrl = result.share_url;
-                    const shareText = '📖 Guarda questa riflessione dal mio Diario!';
+                    const shareText = '📖 Check out this reflection from my Diary!';
                     
                     // Prova Web Share API (mobile)
                     if (navigator.share) {
                         try {
                             await navigator.share({
-                                title: 'Riflessione dal Diario',
+                                title: 'Diary Reflection',
                                 text: shareText,
                                 url: shareUrl
                             });
-                            aggiungiMessaggio('✅ Messaggio condiviso!', 'assistant');
+                            aggiungiMessaggio('✅ Message shared!', 'assistant');
                             return;
                         } catch (err) {
                             if (err.name !== 'AbortError') {
-                                console.log('Web Share fallito, uso fallback');
+                                console.log('Web Share failed, using fallback');
                             }
                         }
                     }
                     
                     // Fallback: copia negli appunti
                     await navigator.clipboard.writeText(shareUrl);
-                    aggiungiMessaggio(`✅ Link copiato negli appunti!\n\n${shareUrl}\n\n📱 Condividi su:\n• Twitter: twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}\n• WhatsApp: wa.me/?text=${encodeURIComponent(shareUrl)}`, 'assistant');
+                    aggiungiMessaggio(`✅ Link copied to clipboard!\n\n${shareUrl}\n\n📱 Share on:\n• Twitter: twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}\n• WhatsApp: wa.me/?text=${encodeURIComponent(shareUrl)}`, 'assistant');
                 } else {
-                    aggiungiMessaggio('❌ Errore nella condivisione. Riprova.', 'assistant');
+                    aggiungiMessaggio('❌ Sharing error. Please try again.', 'assistant');
                 }
             } catch (error) {
-                console.error('Errore condivisione:', error);
-                aggiungiMessaggio('❌ Errore durante la condivisione.', 'assistant');
+                console.error('Sharing error:', error);
+                aggiungiMessaggio('❌ Error during sharing.', 'assistant');
             }
         }
 

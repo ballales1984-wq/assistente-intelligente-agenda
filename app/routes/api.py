@@ -82,6 +82,12 @@ def diario_book():
     return render_template("diario_book.html")
 
 
+@bp.route("/pomodoro")
+def pomodoro():
+    """Pomodoro Timer per produttività"""
+    return render_template("pomodoro.html")
+
+
 @bp.route("/community")
 def community():
     """Community page - Share reflections and connect (Italian)"""

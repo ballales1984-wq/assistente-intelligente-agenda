@@ -296,7 +296,8 @@ class OllamaManager:
         try:
             ollama.list()
             return True
-        except:
+        except Exception as e:
+            logger.debug(f"Ollama not running: {e}")
             return False
     
     @staticmethod
@@ -307,7 +308,8 @@ class OllamaManager:
             if hasattr(models, 'models'):
                 return [m.model for m in models.models]
             return []
-        except:
+        except Exception as e:
+            logger.debug(f"Error listing models: {e}")
             return []
     
     @staticmethod

@@ -9,7 +9,11 @@ Date: 5 Nov 2025
 
 import logging
 
-from duckduckgo_search import DDGS
+try:
+    from ddgs import DDGS
+except ImportError:
+    # Fallback per vecchia versione
+    from duckduckgo_search import DDGS
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +23,8 @@ def _get_cache():
     try:
         from app import cache
         return cache
-    except:
+    except ImportError:
+        logger.debug("Cache not available (import error)")
         return None
 
 

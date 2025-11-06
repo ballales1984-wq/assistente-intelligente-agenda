@@ -25,6 +25,14 @@ class UserProfile(db.Model):
     # fingerprint = db.Column(db.String(100), unique=True, index=True)
     # last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     
+    # Telegram Integration
+    telegram_id = db.Column(db.String(50), unique=True, index=True, nullable=True)
+    telegram_username = db.Column(db.String(100), nullable=True)
+    
+    # Livelli dinamici (per motore adattivo)
+    livello_energia = db.Column(db.Integer, default=80)  # 0-100
+    livello_stress = db.Column(db.Integer, default=30)   # 0-100
+    
     # Relazioni
     obiettivi = db.relationship('Obiettivo', backref='utente', lazy='dynamic', cascade='all, delete-orphan')
     impegni = db.relationship('Impegno', backref='utente', lazy='dynamic', cascade='all, delete-orphan')

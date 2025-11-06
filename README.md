@@ -13,7 +13,8 @@
 ### Il tuo compagno AI per organizzare vita, studio e obiettivi
 
 [![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge&logo=render)](https://assistente-intelligente-agenda.onrender.com/)
-[![Version](https://img.shields.io/badge/version-1.3.4-blue?style=for-the-badge)](https://github.com/ballales1984-wq/assistente-intelligente-agenda/releases)
+[![Telegram Bot](https://img.shields.io/badge/telegram-bot-blue?style=for-the-badge&logo=telegram)](https://t.me/wallmind_agenda_bot)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue?style=for-the-badge)](https://github.com/ballales1984-wq/assistente-intelligente-agenda/releases)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11-blue?style=for-the-badge&logo=python)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/flask-3.1.2-black?style=for-the-badge&logo=flask)](https://flask.palletsprojects.com/)
@@ -25,8 +26,13 @@
 
 ### ✨ Prova Subito
 
-**🇮🇹 Versione Italiana:** https://assistente-intelligente-agenda.onrender.com/  
-**🇬🇧 English Version:** https://assistente-intelligente-agenda.onrender.com/en
+**🌐 Web App:**  
+🇮🇹 Versione Italiana: https://assistente-intelligente-agenda.onrender.com/  
+🇬🇧 English Version: https://assistente-intelligente-agenda.onrender.com/en
+
+**📱 Telegram Bot:**  
+🤖 Chat direttamente su Telegram: [@wallmind_agenda_bot](https://t.me/wallmind_agenda_bot)  
+✨ Supporta 6 lingue: IT, EN, ES, ZH, RU, AR
 
 </div>
 

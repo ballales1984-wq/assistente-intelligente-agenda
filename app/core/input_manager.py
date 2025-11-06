@@ -4,7 +4,14 @@ import re
 from datetime import datetime, timedelta, date
 from typing import Dict, Any, Optional
 from app.core.diario_manager import DiarioManager
-from langdetect import detect, LangDetectException
+
+# Import opzionale langdetect
+try:
+    from langdetect import detect, LangDetectException
+    LANGDETECT_AVAILABLE = True
+except ImportError:
+    LANGDETECT_AVAILABLE = False
+    LangDetectException = Exception
 
 
 class InputManager:
@@ -66,8 +73,8 @@ class InputManager:
         testo = testo.lower().strip()
         risultato = {"tipo": None, "dati": {}, "testo_originale": testo_originale}
         
-        # Auto-rileva lingua se non specificata
-        if lang == 'it':
+        # Auto-rileva lingua se non specificata (solo se langdetect disponibile)
+        if lang == 'it' and LANGDETECT_AVAILABLE:
             try:
                 detected_lang = detect(testo)
                 if detected_lang == 'en':

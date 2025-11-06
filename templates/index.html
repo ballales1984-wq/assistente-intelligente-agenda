@@ -1497,18 +1497,18 @@
     </button>
     
     <!-- Language Selector Dropdown -->
-    <div class="lang-selector">
-        <button class="lang-toggle" onclick="toggleLangMenu()" title="Change language">
-            <span id="langIcon">🇮🇹 IT</span>
-        </button>
-        <div class="lang-menu" id="langMenu">
-            <a href="/" data-lang="it" onclick="setLanguage('it', '/')">🇮🇹 Italiano</a>
-            <a href="/en" data-lang="en" onclick="setLanguage('en', '/en')">🇬🇧 English</a>
-            <a href="/es" data-lang="es" onclick="setLanguage('es', '/es')">🇪🇸 Español</a>
-            <a href="/zh" data-lang="zh" onclick="setLanguage('zh', '/zh')">🇨🇳 中文</a>
-            <a href="/ru" data-lang="ru" onclick="setLanguage('ru', '/ru')">🇷🇺 Русский</a>
-            <a href="/ar" data-lang="ar" onclick="setLanguage('ar', '/ar')">🇸🇦 العربية</a>
+    <!-- Language Carousel -->
+    <div class="lang-carousel">
+        <button class="carousel-arrow" onclick="scrollLangCarousel(-1)" title="Previous">‹</button>
+        <div class="carousel-container" id="langCarousel">
+            <a href="/" class="flag-btn active" data-lang="it" title="Italiano">🇮🇹</a>
+            <a href="/en" class="flag-btn" data-lang="en" title="English">🇬🇧</a>
+            <a href="/es" class="flag-btn" data-lang="es" title="Español">🇪🇸</a>
+            <a href="/zh" class="flag-btn" data-lang="zh" title="中文">🇨🇳</a>
+            <a href="/ru" class="flag-btn" data-lang="ru" title="Русский">🇷🇺</a>
+            <a href="/ar" class="flag-btn" data-lang="ar" title="العربية">🇸🇦</a>
         </div>
+        <button class="carousel-arrow" onclick="scrollLangCarousel(1)" title="Next">›</button>
     </div>
     
     <!-- Onboarding Modal -->

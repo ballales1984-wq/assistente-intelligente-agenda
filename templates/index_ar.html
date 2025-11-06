@@ -1883,57 +1883,57 @@
 
             <!-- Obiettivi -->
             <div class="card">
-                <h2>🎯 Your Goals</h2>
+                <h2>🎯 أهدافك</h2>
                 <div class="obiettivi-list" id="obiettiviList">
-                    <div class="loading" id="obiettiviLoading">Loading...</div>
-                    <div class="empty-state" id="obiettiviEmpty">No goals yet. Start talking with the assistant!</div>
+                    <div class="loading" id="obiettiviLoading">جار التحميل...</div>
+                    <div class="empty-state" id="obiettiviEmpty">لا توجد أهداف بعد. ابدأ بالتحدث مع المساعد!</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaObiettivi()">
-                    🔄 Refresh
+                    🔄 تحديث
                 </button>
             </div>
 
             <!-- Piano -->
             <div class="card">
-                <h2>📅 Weekly Plan</h2>
+                <h2>📅 الخطة الأسبوعية</h2>
                 <div class="piano-list" id="pianoList">
-                    <div class="loading" id="pianoLoading">Loading...</div>
-                    <div class="empty-state" id="pianoEmpty">Generate your plan!</div>
+                    <div class="loading" id="pianoLoading">جار التحميل...</div>
+                    <div class="empty-state" id="pianoEmpty">أنشئ خطتك!</div>
                 </div>
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="generaPiano()">
-                    ✨ Generate Plan
+                    ✨ إنشاء الخطة
                 </button>
             </div>
 
             <!-- Statistiche -->
             <div class="card">
-                <h2>📊 Statistics</h2>
+                <h2>📊 الإحصائيات</h2>
                 <div class="stats-grid" id="statsGrid">
                     <div class="stat-box">
                         <span class="number" id="statObiettivi">0</span>
-                        <span class="label">Goals</span>
+                        <span class="label">الأهداف</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="statOre">0h</span>
-                        <span class="label">Hours completed</span>
+                        <span class="label">ساعات مكتملة</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="statCompletamento">0%</span>
-                        <span class="label">Completion</span>
+                        <span class="label">الإنجاز</span>
                     </div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaStatistiche()">
-                    🔄 Refresh
+                    🔄 تحديث
                 </button>
             </div>
 
             <!-- Previsioni AI Futuro -->
             <div class="card">
-                <h2>🔮 AI Predictions</h2>
-                <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">Based on your past data</p>
+                <h2>🔮 توقعات الذكاء الاصطناعي</h2>
+                <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">بناءً على بياناتك السابقة</p>
                 
                 <div id="previsioniContainer">
-                    <div class="loading" id="previsioniLoading">Loading predictions...</div>
+                    <div class="loading" id="previsioniLoading">جار تحميل التوقعات...</div>
                     
                     <!-- Previsioni Settimana Prossima -->
                     <div id="previsioniContent" style="display: none;">
@@ -1963,50 +1963,50 @@
                 </div>
                 
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="caricaPrevisioni()">
-                    🔮 Refresh Predictions
+                    🔮 تحديث التوقعات
                 </button>
             </div>
 
             <!-- Diario Personale -->
             <div class="card">
-                <h2>📔 Personal Diary</h2>
+                <h2>📔 اليوميات الشخصية</h2>
                 <div class="piano-list" id="diarioList">
-                    <div class="loading" id="diarioLoading">Loading...</div>
-                    <div class="empty-state" id="diarioEmpty">No reflections yet. Write in the chat!</div>
+                    <div class="loading" id="diarioLoading">جار التحميل...</div>
+                    <div class="empty-state" id="diarioEmpty">لا توجد تأملات بعد. اكتب في الدردشة!</div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn btn-secondary" style="flex: 1;" onclick="caricaDiario()">
-                        🔄 Refresh
+                        🔄 تحديث
                     </button>
-                    <a href="/en/diario-book" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                        📖 Book View
+                    <a href="/ar/diario-book" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                        📖 عرض الكتاب
                     </a>
                 </div>
             </div>
 
             <!-- Budget & Spese -->
             <div class="card">
-                <h2>💰 Budget & Spese</h2>
+                <h2>💰 الميزانية والنفقات</h2>
                 <div id="budgetSummary" style="margin-bottom: 15px;">
                     <div class="stat-box" style="margin-bottom: 10px;">
                         <span class="number" id="speseOggi">€0</span>
-                        <span class="label">Today</span>
+                        <span class="label">اليوم</span>
                     </div>
                     <div class="stat-box" style="margin-bottom: 10px;">
                         <span class="number" id="speseSettimana">€0</span>
-                        <span class="label">This Week</span>
+                        <span class="label">هذا الأسبوع</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="speseMese">€0</span>
-                        <span class="label">This Month</span>
+                        <span class="label">هذا الشهر</span>
                     </div>
                 </div>
                 <div class="piano-list" id="speseList" style="max-height: 200px;">
-                    <div class="loading" id="speseLoading">Loading...</div>
-                    <div class="empty-state" id="speseEmpty">No expenses recorded</div>
+                    <div class="loading" id="speseLoading">جار التحميل...</div>
+                    <div class="empty-state" id="speseEmpty">لم يتم تسجيل أي نفقات</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaSpese()">
-                    🔄 Refresh
+                    🔄 تحديث
                 </button>
             </div>
 

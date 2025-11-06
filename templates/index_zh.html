@@ -1576,7 +1576,7 @@
     <!-- Language Selector Dropdown -->
         <!-- Language Carousel -->
     <div class="lang-carousel">
-        <button class="carousel-arrow" onclick="scrollLangCarousel(-1)" title="Previous">‹</button>
+        <button class="carousel-arrow" onclick="scrollLangCarousel(-1)" title="上一个">‹</button>
         <div class="carousel-container" id="langCarousel">
             <a href="/" class="flag-btn " data-lang="it" title="Italiano">🇮🇹</a>
             <a href="/en" class="flag-btn " data-lang="en" title="English">🇬🇧</a>
@@ -1641,7 +1641,7 @@
                 <p>You have everything under control:</p>
                 <div class="onboarding-example">
                     ✅ <strong>Calendar</strong> - View all your commitments<br>
-                    ✅ <strong>Goals</strong> - Automatic progress tracking<br>
+                    ✅ <strong>目标</strong> - Automatic progress tracking<br>
                     ✅ <strong>Budget</strong> - Real-time expense control<br>
                     ✅ <strong>Diary</strong> - Reflections and sentiment analysis<br>
                     ✅ <strong>Analytics</strong> - Charts and statistics
@@ -1687,7 +1687,7 @@
         <div class="quick-tour-item" onclick="tourGoTo('obiettivi', 'Here you see the goals you created and their progress')">
             <div class="quick-tour-icon">🎯</div>
             <div class="quick-tour-text">
-                <div class="quick-tour-label">Goals</div>
+                <div class="quick-tour-label">目标</div>
                 <div class="quick-tour-desc">Automatic progress tracking</div>
             </div>
         </div>
@@ -1794,30 +1794,30 @@
                         type="text" 
                         class="chat-input" 
                         id="chatInput" 
-                        placeholder="Type here..."
+                        placeholder="在这里输入..."
                         onkeypress="handleKeyPress(event)"
                     >
-                    <button class="btn btn-primary" onclick="inviaMessaggio()">Send</button>
+                    <button class="btn btn-primary" onclick="inviaMessaggio()">发送</button>
                 </div>
                 <div class="quick-actions">
                     <button class="quick-action" onclick="usaEsempio('I want to study Python 3 hours a week')">
-                        📚 Example: Study
+                        📚 示例：学习
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Sunday beach from 4pm to 8pm')">
-                        🏖️ Example: Commitment
+                        🏖️ 示例：承诺
                     </button>
                     <button class="quick-action" onclick="usaEsempio('I feel tired')">
-                        😴 Example: Mood
+                        😴 示例：心情
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Today I talked with Sara and understood for loops in Python. I feel motivated!')">
-                        📔 Example: Diary
+                        📔 示例：日记
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Spent $12 for lunch')">
-                        💰 Example: Expense
+                        💰 示例：支出
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Time Questions:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ 时间问题：</strong>
                     <button class="quick-action" onclick="domandaTemporale('passato')">
                         ⏮️ What did I do?
                     </button>
@@ -1831,77 +1831,77 @@
                         🔮 How's Thursday?
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('proiezione')">
-                        📈 Future projection
+                        📈 未来预测
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💰 Budget & Expenses:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💰 预算和支出：</strong>
                     <button class="quick-action" onclick="domandaSpese('oggi')">
                         💵 Spent today?
                     </button>
                     <button class="quick-action" onclick="domandaSpese('settimana')">
-                        📊 Spent this week?
+                        📊 Spent 本周?
                     </button>
                     <button class="quick-action" onclick="domandaSpese('mese')">
                         📈 Spent this month?
                     </button>
                     <button class="quick-action" onclick="domandaSpese('budget')">
-                        🎯 Check budget
+                        🎯 检查预算
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">🔊 Voice Reading:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">🔊 语音阅读：</strong>
                     <button class="quick-action" onclick="leggiImpegniGiorno('oggi')">
-                        🔊 Today's commitments
+                        🔊 今天的承诺
                     </button>
                     <button class="quick-action" onclick="leggiImpegniGiorno('domani')">
-                        🔊 Tomorrow's commitments
+                        🔊 明天的承诺
                     </button>
                     <button class="quick-action" onclick="apriSelettoreGiorno()">
-                        📅 Choose day
+                        📅 选择日期
                     </button>
                     <button class="quick-action" onclick="stopLettura()">
-                        ⏹️ Stop
+                        ⏹️ 停止
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💾 Backup & Export:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💾 备份和导出：</strong>
                     <button class="quick-action" onclick="exportaTutto()">
-                        📦 Export All JSON
+                        📦 导出全部 JSON
                     </button>
                     <button class="quick-action" onclick="exportaPianoPDF()">
-                        📄 Export Plan PDF
+                        📄 导出计划 PDF
                     </button>
                     <button class="quick-action" onclick="exportaImpegniICalendar()">
-                        📅 Export iCal
+                        📅 导出 iCal
                     </button>
                     <button class="quick-action" onclick="exportaSpese()">
-                        💰 Export Expenses CSV
+                        💰 导出支出 CSV
                     </button>
                 </div>
             </div>
 
             <!-- Obiettivi -->
             <div class="card">
-                <h2>🎯 Your Goals</h2>
+                <h2>🎯 您的目标</h2>
                 <div class="obiettivi-list" id="obiettiviList">
-                    <div class="loading" id="obiettiviLoading">Loading...</div>
-                    <div class="empty-state" id="obiettiviEmpty">No goals yet. Start talking with the assistant!</div>
+                    <div class="loading" id="obiettiviLoading">加载中...</div>
+                    <div class="empty-state" id="obiettiviEmpty">还没有目标. Start talking with the assistant!</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaObiettivi()">
-                    🔄 Refresh
+                    🔄 刷新
                 </button>
             </div>
 
             <!-- Piano -->
             <div class="card">
-                <h2>📅 Weekly Plan</h2>
+                <h2>📅 每周计划</h2>
                 <div class="piano-list" id="pianoList">
-                    <div class="loading" id="pianoLoading">Loading...</div>
-                    <div class="empty-state" id="pianoEmpty">Generate your plan!</div>
+                    <div class="loading" id="pianoLoading">加载中...</div>
+                    <div class="empty-state" id="pianoEmpty">生成您的计划！</div>
                 </div>
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="generaPiano()">
-                    ✨ Generate Plan
+                    ✨ 生成计划
                 </button>
             </div>
 
@@ -1911,29 +1911,29 @@
                 <div class="stats-grid" id="statsGrid">
                     <div class="stat-box">
                         <span class="number" id="statObiettivi">0</span>
-                        <span class="label">Goals</span>
+                        <span class="label">目标</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="statOre">0h</span>
-                        <span class="label">Hours completed</span>
+                        <span class="label">完成小时数</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="statCompletamento">0%</span>
-                        <span class="label">Completion</span>
+                        <span class="label">完成度</span>
                     </div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaStatistiche()">
-                    🔄 Refresh
+                    🔄 刷新
                 </button>
             </div>
 
             <!-- Previsioni AI Futuro -->
             <div class="card">
-                <h2>🔮 AI Predictions</h2>
-                <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">Based on your past data</p>
+                <h2>🔮 AI 预测</h2>
+                <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">基于您的历史数据</p>
                 
                 <div id="previsioniContainer">
-                    <div class="loading" id="previsioniLoading">Loading predictions...</div>
+                    <div class="loading" id="previsioniLoading">加载预测中...</div>
                     
                     <!-- Previsioni Settimana Prossima -->
                     <div id="previsioniContent" style="display: none;">
@@ -1963,30 +1963,30 @@
                 </div>
                 
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="caricaPrevisioni()">
-                    🔮 Refresh Predictions
+                    🔮 刷新 Predictions
                 </button>
             </div>
 
             <!-- Diario Personale -->
             <div class="card">
-                <h2>📔 Personal Diary</h2>
+                <h2>📔 个人日记</h2>
                 <div class="piano-list" id="diarioList">
-                    <div class="loading" id="diarioLoading">Loading...</div>
-                    <div class="empty-state" id="diarioEmpty">No reflections yet. Write in the chat!</div>
+                    <div class="loading" id="diarioLoading">加载中...</div>
+                    <div class="empty-state" id="diarioEmpty">还没有反思. 在聊天中写！</div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn btn-secondary" style="flex: 1;" onclick="caricaDiario()">
-                        🔄 Refresh
+                        🔄 刷新
                     </button>
                     <a href="/en/diario-book" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                        📖 Book View
+                        📖 书籍视图
                     </a>
                 </div>
             </div>
 
-            <!-- Budget & Spese -->
+            <!-- 预算和支出 -->
             <div class="card">
-                <h2>💰 Budget & Spese</h2>
+                <h2>💰 预算和支出</h2>
                 <div id="budgetSummary" style="margin-bottom: 15px;">
                     <div class="stat-box" style="margin-bottom: 10px;">
                         <span class="number" id="speseOggi">€0</span>
@@ -2002,11 +2002,11 @@
                     </div>
                 </div>
                 <div class="piano-list" id="speseList" style="max-height: 200px;">
-                    <div class="loading" id="speseLoading">Loading...</div>
-                    <div class="empty-state" id="speseEmpty">No expenses recorded</div>
+                    <div class="loading" id="speseLoading">加载中...</div>
+                    <div class="empty-state" id="speseEmpty">没有记录支出</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaSpese()">
-                    🔄 Refresh
+                    🔄 刷新
                 </button>
             </div>
 
@@ -2027,15 +2027,15 @@
                 <!-- Vista Settimanale -->
                 <div id="vistaSettimana">
                     <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                        <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ Previous</button>
+                        <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ 上一个</button>
                         <span id="settimanaCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
-                            This week
+                            本周
                         </span>
                         <button class="btn btn-secondary" onclick="cambiaSettimana(1)">Next ▶</button>
                         <button class="btn btn-primary" onclick="cambiaSettimana(0)">Today</button>
                     </div>
                     <div id="calendarioContainer" style="overflow-x: auto;">
-                        <div class="loading" id="calendarioLoading">Loading calendar...</div>
+                        <div class="loading" id="calendarioLoading">加载日历中...</div>
                         <div id="calendarioGrid"></div>
                     </div>
                 </div>
@@ -2043,15 +2043,15 @@
                 <!-- Vista Mensile -->
                 <div id="vistaMese" style="display: none;">
                     <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                        <button class="btn btn-secondary" onclick="cambiaMese(-1)">◀ Previous Month</button>
+                        <button class="btn btn-secondary" onclick="cambiaMese(-1)">◀ 上一个 Month</button>
                         <span id="meseCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
-                            This month
+                            本月
                         </span>
                         <button class="btn btn-secondary" onclick="cambiaMese(1)">Next Month ▶</button>
                         <button class="btn btn-primary" onclick="cambiaMese(0)">Today</button>
                     </div>
                     <div id="calendarioMensileContainer">
-                        <div class="loading" id="calendarioMensileLoading">Loading month...</div>
+                        <div class="loading" id="calendarioMensileLoading">加载月份中...</div>
                         <div id="calendarioMensileGrid"></div>
                     </div>
                 </div>
@@ -2527,11 +2527,11 @@
                         <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">
                         ${riepilogo.ore_totali_previste.toFixed(1)}h
                     </div>
-                    <div style="opacity: 0.9;">Total hours predicted</div>
+                    <div style="opacity: 0.9;">预计总小时数</div>
                 </div>
                 <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                    <div style="font-weight: 600; margin-bottom: 5px;">📌 Busiest day:</div>
-                    <div>${riepilogo.giorno_piu_pieno.giorno} - ${riepilogo.giorno_piu_pieno.ore.toFixed(1)}h predicted</div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">📌 最忙的一天：</div>
+                    <div>${riepilogo.giorno_piu_pieno.giorno} - ${riepilogo.giorno_piu_pieno.ore.toFixed(1)}h 预计</div>
                 </div>
                     <div style="font-size: 0.9em; opacity: 0.9;">
                         ${previsioni.suggerimenti.join(' • ')}
@@ -2549,7 +2549,7 @@
                             <div style="font-size: 1.8em; font-weight: bold; color: #667eea;">
                             ${oreTotaliObiettivi.toFixed(1)}h
                         </div>
-                        <div style="color: #888; font-size: 0.9em;">Hours predicted on goals this week</div>
+                        <div style="color: #888; font-size: 0.9em;">Hours 预计 on goals 本周</div>
                     </div>
                         ${obiettivi.map(obj => `
                             <div style="background: white; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #667eea;">
@@ -3292,7 +3292,7 @@
                     break;
                 case 'settimana':
                     endpoint = '/api/spese/settimana';
-                    messaggio = 'How much did I spend this week?';
+                    messaggio = 'How much did I spend 本周?';
                     break;
                 case 'mese':
                     endpoint = '/api/spese/mese';

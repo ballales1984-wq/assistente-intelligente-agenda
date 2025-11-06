@@ -1576,7 +1576,7 @@
     <!-- Language Selector Dropdown -->
         <!-- Language Carousel -->
     <div class="lang-carousel">
-        <button class="carousel-arrow" onclick="scrollLangCarousel(-1)" title="Previous">‹</button>
+        <button class="carousel-arrow" onclick="scrollLangCarousel(-1)" title="Предыдущий">‹</button>
         <div class="carousel-container" id="langCarousel">
             <a href="/" class="flag-btn " data-lang="it" title="Italiano">🇮🇹</a>
             <a href="/en" class="flag-btn " data-lang="en" title="English">🇬🇧</a>
@@ -1641,7 +1641,7 @@
                 <p>You have everything under control:</p>
                 <div class="onboarding-example">
                     ✅ <strong>Calendar</strong> - View all your commitments<br>
-                    ✅ <strong>Goals</strong> - Automatic progress tracking<br>
+                    ✅ <strong>Цели</strong> - Automatic progress tracking<br>
                     ✅ <strong>Budget</strong> - Real-time expense control<br>
                     ✅ <strong>Diary</strong> - Reflections and sentiment analysis<br>
                     ✅ <strong>Analytics</strong> - Charts and statistics
@@ -1687,7 +1687,7 @@
         <div class="quick-tour-item" onclick="tourGoTo('obiettivi', 'Here you see the goals you created and their progress')">
             <div class="quick-tour-icon">🎯</div>
             <div class="quick-tour-text">
-                <div class="quick-tour-label">Goals</div>
+                <div class="quick-tour-label">Цели</div>
                 <div class="quick-tour-desc">Automatic progress tracking</div>
             </div>
         </div>
@@ -1794,30 +1794,30 @@
                         type="text" 
                         class="chat-input" 
                         id="chatInput" 
-                        placeholder="Type here..."
+                        placeholder="Введите здесь..."
                         onkeypress="handleKeyPress(event)"
                     >
-                    <button class="btn btn-primary" onclick="inviaMessaggio()">Send</button>
+                    <button class="btn btn-primary" onclick="inviaMessaggio()">Отправить</button>
                 </div>
                 <div class="quick-actions">
                     <button class="quick-action" onclick="usaEsempio('I want to study Python 3 hours a week')">
-                        📚 Example: Study
+                        📚 Пример: Учеба
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Sunday beach from 4pm to 8pm')">
-                        🏖️ Example: Commitment
+                        🏖️ Пример: Обязательство
                     </button>
                     <button class="quick-action" onclick="usaEsempio('I feel tired')">
-                        😴 Example: Mood
+                        😴 Пример: Настроение
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Today I talked with Sara and understood for loops in Python. I feel motivated!')">
-                        📔 Example: Diary
+                        📔 Пример: Дневник
                     </button>
                     <button class="quick-action" onclick="usaEsempio('Spent $12 for lunch')">
-                        💰 Example: Expense
+                        💰 Пример: Расход
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Time Questions:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Вопросы времени:</strong>
                     <button class="quick-action" onclick="domandaTemporale('passato')">
                         ⏮️ What did I do?
                     </button>
@@ -1831,77 +1831,77 @@
                         🔮 How's Thursday?
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('proiezione')">
-                        📈 Future projection
+                        📈 Прогноз на будущее
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💰 Budget & Expenses:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💰 Бюджет и расходы:</strong>
                     <button class="quick-action" onclick="domandaSpese('oggi')">
                         💵 Spent today?
                     </button>
                     <button class="quick-action" onclick="domandaSpese('settimana')">
-                        📊 Spent this week?
+                        📊 Spent на этой неделе?
                     </button>
                     <button class="quick-action" onclick="domandaSpese('mese')">
                         📈 Spent this month?
                     </button>
                     <button class="quick-action" onclick="domandaSpese('budget')">
-                        🎯 Check budget
+                        🎯 Проверить бюджет
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">🔊 Voice Reading:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">🔊 Голосовое чтение:</strong>
                     <button class="quick-action" onclick="leggiImpegniGiorno('oggi')">
-                        🔊 Today's commitments
+                        🔊 Сегодняшние обязательства
                     </button>
                     <button class="quick-action" onclick="leggiImpegniGiorno('domani')">
-                        🔊 Tomorrow's commitments
+                        🔊 Завтрашние обязательства
                     </button>
                     <button class="quick-action" onclick="apriSelettoreGiorno()">
-                        📅 Choose day
+                        📅 Выбрать день
                     </button>
                     <button class="quick-action" onclick="stopLettura()">
-                        ⏹️ Stop
+                        ⏹️ Стоп
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💾 Backup & Export:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💾 Резервное копирование и экспорт:</strong>
                     <button class="quick-action" onclick="exportaTutto()">
-                        📦 Export All JSON
+                        📦 Экспорт всех данных JSON
                     </button>
                     <button class="quick-action" onclick="exportaPianoPDF()">
-                        📄 Export Plan PDF
+                        📄 Экспорт плана PDF
                     </button>
                     <button class="quick-action" onclick="exportaImpegniICalendar()">
-                        📅 Export iCal
+                        📅 Экспорт iCal
                     </button>
                     <button class="quick-action" onclick="exportaSpese()">
-                        💰 Export Expenses CSV
+                        💰 Экспорт расходов CSV
                     </button>
                 </div>
             </div>
 
             <!-- Obiettivi -->
             <div class="card">
-                <h2>🎯 Your Goals</h2>
+                <h2>🎯 Ваши цели</h2>
                 <div class="obiettivi-list" id="obiettiviList">
-                    <div class="loading" id="obiettiviLoading">Loading...</div>
-                    <div class="empty-state" id="obiettiviEmpty">No goals yet. Start talking with the assistant!</div>
+                    <div class="loading" id="obiettiviLoading">Загрузка...</div>
+                    <div class="empty-state" id="obiettiviEmpty">Пока нет целей. Start talking with the assistant!</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaObiettivi()">
-                    🔄 Refresh
+                    🔄 Обновить
                 </button>
             </div>
 
             <!-- Piano -->
             <div class="card">
-                <h2>📅 Weekly Plan</h2>
+                <h2>📅 Недельный план</h2>
                 <div class="piano-list" id="pianoList">
-                    <div class="loading" id="pianoLoading">Loading...</div>
-                    <div class="empty-state" id="pianoEmpty">Generate your plan!</div>
+                    <div class="loading" id="pianoLoading">Загрузка...</div>
+                    <div class="empty-state" id="pianoEmpty">Создайте свой план!</div>
                 </div>
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="generaPiano()">
-                    ✨ Generate Plan
+                    ✨ Создать план
                 </button>
             </div>
 
@@ -1911,29 +1911,29 @@
                 <div class="stats-grid" id="statsGrid">
                     <div class="stat-box">
                         <span class="number" id="statObiettivi">0</span>
-                        <span class="label">Goals</span>
+                        <span class="label">Цели</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="statOre">0h</span>
-                        <span class="label">Hours completed</span>
+                        <span class="label">Завершенные часы</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="statCompletamento">0%</span>
-                        <span class="label">Completion</span>
+                        <span class="label">Завершение</span>
                     </div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaStatistiche()">
-                    🔄 Refresh
+                    🔄 Обновить
                 </button>
             </div>
 
             <!-- Previsioni AI Futuro -->
             <div class="card">
-                <h2>🔮 AI Predictions</h2>
-                <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">Based on your past data</p>
+                <h2>🔮 Прогнозы ИИ</h2>
+                <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">На основе ваших прошлых данных</p>
                 
                 <div id="previsioniContainer">
-                    <div class="loading" id="previsioniLoading">Loading predictions...</div>
+                    <div class="loading" id="previsioniLoading">Загрузка прогнозов...</div>
                     
                     <!-- Previsioni Settimana Prossima -->
                     <div id="previsioniContent" style="display: none;">
@@ -1963,30 +1963,30 @@
                 </div>
                 
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="caricaPrevisioni()">
-                    🔮 Refresh Predictions
+                    🔮 Обновить Predictions
                 </button>
             </div>
 
             <!-- Diario Personale -->
             <div class="card">
-                <h2>📔 Personal Diary</h2>
+                <h2>📔 Личный дневник</h2>
                 <div class="piano-list" id="diarioList">
-                    <div class="loading" id="diarioLoading">Loading...</div>
-                    <div class="empty-state" id="diarioEmpty">No reflections yet. Write in the chat!</div>
+                    <div class="loading" id="diarioLoading">Загрузка...</div>
+                    <div class="empty-state" id="diarioEmpty">Пока нет записей. Напишите в чате!</div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn btn-secondary" style="flex: 1;" onclick="caricaDiario()">
-                        🔄 Refresh
+                        🔄 Обновить
                     </button>
                     <a href="/en/diario-book" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                        📖 Book View
+                        📖 Вид книги
                     </a>
                 </div>
             </div>
 
-            <!-- Budget & Spese -->
+            <!-- Бюджет и расходы -->
             <div class="card">
-                <h2>💰 Budget & Spese</h2>
+                <h2>💰 Бюджет и расходы</h2>
                 <div id="budgetSummary" style="margin-bottom: 15px;">
                     <div class="stat-box" style="margin-bottom: 10px;">
                         <span class="number" id="speseOggi">€0</span>
@@ -2002,11 +2002,11 @@
                     </div>
                 </div>
                 <div class="piano-list" id="speseList" style="max-height: 200px;">
-                    <div class="loading" id="speseLoading">Loading...</div>
-                    <div class="empty-state" id="speseEmpty">No expenses recorded</div>
+                    <div class="loading" id="speseLoading">Загрузка...</div>
+                    <div class="empty-state" id="speseEmpty">Расходы не записаны</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaSpese()">
-                    🔄 Refresh
+                    🔄 Обновить
                 </button>
             </div>
 
@@ -2027,15 +2027,15 @@
                 <!-- Vista Settimanale -->
                 <div id="vistaSettimana">
                     <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                        <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ Previous</button>
+                        <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ Предыдущий</button>
                         <span id="settimanaCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
-                            This week
+                            Эта неделя
                         </span>
                         <button class="btn btn-secondary" onclick="cambiaSettimana(1)">Next ▶</button>
                         <button class="btn btn-primary" onclick="cambiaSettimana(0)">Today</button>
                     </div>
                     <div id="calendarioContainer" style="overflow-x: auto;">
-                        <div class="loading" id="calendarioLoading">Loading calendar...</div>
+                        <div class="loading" id="calendarioLoading">Загрузка календаря...</div>
                         <div id="calendarioGrid"></div>
                     </div>
                 </div>
@@ -2043,15 +2043,15 @@
                 <!-- Vista Mensile -->
                 <div id="vistaMese" style="display: none;">
                     <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                        <button class="btn btn-secondary" onclick="cambiaMese(-1)">◀ Previous Month</button>
+                        <button class="btn btn-secondary" onclick="cambiaMese(-1)">◀ Предыдущий Month</button>
                         <span id="meseCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
-                            This month
+                            Этот месяц
                         </span>
                         <button class="btn btn-secondary" onclick="cambiaMese(1)">Next Month ▶</button>
                         <button class="btn btn-primary" onclick="cambiaMese(0)">Today</button>
                     </div>
                     <div id="calendarioMensileContainer">
-                        <div class="loading" id="calendarioMensileLoading">Loading month...</div>
+                        <div class="loading" id="calendarioMensileLoading">Загрузка месяца...</div>
                         <div id="calendarioMensileGrid"></div>
                     </div>
                 </div>
@@ -2527,11 +2527,11 @@
                         <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">
                         ${riepilogo.ore_totali_previste.toFixed(1)}h
                     </div>
-                    <div style="opacity: 0.9;">Total hours predicted</div>
+                    <div style="opacity: 0.9;">Всего часов прогнозируется</div>
                 </div>
                 <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                    <div style="font-weight: 600; margin-bottom: 5px;">📌 Busiest day:</div>
-                    <div>${riepilogo.giorno_piu_pieno.giorno} - ${riepilogo.giorno_piu_pieno.ore.toFixed(1)}h predicted</div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">📌 Самый загруженный день:</div>
+                    <div>${riepilogo.giorno_piu_pieno.giorno} - ${riepilogo.giorno_piu_pieno.ore.toFixed(1)}h прогнозируется</div>
                 </div>
                     <div style="font-size: 0.9em; opacity: 0.9;">
                         ${previsioni.suggerimenti.join(' • ')}
@@ -2549,7 +2549,7 @@
                             <div style="font-size: 1.8em; font-weight: bold; color: #667eea;">
                             ${oreTotaliObiettivi.toFixed(1)}h
                         </div>
-                        <div style="color: #888; font-size: 0.9em;">Hours predicted on goals this week</div>
+                        <div style="color: #888; font-size: 0.9em;">Hours прогнозируется on goals на этой неделе</div>
                     </div>
                         ${obiettivi.map(obj => `
                             <div style="background: white; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #667eea;">
@@ -3292,7 +3292,7 @@
                     break;
                 case 'settimana':
                     endpoint = '/api/spese/settimana';
-                    messaggio = 'How much did I spend this week?';
+                    messaggio = 'How much did I spend на этой неделе?';
                     break;
                 case 'mese':
                     endpoint = '/api/spese/mese';

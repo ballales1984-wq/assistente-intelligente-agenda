@@ -269,7 +269,7 @@ def chat():
 
     # Analizza input con regex (se non è una ricerca)
     input_manager = InputManager()
-    risultato = input_manager.analizza_input(messaggio)
+    risultato = input_manager.analizza_input(messaggio, lang=lang)
 
     risposta = {
         "messaggio": messaggio,

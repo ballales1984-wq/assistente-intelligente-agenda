@@ -1,0 +1,40 @@
+name: 🔍 Code Quality
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: 🔍 Lint & Format Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v4
+    
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: 📦 Install linters
+      run: |
+        pip install flake8 black isort
+    
+    - name: 🔍 Flake8
+      run: flake8 app --max-line-length=127 --extend-ignore=E203,W503
+      continue-on-error: true
+    
+    - name: ⚫ Black format check
+      run: black --check app
+      continue-on-error: true
+    
+    - name: 📋 isort check
+      run: isort --check-only app
+      continue-on-error: true
+    
+    - name: ✅ Lint summary
+      if: always()
+      run: echo "✅ Code quality check completed!"
+

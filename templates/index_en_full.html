@@ -1683,21 +1683,21 @@
             </button>
             <button class="tab-btn" onclick="switchTab('calendario')" id="tabCalendario">
                 <span>📅</span>
-                <span>Calendario</span>
+                <span>Calendar</span>
             </button>
             <button class="tab-btn" onclick="switchTab('diario')" id="tabDiario">
                 <span>📔</span>
-                <span>Diario</span>
+                <span>Diary</span>
             </button>
             <button class="tab-btn" onclick="switchTab('spese')" id="tabSpese">
                 <span>💰</span>
-                <span>Spese</span>
+                <span>Expenses</span>
             </button>
             <button class="tab-btn" onclick="switchTab('analytics')" id="tabAnalytics">
                 <span>📊</span>
                 <span>Analytics</span>
             </button>
-            <button class="tab-btn" onclick="window.location.href='/community'">
+            <button class="tab-btn" onclick="window.location.href='/en/community'">
                 <span>🤝</span>
                 <span>Community</span>
             </button>
@@ -1709,8 +1709,8 @@
                 <h2>💬 Chat</h2>
                 <div class="chat-messages" id="chatMessages">
                     <div class="message assistant">
-                        Ciao! Sono il tuo assistente personale. Dimmi cosa vuoi fare! 
-                        Ad esempio: "Voglio studiare Python 3 ore a settimana" o "Domenica vado al mare dalle 16 alle 20".
+                        Hi! I'm your personal assistant. Tell me what you want to do! 
+                        For example: "I want to study Python 3 hours a week" or "Sunday I'm going to the beach from 4pm to 8pm".
                     </div>
                 </div>
                 <div class="chat-input-container">
@@ -1718,71 +1718,71 @@
                         type="text" 
                         class="chat-input" 
                         id="chatInput" 
-                        placeholder="Scrivi qui..."
+                        placeholder="Type here..."
                         onkeypress="handleKeyPress(event)"
                     >
-                    <button class="btn btn-primary" onclick="inviaMessaggio()">Invia</button>
+                    <button class="btn btn-primary" onclick="inviaMessaggio()">Send</button>
                 </div>
                 <div class="quick-actions">
-                    <button class="quick-action" onclick="usaEsempio('Voglio studiare Python 3 ore a settimana')">
-                        📚 Esempio: Studio
+                    <button class="quick-action" onclick="usaEsempio('I want to study Python 3 hours a week')">
+                        📚 Example: Study
                     </button>
-                    <button class="quick-action" onclick="usaEsempio('Domenica vado al mare dalle 16 alle 20')">
-                        🏖️ Esempio: Impegno
+                    <button class="quick-action" onclick="usaEsempio('Sunday beach from 4pm to 8pm')">
+                        🏖️ Example: Commitment
                     </button>
-                    <button class="quick-action" onclick="usaEsempio('Sono stanco')">
-                        😴 Esempio: Stato
+                    <button class="quick-action" onclick="usaEsempio('I feel tired')">
+                        😴 Example: Mood
                     </button>
-                    <button class="quick-action" onclick="usaEsempio('Oggi ho parlato con Sara e ho capito i cicli for in Python. Mi sento motivato!')">
-                        📔 Esempio: Diario
+                    <button class="quick-action" onclick="usaEsempio('Today I talked with Sara and understood for loops in Python. I feel motivated!')">
+                        📔 Example: Diary
                     </button>
-                    <button class="quick-action" onclick="usaEsempio('Spesa 12 euro per pranzo')">
-                        💰 Esempio: Spesa
+                    <button class="quick-action" onclick="usaEsempio('Spent $12 for lunch')">
+                        💰 Example: Expense
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Domande Temporali:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">⏰ Time Questions:</strong>
                     <button class="quick-action" onclick="domandaTemporale('passato')">
-                        ⏮️ Cosa ho fatto?
+                        ⏮️ What did I do?
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('oggi')">
-                        📅 Cosa faccio oggi?
+                        📅 What do I do today?
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('adesso')">
-                        ⏰ Cosa faccio adesso?
+                        ⏰ What do I do now?
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('giovedi')">
-                        🔮 Come sarà giovedì?
+                        🔮 How's Thursday?
                     </button>
                     <button class="quick-action" onclick="domandaTemporale('proiezione')">
-                        📈 Proiezione future
+                        📈 Future projection
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💰 Budget & Spese:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">💰 Budget & Expenses:</strong>
                     <button class="quick-action" onclick="domandaSpese('oggi')">
-                        💵 Speso oggi?
+                        💵 Spent today?
                     </button>
                     <button class="quick-action" onclick="domandaSpese('settimana')">
-                        📊 Speso settimana?
+                        📊 Spent this week?
                     </button>
                     <button class="quick-action" onclick="domandaSpese('mese')">
-                        📈 Speso mese?
+                        📈 Spent this month?
                     </button>
                     <button class="quick-action" onclick="domandaSpese('budget')">
                         🎯 Check budget
                     </button>
                 </div>
                 <div class="quick-actions" style="margin-top: 10px;">
-                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">🔊 Lettura Vocale:</strong>
+                    <strong style="color: #667eea; display: block; margin-bottom: 8px;">🔊 Voice Reading:</strong>
                     <button class="quick-action" onclick="leggiImpegniGiorno('oggi')">
-                        🔊 Impegni oggi
+                        🔊 Today's commitments
                     </button>
                     <button class="quick-action" onclick="leggiImpegniGiorno('domani')">
-                        🔊 Impegni domani
+                        🔊 Tomorrow's commitments
                     </button>
                     <button class="quick-action" onclick="apriSelettoreGiorno()">
-                        📅 Scegli giorno
+                        📅 Choose day
                     </button>
                     <button class="quick-action" onclick="stopLettura()">
                         ⏹️ Stop
@@ -1791,63 +1791,63 @@
                 <div class="quick-actions" style="margin-top: 10px;">
                     <strong style="color: #667eea; display: block; margin-bottom: 8px;">💾 Backup & Export:</strong>
                     <button class="quick-action" onclick="exportaTutto()">
-                        📦 Export Tutto JSON
+                        📦 Export All JSON
                     </button>
                     <button class="quick-action" onclick="exportaPianoPDF()">
-                        📄 Export Piano PDF
+                        📄 Export Plan PDF
                     </button>
                     <button class="quick-action" onclick="exportaImpegniICalendar()">
                         📅 Export iCal
                     </button>
                     <button class="quick-action" onclick="exportaSpese()">
-                        💰 Export Spese CSV
+                        💰 Export Expenses CSV
                     </button>
                 </div>
             </div>
 
             <!-- Obiettivi -->
             <div class="card">
-                <h2>🎯 I Tuoi Obiettivi</h2>
+                <h2>🎯 Your Goals</h2>
                 <div class="obiettivi-list" id="obiettiviList">
-                    <div class="loading" id="obiettiviLoading">Caricamento...</div>
-                    <div class="empty-state" id="obiettiviEmpty">Nessun obiettivo ancora. Inizia a parlare con l'assistente!</div>
+                    <div class="loading" id="obiettiviLoading">Loading...</div>
+                    <div class="empty-state" id="obiettiviEmpty">No goals yet. Start talking with the assistant!</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaObiettivi()">
-                    🔄 Aggiorna
+                    🔄 Refresh
                 </button>
             </div>
 
             <!-- Piano -->
             <div class="card">
-                <h2>📅 Piano Settimanale</h2>
+                <h2>📅 Weekly Plan</h2>
                 <div class="piano-list" id="pianoList">
-                    <div class="loading" id="pianoLoading">Caricamento...</div>
-                    <div class="empty-state" id="pianoEmpty">Genera il tuo piano!</div>
+                    <div class="loading" id="pianoLoading">Loading...</div>
+                    <div class="empty-state" id="pianoEmpty">Generate your plan!</div>
                 </div>
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="generaPiano()">
-                    ✨ Genera Piano
+                    ✨ Generate Plan
                 </button>
             </div>
 
             <!-- Statistiche -->
             <div class="card">
-                <h2>📊 Statistiche</h2>
+                <h2>📊 Statistics</h2>
                 <div class="stats-grid" id="statsGrid">
                     <div class="stat-box">
                         <span class="number" id="statObiettivi">0</span>
-                        <span class="label">Obiettivi</span>
+                        <span class="label">Goals</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="statOre">0h</span>
-                        <span class="label">Ore completate</span>
+                        <span class="label">Hours completed</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="statCompletamento">0%</span>
-                        <span class="label">Completamento</span>
+                        <span class="label">Completion</span>
                     </div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaStatistiche()">
-                    🔄 Aggiorna
+                    🔄 Refresh
                 </button>
             </div>
 

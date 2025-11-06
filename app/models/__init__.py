@@ -10,9 +10,12 @@ from app.models.community import (
     UserBan, ModerationLog
 )
 
+from app.models.habit import Habit, HabitCompletion
+
 __all__ = [
     'UserProfile', 'Obiettivo', 'Impegno', 'DiarioGiornaliero', 'Spesa', 'CATEGORIE_SPESE',
     'ReflectionShare', 'Reaction', 'Comment', 'Circle', 'CircleMember', 
-    'Challenge', 'ChallengeParticipation', 'UserBan', 'ModerationLog'
+    'Challenge', 'ChallengeParticipation', 'UserBan', 'ModerationLog',
+    'Habit', 'HabitCompletion'
 ]
 

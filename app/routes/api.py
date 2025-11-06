@@ -88,6 +88,12 @@ def pomodoro():
     return render_template("pomodoro.html")
 
 
+@bp.route("/habits")
+def habits_page():
+    """Habit Tracker page"""
+    return render_template("habits.html")
+
+
 @bp.route("/community")
 def community():
     """Community page - Share reflections and connect (Italian)"""

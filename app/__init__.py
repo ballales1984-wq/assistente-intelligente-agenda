@@ -158,6 +158,7 @@ def create_app(config_class=Config):
     from app.routes import community
     from app.routes import debug
     from app.routes import admin
+    from app.routes import habits
 
     app.register_blueprint(api.bp)
     app.register_blueprint(beta.bp)
@@ -165,8 +166,9 @@ def create_app(config_class=Config):
     app.register_blueprint(community.bp)
     app.register_blueprint(debug.bp)
     app.register_blueprint(admin.bp)
+    app.register_blueprint(habits.bp)
     app.logger.info(
-        "📋 Blueprints registrati (API + Beta + AI + Community + Debug + Admin)"
+        "📋 Blueprints registrati (API + Beta + AI + Community + Debug + Admin + Habits)"
     )
 
     # ========================================

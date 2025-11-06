@@ -1857,7 +1857,7 @@
                 <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">Based on your past data</p>
                 
                 <div id="previsioniContainer">
-                    <div class="loading" id="previsioniLoading">Caricamento previsioni...</div>
+                    <div class="loading" id="previsioniLoading">Loading predictions...</div>
                     
                     <!-- Previsioni Settimana Prossima -->
                     <div id="previsioniContent" style="display: none;">
@@ -1887,7 +1887,7 @@
                 </div>
                 
                 <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="caricaPrevisioni()">
-                    🔮 Aggiorna Previsioni
+                    🔮 Refresh Predictions
                 </button>
             </div>
 
@@ -1900,10 +1900,10 @@
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn btn-secondary" style="flex: 1;" onclick="caricaDiario()">
-                        🔄 Aggiorna
+                        🔄 Refresh
                     </button>
-                    <a href="/diario-book" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                        📖 Vista Libro
+                    <a href="/en/diario-book" class="btn btn-primary" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                        📖 Book View
                     </a>
                 </div>
             </div>
@@ -1926,11 +1926,11 @@
                     </div>
                 </div>
                 <div class="piano-list" id="speseList" style="max-height: 200px;">
-                    <div class="loading" id="speseLoading">Caricamento...</div>
-                    <div class="empty-state" id="speseEmpty">Nessuna spesa registrata</div>
+                    <div class="loading" id="speseLoading">Loading...</div>
+                    <div class="empty-state" id="speseEmpty">No expenses recorded</div>
                 </div>
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="caricaSpese()">
-                    🔄 Aggiorna
+                    🔄 Refresh
                 </button>
             </div>
 
@@ -1951,15 +1951,15 @@
                 <!-- Vista Settimanale -->
                 <div id="vistaSettimana">
                     <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                        <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ Precedente</button>
+                        <button class="btn btn-secondary" onclick="cambiaSettimana(-1)">◀ Previous</button>
                         <span id="settimanaCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
-                            Questa settimana
+                            This week
                         </span>
                         <button class="btn btn-secondary" onclick="cambiaSettimana(1)">Next ▶</button>
                         <button class="btn btn-primary" onclick="cambiaSettimana(0)">Today</button>
                     </div>
                     <div id="calendarioContainer" style="overflow-x: auto;">
-                        <div class="loading" id="calendarioLoading">Caricamento calendario...</div>
+                        <div class="loading" id="calendarioLoading">Loading calendar...</div>
                         <div id="calendarioGrid"></div>
                     </div>
                 </div>
@@ -1967,15 +1967,15 @@
                 <!-- Vista Mensile -->
                 <div id="vistaMese" style="display: none;">
                     <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                        <button class="btn btn-secondary" onclick="cambiaMese(-1)">◀ Mese Precedente</button>
+                        <button class="btn btn-secondary" onclick="cambiaMese(-1)">◀ Previous Month</button>
                         <span id="meseCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
-                            Questo mese
+                            This month
                         </span>
                         <button class="btn btn-secondary" onclick="cambiaMese(1)">Next Month ▶</button>
                         <button class="btn btn-primary" onclick="cambiaMese(0)">Today</button>
                     </div>
                     <div id="calendarioMensileContainer">
-                        <div class="loading" id="calendarioMensileLoading">Caricamento mese...</div>
+                        <div class="loading" id="calendarioMensileLoading">Loading month...</div>
                         <div id="calendarioMensileGrid"></div>
                     </div>
                 </div>

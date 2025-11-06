@@ -48,6 +48,15 @@ MESSAGES = {
         'calm_days_to_recover': 'días más tranquilos para recuperar',
         'average': 'promedio',
         'loading': 'Cargando...',
+        # Chat responses
+        'empty_message': 'Mensaje vacío',
+        'goal_created': "✅ ¡Perfecto! He añadido el objetivo '{nome}' con {ore}h/semana ({tipo}).",
+        'commitment_created': "✅ ¡Perfecto! He añadido el compromiso '{nome}' el {data} de {ora_inizio} a {ora_fine}.",
+        'expense_created': "✅ ¡Perfecto! He registrado el gasto de €{importo:.2f} para '{descrizione}' (categoría: {categoria}).",
+        'diary_created': "✅ ¡Perfecto! He añadido tu reflexión al diario. Sentimiento: {sentiment}",
+        'today': 'Hoy',
+        'not_understood': "🤔 No entendí bien este formato.\n\n💡 **OPCIONES:**\n1️⃣ Reformula más específicamente:\n   • 'Quiero estudiar Python 3 horas a la semana'\n   • 'Mañana reunión 10-12'\n   • '50 euros gasolina'\n\n2️⃣ ¡Usa el Chat AI (🤖 próximamente!) para lenguaje natural completo\n\n3️⃣ ¡O escribe una reflexión libre para tu diario!",
+        'question_understood': "❓ ¡Entiendo que quieres saber algo!\n\n💡 ¡Usa los botones de Acciones Rápidas para respuestas inmediatas, o activa el chat AI para conversaciones naturales!",
     },
     'zh': {
         'no_events_today': '今天没有活动',

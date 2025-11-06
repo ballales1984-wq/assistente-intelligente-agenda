@@ -10,6 +10,13 @@ MESSAGES = {
         'calm_days_to_recover': 'giorni più tranquilli per recuperare',
         'average': 'media',
         'loading': 'Caricamento...',
+        # Chat responses
+        'empty_message': 'Messaggio vuoto',
+        'goal_created': "✅ Perfetto! Ho aggiunto l'obiettivo '{nome}' con {ore}h/settimana ({tipo}).",
+        'commitment_created': "✅ Perfetto! Ho aggiunto l'impegno '{nome}' il {data} dalle {ora_inizio} alle {ora_fine}.",
+        'expense_created': "✅ Perfetto! Ho registrato la spesa di €{importo:.2f} per '{descrizione}' (categoria: {categoria}).",
+        'diary_created': "✅ Perfetto! Ho aggiunto la tua riflessione al diario. Sentiment: {sentiment}",
+        'today': 'Oggi',
     },
     'en': {
         'no_events_today': 'No events for today',
@@ -20,6 +27,13 @@ MESSAGES = {
         'calm_days_to_recover': 'calmer days to recover',
         'average': 'average',
         'loading': 'Loading...',
+        # Chat responses
+        'empty_message': 'Empty message',
+        'goal_created': "✅ Perfect! I've added the goal '{nome}' with {ore}h/week ({tipo}).",
+        'commitment_created': "✅ Perfect! I've added the commitment '{nome}' on {data} from {ora_inizio} to {ora_fine}.",
+        'expense_created': "✅ Perfect! I've recorded the expense of ${importo:.2f} for '{descrizione}' (category: {categoria}).",
+        'diary_created': "✅ Perfect! I've added your reflection to the diary. Sentiment: {sentiment}",
+        'today': 'Today',
     },
     'es': {
         'no_events_today': 'No hay eventos para hoy',
@@ -73,13 +87,15 @@ MESSAGES = {
     }
 }
 
-def get_message(key, lang='it', *args):
+def get_message(key, lang='it', *args, **kwargs):
     """Get translated message"""
     messages = MESSAGES.get(lang, MESSAGES['it'])
     message = messages.get(key, MESSAGES['it'].get(key, key))
     
     if args:
         return message.format(*args)
+    elif kwargs:
+        return message.format(**kwargs)
     return message
 
 

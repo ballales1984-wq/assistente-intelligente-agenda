@@ -6,7 +6,7 @@ from app import db, limiter, cache
 from app.models import UserProfile, Obiettivo, Impegno, DiarioGiornaliero, Spesa
 from app.core import InputManager, AgendaDinamica, MotoreAdattivo, DiarioManager
 from app.managers import PassatoManager, PresenteManager, FuturoManager, SpeseManager
-from app.i18n import get_text, detect_language_from_path
+from app.i18n import get_message, detect_language_from_path
 
 bp = Blueprint("api", __name__)
 
@@ -225,7 +225,7 @@ def chat():
     lang = data.get("lang") or detect_language_from_path(request.referrer or request.path)
 
     if not messaggio:
-        return jsonify({"errore": get_text('empty_message', lang)}), 400
+        return jsonify({"errore": get_message('empty_message', lang)}), 400
 
     # Ottieni profilo utente
     profilo = UserProfile.query.first()
@@ -353,7 +353,7 @@ def chat():
         db.session.add(obiettivo)
         db.session.commit()
 
-        risposta["risposta"] = get_text(
+        risposta["risposta"] = get_message(
             'goal_created',
             lang,
             nome=obiettivo.nome,
@@ -533,7 +533,7 @@ def chat():
                         f"\n\n❌ **Eliminato:** '{mod['nome']}' ({mod['orario']})"
                     )
 
-        risposta["risposta"] = get_text(
+        risposta["risposta"] = get_message(
             'commitment_created',
             lang,
             nome=impegno.nome,
@@ -686,7 +686,7 @@ def chat():
         sentiment_emoji = {"positivo": "😊", "neutro": "😐", "negativo": "😔"}
         emoji = sentiment_emoji.get(dati_diario["sentiment"], "📝")
 
-        risposta["risposta"] = get_text(
+        risposta["risposta"] = get_message(
             'diary_created',
             lang,
             sentiment=dati_diario['sentiment']
@@ -714,13 +714,13 @@ def chat():
         spese_manager = SpeseManager(profilo)
         totale_oggi = spese_manager.quanto_ho_speso_oggi()
 
-        risposta["risposta"] = get_text(
+        risposta["risposta"] = get_message(
             'expense_created',
             lang,
             importo=spesa.importo,
             descrizione=spesa.descrizione,
             categoria=spesa.categoria
-        ) + f"\n\n📊 {get_text('today', lang)}: €{totale_oggi['totale']:.2f}"
+        ) + f"\n\n📊 {get_message('today', lang)}: €{totale_oggi['totale']:.2f}"
         risposta["dati"] = spesa.to_dict()
 
     elif risultato["tipo"] == "domanda":

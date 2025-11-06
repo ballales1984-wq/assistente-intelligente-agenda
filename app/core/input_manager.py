@@ -4,13 +4,14 @@ import re
 from datetime import datetime, timedelta, date
 from typing import Dict, Any, Optional
 from app.core.diario_manager import DiarioManager
+from langdetect import detect, LangDetectException
 
 
 class InputManager:
     """Gestisce e analizza l'input testuale dell'utente"""
 
-    # Pattern per riconoscere intenzioni comuni (migliorati!)
-    PATTERNS = {
+    # Pattern ITALIANO per riconoscere intenzioni comuni
+    PATTERNS_IT = {
         "obiettivo_ore": r"(?:studiare|fare|dedicare|imparare|allenarmi|esercitarmi|lavorare su|praticare)\s+(.+?)\s+(\d+)\s*(?:ore?|h)\s*(?:a|alla|per|ogni|alla|al)?\s*settimana",
         "obiettivo_durata": r"(?:voglio|devo|vorrei|mi piacerebbe)\s+(.+?)\s+per\s+(\d+)\s*(?:giorni|settimane|mesi)",
         "impegno_specifico": r"(.+?)\s+(?:dalle|dal|alle|al|dalle\s+ore|alle\s+ore)\s+(\d{1,2}):?(\d{2})?\s*(?:alle|al|-|–)?\s*(\d{1,2})?:?(\d{2})?",
@@ -27,14 +28,36 @@ class InputManager:
         "spesa_diretta": r"(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)\s+(?:per|di|per|di|in)?\s+([^.!?\n]{1,100})",
         "spesa_solo_importo": r"^(\d+(?:[.,]\d+)?)\s*(?:euro?|€|eur)\s+(.+)",
     }
+    
+    # Pattern INGLESE per riconoscere intenzioni comuni
+    PATTERNS_EN = {
+        "obiettivo_ore": r"(?:study|learn|practice|train|work on|do)\s+(.+?)\s+(\d+)\s*(?:hours?|h)\s+(?:a|per|every)?\s*week",
+        "obiettivo_durata": r"(?:i want to|i need to|i would like to)\s+(.+?)\s+for\s+(\d+)\s*(?:days?|weeks?|months?)",
+        "impegno_specifico": r"(.+?)\s+(?:from|at)\s+(\d{1,2}):?(\d{2})?\s*(?:to|until|-|–)?\s*(\d{1,2})?:?(\d{2})?",
+        "impegno_oggi_domani": r"(?:today|tomorrow)\s+(.+?)\s+(?:at|from|\s)(\d{1,2}):?(\d{2})?(?:\s*-\s*(\d{1,2}):?(\d{2})?)?",
+        "impegno_ricorrente": r"every\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday|day)\s+(.+?)\s+(?:at|from)\s+(\d{1,2})",
+        "stato_emotivo": r"(?:i am|i feel|i'm)\s+(tired|focused|relaxed|stressed|motivated|energetic|exhausted|happy|sad)",
+        "preferenza_riposo": r"(?:i want|i prefer|i would like|i need)\s+(?:to rest|to relax|more breaks|longer breaks|more sleep)",
+        "giorno_settimana": r"(monday|tuesday|wednesday|thursday|friday|saturday|sunday|today|tomorrow)",
+        "completamento": r"(?:i finished|i completed|finished|completed|done)\s+(.+)",
+        "modifica_piano": r"(?:move|change|modify|remove|delete)\s+(.+)",
+        "richiesta_aiuto": r"(?:help me|help|how do i|suggest|advise)",
+        "tempo_disponibile": r"(?:i have|i've got)\s+(\d+)\s*(?:hours?|h|minutes?|min)\s+(?:free|available)",
+        "spesa": r"(?:spent|paid|cost|bought)\s+\$?(\d+(?:[.,]\d+)?)\s*(?:dollars?|\$|usd)?\s*(?:for|on|in)?\s*([^.!?\n]{1,100})",
+        "spesa_diretta": r"\$?(\d+(?:[.,]\d+)?)\s*(?:dollars?|\$|usd)\s+(?:for|on|in)?\s+([^.!?\n]{1,100})",
+        "spesa_solo_importo": r"^\$?(\d+(?:[.,]\d+)?)\s*(?:dollars?|\$)\s+(.+)",
+    }
+    
+    PATTERNS = PATTERNS_IT  # Default italiano per backward compatibility
 
     @staticmethod
-    def analizza_input(testo: str) -> Dict[str, Any]:
+    def analizza_input(testo: str, lang: str = 'it') -> Dict[str, Any]:
         """
         Analizza l'input testuale e estrae informazioni strutturate
 
         Args:
             testo: Input testuale dell'utente
+            lang: Lingua dell'input ('it', 'en', etc.)
 
         Returns:
             Dizionario con informazioni estratte
@@ -42,6 +65,18 @@ class InputManager:
         testo_originale = testo
         testo = testo.lower().strip()
         risultato = {"tipo": None, "dati": {}, "testo_originale": testo_originale}
+        
+        # Auto-rileva lingua se non specificata
+        if lang == 'it':
+            try:
+                detected_lang = detect(testo)
+                if detected_lang == 'en':
+                    lang = 'en'
+            except (LangDetectException, Exception):
+                pass  # Mantieni italiano di default
+        
+        # Seleziona pattern in base alla lingua
+        patterns = InputManager.PATTERNS_EN if lang == 'en' else InputManager.PATTERNS_IT
 
         # Prima di tutto: distingui se è agenda o diario
         tipo_contenuto = DiarioManager.distingui_agenda_vs_diario(testo)
@@ -61,7 +96,7 @@ class InputManager:
             return risultato
 
         # Riconosci obiettivo con ore settimanali
-        match = re.search(InputManager.PATTERNS["obiettivo_ore"], testo, re.IGNORECASE)
+        match = re.search(patterns["obiettivo_ore"], testo, re.IGNORECASE)
         if match:
             risultato["tipo"] = "obiettivo"
             risultato["dati"] = {
@@ -73,7 +108,7 @@ class InputManager:
 
         # Riconosci impegno RICORRENTE (es. "ogni lunedì palestra ore 18")
         match_ricorrente = re.search(
-            InputManager.PATTERNS["impegno_ricorrente"], testo, re.IGNORECASE
+            patterns["impegno_ricorrente"], testo, re.IGNORECASE
         )
         if match_ricorrente:
             giorno_o_frequenza = match_ricorrente.group(1).lower()
@@ -185,7 +220,7 @@ class InputManager:
 
         # Riconosci impegno con orari specifici
         match = re.search(
-            InputManager.PATTERNS["impegno_specifico"], testo, re.IGNORECASE
+            patterns["impegno_specifico"], testo, re.IGNORECASE
         )
         if match:
             risultato["tipo"] = "impegno"
@@ -202,7 +237,7 @@ class InputManager:
 
             # Cerca giorno della settimana
             giorno_match = re.search(
-                InputManager.PATTERNS["giorno_settimana"], testo, re.IGNORECASE
+                patterns["giorno_settimana"], testo, re.IGNORECASE
             )
             if giorno_match:
                 risultato["dati"]["giorno"] = giorno_match.group(1)
@@ -210,7 +245,7 @@ class InputManager:
             return risultato
 
         # Riconosci stato emotivo/fisico
-        match = re.search(InputManager.PATTERNS["stato_emotivo"], testo, re.IGNORECASE)
+        match = re.search(patterns["stato_emotivo"], testo, re.IGNORECASE)
         if match:
             risultato["tipo"] = "stato"
             risultato["dati"] = {
@@ -220,13 +255,13 @@ class InputManager:
             return risultato
 
         # Riconosci preferenza per il riposo
-        if re.search(InputManager.PATTERNS["preferenza_riposo"], testo, re.IGNORECASE):
+        if re.search(patterns["preferenza_riposo"], testo, re.IGNORECASE):
             risultato["tipo"] = "preferenza"
             risultato["dati"] = {"tipo_preferenza": "riposo", "azione": "aumenta_pause"}
             return risultato
 
         # Riconosci completamento attività
-        match = re.search(InputManager.PATTERNS["completamento"], testo, re.IGNORECASE)
+        match = re.search(patterns["completamento"], testo, re.IGNORECASE)
         if match:
             risultato["tipo"] = "completamento"
             risultato["dati"] = {
@@ -236,7 +271,7 @@ class InputManager:
             return risultato
 
         # Riconosci richiesta di aiuto
-        if re.search(InputManager.PATTERNS["richiesta_aiuto"], testo, re.IGNORECASE):
+        if re.search(patterns["richiesta_aiuto"], testo, re.IGNORECASE):
             risultato["tipo"] = "aiuto"
             risultato["dati"] = {
                 "suggerimenti": [
@@ -250,7 +285,7 @@ class InputManager:
 
         # Riconosci tempo disponibile
         match = re.search(
-            InputManager.PATTERNS["tempo_disponibile"], testo, re.IGNORECASE
+            patterns["tempo_disponibile"], testo, re.IGNORECASE
         )
         if match:
             risultato["tipo"] = "tempo_libero"
@@ -263,14 +298,14 @@ class InputManager:
             return risultato
 
         # Riconosci spesa
-        match = re.search(InputManager.PATTERNS["spesa"], testo, re.IGNORECASE)
+        match = re.search(patterns["spesa"], testo, re.IGNORECASE)
         if not match:
             match = re.search(
-                InputManager.PATTERNS["spesa_diretta"], testo, re.IGNORECASE
+                patterns["spesa_diretta"], testo, re.IGNORECASE
             )
         if not match:
             match = re.search(
-                InputManager.PATTERNS["spesa_solo_importo"], testo, re.IGNORECASE
+                patterns["spesa_solo_importo"], testo, re.IGNORECASE
             )
 
         if match:

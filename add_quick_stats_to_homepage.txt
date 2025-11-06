@@ -1,0 +1,35 @@
+PIANO: Aggiungere Quick Stats Cards visibili subito sulla homepage
+
+Posizione: Dopo header, prima della chat
+
+Stats da mostrare:
+- 📅 Impegni oggi
+- 🎯 Obiettivi attivi  
+- 💰 Speso oggi
+- 📔 Riflessioni questa settimana
+- 🍅 Pomodori completati oggi
+- 📊 Habits completate oggi
+
+Design:
+- Grid 3 colonne desktop
+- 2 colonne tablet
+- 1 colonna mobile
+- Gradiente background
+- Animazione counter
+- Click per dettagli
+
+API già esistenti:
+- /api/impegni
+- /api/obiettivi
+- /api/spese/oggi
+- /api/diario
+- /api/habits/stats (appena creato!)
+
+Implementazione:
+1. HTML: Sezione dopo header
+2. CSS: Grid responsive + animations
+3. JS: Fetch API e update counter animati
+4. Auto-refresh ogni 30s
+
+Tempo stimato: 15 minuti
+

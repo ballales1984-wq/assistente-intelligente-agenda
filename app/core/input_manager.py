@@ -55,6 +55,25 @@ class InputManager:
         "spesa_solo_importo": r"^\$?(\d+(?:[.,]\d+)?)\s*(?:dollars?|\$)\s+(.+)",
     }
     
+    # Pattern SPAGNOLO per riconoscere intenzioni comuni
+    PATTERNS_ES = {
+        "obiettivo_ore": r"(?:estudiar|hacer|dedicar|aprender|entrenar|practicar|trabajar en)\s+(.+?)\s+(\d+)\s*(?:horas?|h)\s+(?:a la|por|cada)?\s*semana",
+        "obiettivo_durata": r"(?:quiero|necesito|me gustaría)\s+(.+?)\s+(?:por|durante)\s+(\d+)\s*(?:días?|semanas?|meses?)",
+        "impegno_specifico": r"(.+?)\s+(?:desde|de|a las|a)\s+(\d{1,2}):?(\d{2})?\s*(?:a las?|hasta|-|–)?\s*(\d{1,2})?:?(\d{2})?",
+        "impegno_oggi_domani": r"(?:hoy|mañana)\s+(.+?)\s+(?:a las?|desde|\s)(\d{1,2}):?(\d{2})?(?:\s*-\s*(\d{1,2}):?(\d{2})?)?",
+        "impegno_ricorrente": r"cada\s+(lunes|martes|miércoles|jueves|viernes|sábado|domingo|día)\s+(.+?)\s+(?:a las?|desde)\s+(\d{1,2})",
+        "stato_emotivo": r"(?:estoy|me siento)\s+(cansado|cansada|concentrado|concentrada|relajado|relajada|estresado|estresada|motivado|motivada|enérgico|enérgica|agotado|agotada|feliz|triste)",
+        "preferenza_riposo": r"(?:quiero|prefiero|me gustaría|necesito)\s+(?:descansar|relajarme|más descansos|descansos más largos|dormir más)",
+        "giorno_settimana": r"(lunes|martes|miércoles|jueves|viernes|sábado|domingo|hoy|mañana)",
+        "completamento": r"(?:terminé|completé|acabé|hice)\s+(.+)",
+        "modifica_piano": r"(?:mueve|cambia|modifica|elimina|borra)\s+(.+)",
+        "richiesta_aiuto": r"(?:ayúdame|ayuda|cómo hago|sugiéreme|aconséjame)",
+        "tempo_disponibile": r"(?:tengo|dispongo de)\s+(\d+)\s*(?:horas?|h|minutos?|min)\s+(?:libres?|disponibles?)",
+        "spesa": r"(?:gasto|gasté|pagué|compré)\s+(\d+(?:[.,]\d+)?)\s*(?:euros?|€|eur)?\s*(?:en|para|de)?\s*([^.!?\n]{1,100})",
+        "spesa_diretta": r"(\d+(?:[.,]\d+)?)\s*(?:euros?|€|eur)\s+(?:en|para|de)?\s+([^.!?\n]{1,100})",
+        "spesa_solo_importo": r"^(\d+(?:[.,]\d+)?)\s*(?:euros?|€)\s+(.+)",
+    }
+    
     PATTERNS = PATTERNS_IT  # Default italiano per backward compatibility
 
     @staticmethod
@@ -79,11 +98,18 @@ class InputManager:
                 detected_lang = detect(testo)
                 if detected_lang == 'en':
                     lang = 'en'
+                elif detected_lang == 'es':
+                    lang = 'es'
             except (LangDetectException, Exception):
                 pass  # Mantieni italiano di default
         
         # Seleziona pattern in base alla lingua
-        patterns = InputManager.PATTERNS_EN if lang == 'en' else InputManager.PATTERNS_IT
+        if lang == 'en':
+            patterns = InputManager.PATTERNS_EN
+        elif lang == 'es':
+            patterns = InputManager.PATTERNS_ES
+        else:
+            patterns = InputManager.PATTERNS_IT
 
         # Prima di tutto: distingui se è agenda o diario
         tipo_contenuto = DiarioManager.distingui_agenda_vs_diario(testo)

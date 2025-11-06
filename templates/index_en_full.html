@@ -1853,8 +1853,8 @@
 
             <!-- Previsioni AI Futuro -->
             <div class="card">
-                <h2>🔮 Previsioni AI</h2>
-                <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">Basato sui tuoi dati passati</p>
+                <h2>🔮 AI Predictions</h2>
+                <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">Based on your past data</p>
                 
                 <div id="previsioniContainer">
                     <div class="loading" id="previsioniLoading">Caricamento previsioni...</div>
@@ -1893,10 +1893,10 @@
 
             <!-- Diario Personale -->
             <div class="card">
-                <h2>📔 Diario Personale</h2>
+                <h2>📔 Personal Diary</h2>
                 <div class="piano-list" id="diarioList">
-                    <div class="loading" id="diarioLoading">Caricamento...</div>
-                    <div class="empty-state" id="diarioEmpty">Nessuna riflessione ancora. Scrivi nella chat!</div>
+                    <div class="loading" id="diarioLoading">Loading...</div>
+                    <div class="empty-state" id="diarioEmpty">No reflections yet. Write in the chat!</div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn btn-secondary" style="flex: 1;" onclick="caricaDiario()">
@@ -1914,15 +1914,15 @@
                 <div id="budgetSummary" style="margin-bottom: 15px;">
                     <div class="stat-box" style="margin-bottom: 10px;">
                         <span class="number" id="speseOggi">€0</span>
-                        <span class="label">Oggi</span>
+                        <span class="label">Today</span>
                     </div>
                     <div class="stat-box" style="margin-bottom: 10px;">
                         <span class="number" id="speseSettimana">€0</span>
-                        <span class="label">Questa Settimana</span>
+                        <span class="label">This Week</span>
                     </div>
                     <div class="stat-box">
                         <span class="number" id="speseMese">€0</span>
-                        <span class="label">Questo Mese</span>
+                        <span class="label">This Month</span>
                     </div>
                 </div>
                 <div class="piano-list" id="speseList" style="max-height: 200px;">
@@ -1955,8 +1955,8 @@
                         <span id="settimanaCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
                             Questa settimana
                         </span>
-                        <button class="btn btn-secondary" onclick="cambiaSettimana(1)">Successiva ▶</button>
-                        <button class="btn btn-primary" onclick="cambiaSettimana(0)">Oggi</button>
+                        <button class="btn btn-secondary" onclick="cambiaSettimana(1)">Next ▶</button>
+                        <button class="btn btn-primary" onclick="cambiaSettimana(0)">Today</button>
                     </div>
                     <div id="calendarioContainer" style="overflow-x: auto;">
                         <div class="loading" id="calendarioLoading">Caricamento calendario...</div>
@@ -1971,8 +1971,8 @@
                         <span id="meseCorrente" style="flex: 1; text-align: center; font-weight: bold; color: #cbd5e1;">
                             Questo mese
                         </span>
-                        <button class="btn btn-secondary" onclick="cambiaMese(1)">Mese Successivo ▶</button>
-                        <button class="btn btn-primary" onclick="cambiaMese(0)">Oggi</button>
+                        <button class="btn btn-secondary" onclick="cambiaMese(1)">Next Month ▶</button>
+                        <button class="btn btn-primary" onclick="cambiaMese(0)">Today</button>
                     </div>
                     <div id="calendarioMensileContainer">
                         <div class="loading" id="calendarioMensileLoading">Caricamento mese...</div>

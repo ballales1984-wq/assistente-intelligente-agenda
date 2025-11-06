@@ -124,7 +124,7 @@ class SpeseManager:
             'insights': insights
         }
     
-    def quanto_ho_speso_oggi(self) -> Dict[str, Any]:
+    def quanto_ho_speso_oggi(self, lang: str = 'it') -> Dict[str, Any]:
         """
         Risponde a: "Quanto ho speso oggi?"
         
@@ -132,9 +132,9 @@ class SpeseManager:
             Analisi spese di oggi
         """
         oggi = date.today()
-        return self.analizza_spese_periodo(oggi, oggi)
+        return self.analizza_spese_periodo(oggi, oggi, lang=lang)
     
-    def quanto_ho_speso_settimana(self) -> Dict[str, Any]:
+    def quanto_ho_speso_settimana(self, lang: str = 'it') -> Dict[str, Any]:
         """
         Risponde a: "Quanto ho speso questa settimana?"
         
@@ -145,9 +145,9 @@ class SpeseManager:
         lunedi = oggi - timedelta(days=oggi.weekday())
         domenica = lunedi + timedelta(days=6)
         
-        return self.analizza_spese_periodo(lunedi, domenica)
+        return self.analizza_spese_periodo(lunedi, domenica, lang=lang)
     
-    def quanto_ho_speso_mese(self) -> Dict[str, Any]:
+    def quanto_ho_speso_mese(self, lang: str = 'it') -> Dict[str, Any]:
         """
         Risponde a: "Quanto ho speso questo mese?"
         
@@ -163,7 +163,7 @@ class SpeseManager:
         ultimo_giorno = monthrange(oggi.year, oggi.month)[1]
         ultimo_mese = oggi.replace(day=ultimo_giorno)
         
-        return self.analizza_spese_periodo(primo_mese, ultimo_mese)
+        return self.analizza_spese_periodo(primo_mese, ultimo_mese, lang=lang)
     
     def budget_check(self, budget_mensile: float) -> Dict[str, Any]:
         """

@@ -1477,9 +1477,12 @@ def spese_oggi():
     profilo = UserProfile.query.first()
     if not profilo:
         return jsonify({"errore": "Nessun profilo trovato"}), 404
+    
+    # Detect language from referer
+    lang = detect_language_from_path(request.referrer or request.path)
 
     spese_mgr = SpeseManager(profilo)
-    analisi = spese_mgr.quanto_ho_speso_oggi()
+    analisi = spese_mgr.quanto_ho_speso_oggi(lang=lang)
 
     return jsonify(analisi)
 
@@ -1490,9 +1493,11 @@ def spese_settimana():
     profilo = UserProfile.query.first()
     if not profilo:
         return jsonify({"errore": "Nessun profilo trovato"}), 404
+    
+    lang = detect_language_from_path(request.referrer or request.path)
 
     spese_mgr = SpeseManager(profilo)
-    analisi = spese_mgr.quanto_ho_speso_settimana()
+    analisi = spese_mgr.quanto_ho_speso_settimana(lang=lang)
 
     return jsonify(analisi)
 
@@ -1503,9 +1508,11 @@ def spese_mese():
     profilo = UserProfile.query.first()
     if not profilo:
         return jsonify({"errore": "Nessun profilo trovato"}), 404
+    
+    lang = detect_language_from_path(request.referrer or request.path)
 
     spese_mgr = SpeseManager(profilo)
-    analisi = spese_mgr.quanto_ho_speso_mese()
+    analisi = spese_mgr.quanto_ho_speso_mese(lang=lang)
 
     return jsonify(analisi)
 

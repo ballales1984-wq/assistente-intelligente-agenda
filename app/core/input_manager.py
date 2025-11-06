@@ -74,6 +74,42 @@ class InputManager:
         "spesa_solo_importo": r"^(\d+(?:[.,]\d+)?)\s*(?:euros?|€)\s+(.+)",
     }
     
+    # Pattern CINESE per riconoscere intenzioni comuni
+    PATTERNS_ZH = {
+        "obiettivo_ore": r"(?:学习|做|练习|训练|工作)\s*(.+?)\s*(\d+)\s*(?:小时|h)\s*(?:每周|一周)",
+        "obiettivo_durata": r"(?:我想|我要|我需要)\s*(.+?)\s*(\d+)\s*(?:天|周|月)",
+        "impegno_specifico": r"(.+?)\s*(?:从|在)\s*(\d{1,2}):?(\d{2})?\s*(?:到|至|-)\s*(\d{1,2}):?(\d{2})?",
+        "impegno_oggi_domani": r"(?:今天|明天)\s*(.+?)\s*(?:在|从)?\s*(\d{1,2}):?(\d{2})?(?:\s*-\s*(\d{1,2}):?(\d{2})?)?",
+        "impegno_ricorrente": r"(?:每|每个)\s*(?:星期一|星期二|星期三|星期四|星期五|星期六|星期日|天)\s*(.+?)\s*(?:在)?\s*(\d{1,2})",
+        "stato_emotivo": r"(?:我|感觉|觉得)\s*(?:很)?\s*(累|专注|放松|压力|有动力|疲惫|开心|难过)",
+        "spesa": r"(?:花了|支付|买了|消费)\s*(\d+(?:[.,]\d+)?)\s*(?:元|块|¥)?\s*(.{1,50})",
+        "spesa_diretta": r"(\d+(?:[.,]\d+)?)\s*(?:元|块|¥)\s*(.{1,50})",
+    }
+    
+    # Pattern RUSSO per riconoscere intenzioni comuni  
+    PATTERNS_RU = {
+        "obiettivo_ore": r"(?:учить|изучать|заниматься|тренироваться|работать над)\s+(.+?)\s+(\d+)\s*(?:час|часа|часов|ч)\s+(?:в|каждую)?\s*неделю",
+        "obiettivo_durata": r"(?:я хочу|мне нужно|я бы хотел)\s+(.+?)\s+(?:в течение|на)\s+(\d+)\s*(?:дн|дней|недел|недели|месяц|месяца)",
+        "impegno_specifico": r"(.+?)\s+(?:с|в)\s+(\d{1,2}):?(\d{2})?\s*(?:до|-)\s*(\d{1,2}):?(\d{2})?",
+        "impegno_oggi_domani": r"(?:сегодня|завтра)\s+(.+?)\s+(?:в|с)?\s*(\d{1,2}):?(\d{2})?(?:\s*-\s*(\d{1,2}):?(\d{2})?)?",
+        "impegno_ricorrente": r"(?:каждый|каждую)\s+(понедельник|вторник|среда|четверг|пятница|суббота|воскресенье|день)\s+(.+?)\s+(?:в|с)\s+(\d{1,2})",
+        "stato_emotivo": r"(?:я|чувствую себя)\s+(устал|устала|сосредоточен|расслаблен|в стрессе|мотивирован|энергичный|счастлив|грустный)",
+        "spesa": r"(?:потратил|заплатил|купил)\s+(\d+(?:[.,]\d+)?)\s*(?:руб|₽)?\s*(?:на|за)?\s*(.{1,50})",
+        "spesa_diretta": r"(\d+(?:[.,]\d+)?)\s*(?:руб|₽)\s+(?:на|за)?\s+(.{1,50})",
+    }
+    
+    # Pattern ARABO per riconoscere intenzioni comuni
+    PATTERNS_AR = {
+        "obiettivo_ore": r"(?:دراسة|تعلم|ممارسة|تدريب|العمل على)\s+(.+?)\s+(\d+)\s*(?:ساعة|ساعات|س)\s+(?:في|كل)?\s*(?:الأسبوع|أسبوع)",
+        "obiettivo_durata": r"(?:أريد|أحتاج|أرغب)\s+(.+?)\s+(?:لمدة|ل)\s+(\d+)\s*(?:يوم|أيام|أسبوع|أسابيع|شهر|أشهر)",
+        "impegno_specifico": r"(.+?)\s+(?:من|في)\s+(\d{1,2}):?(\d{2})?\s*(?:إلى|حتى|-)\s*(\d{1,2}):?(\d{2})?",
+        "impegno_oggi_domani": r"(?:اليوم|غدا|غداً)\s+(.+?)\s+(?:في|من)?\s*(\d{1,2}):?(\d{2})?(?:\s*-\s*(\d{1,2}):?(\d{2})?)?",
+        "impegno_ricorrente": r"(?:كل|كل يوم)\s+(الاثنين|الثلاثاء|الأربعاء|الخميس|الجمعة|السبت|الأحد)\s+(.+?)\s+(?:في)?\s*(\d{1,2})",
+        "stato_emotivo": r"(?:أنا|أشعر)\s+(متعب|متعبة|مركز|مسترخي|متوتر|متحمس|سعيد|حزين)",
+        "spesa": r"(?:أنفقت|دفعت|اشتريت)\s+(\d+(?:[.,]\d+)?)\s*(?:ريال|دولار|درهم)?\s*(?:على|ل)?\s*(.{1,50})",
+        "spesa_diretta": r"(\d+(?:[.,]\d+)?)\s*(?:ريال|دولار|درهم)\s+(?:على|ل)?\s+(.{1,50})",
+    }
+    
     PATTERNS = PATTERNS_IT  # Default italiano per backward compatibility
 
     @staticmethod
@@ -100,6 +136,12 @@ class InputManager:
                     lang = 'en'
                 elif detected_lang == 'es':
                     lang = 'es'
+                elif detected_lang == 'zh' or detected_lang == 'zh-cn' or detected_lang == 'zh-tw':
+                    lang = 'zh'
+                elif detected_lang == 'ru':
+                    lang = 'ru'
+                elif detected_lang == 'ar':
+                    lang = 'ar'
             except (LangDetectException, Exception):
                 pass  # Mantieni italiano di default
         
@@ -108,6 +150,12 @@ class InputManager:
             patterns = InputManager.PATTERNS_EN
         elif lang == 'es':
             patterns = InputManager.PATTERNS_ES
+        elif lang == 'zh':
+            patterns = InputManager.PATTERNS_ZH
+        elif lang == 'ru':
+            patterns = InputManager.PATTERNS_RU
+        elif lang == 'ar':
+            patterns = InputManager.PATTERNS_AR
         else:
             patterns = InputManager.PATTERNS_IT
 

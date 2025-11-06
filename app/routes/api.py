@@ -41,12 +41,6 @@ def index_ru():
     return render_template("index_ru.html")
 
 
-@bp.route("/hi")
-def index_hi():
-    """Hindi version (हिन्दी)"""
-    return render_template("index_hi.html")
-
-
 @bp.route("/ar")
 def index_ar():
     """Arabic version (العربية)"""

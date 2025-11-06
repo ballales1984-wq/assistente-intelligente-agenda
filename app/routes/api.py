@@ -83,6 +83,12 @@ def diario_book():
     return render_template("diario_book.html")
 
 
+@bp.route("/en/diario-book")
+def diario_book_en():
+    """Diary book page (English)"""
+    return render_template("diario_book.html")  # Usa stesso template per ora
+
+
 @bp.route("/pomodoro")
 def pomodoro():
     """Pomodoro Timer per produttività"""

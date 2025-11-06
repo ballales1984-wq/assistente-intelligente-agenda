@@ -2449,14 +2449,14 @@
                 settimanaDiv.innerHTML = `
                     <div style="margin-bottom: 15px;">
                         <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">
-                            ${riepilogo.ore_totali_previste.toFixed(1)}h
-                        </div>
-                        <div style="opacity: 0.9;">Ore totali previste</div>
+                        ${riepilogo.ore_totali_previste.toFixed(1)}h
                     </div>
-                    <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                        <div style="font-weight: 600; margin-bottom: 5px;">📌 Giorno più impegnativo:</div>
-                        <div>${riepilogo.giorno_piu_pieno.giorno} - ${riepilogo.giorno_piu_pieno.ore.toFixed(1)}h previste</div>
-                    </div>
+                    <div style="opacity: 0.9;">Total hours predicted</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+                    <div style="font-weight: 600; margin-bottom: 5px;">📌 Busiest day:</div>
+                    <div>${riepilogo.giorno_piu_pieno.giorno} - ${riepilogo.giorno_piu_pieno.ore.toFixed(1)}h predicted</div>
+                </div>
                     <div style="font-size: 0.9em; opacity: 0.9;">
                         ${previsioni.suggerimenti.join(' • ')}
                     </div>
@@ -2471,10 +2471,10 @@
                     obiettiviDiv.innerHTML = `
                         <div style="margin-bottom: 10px;">
                             <div style="font-size: 1.8em; font-weight: bold; color: #667eea;">
-                                ${oreTotaliObiettivi.toFixed(1)}h
-                            </div>
-                            <div style="color: #888; font-size: 0.9em;">Ore previste sugli obiettivi questa settimana</div>
+                            ${oreTotaliObiettivi.toFixed(1)}h
                         </div>
+                        <div style="color: #888; font-size: 0.9em;">Hours predicted on goals this week</div>
+                    </div>
                         ${obiettivi.map(obj => `
                             <div style="background: white; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #667eea;">
                                 <div style="font-weight: 600; color: #333;">${obj.nome}</div>

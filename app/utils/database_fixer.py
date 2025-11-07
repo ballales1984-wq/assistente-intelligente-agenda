@@ -12,35 +12,51 @@ def fix_telegram_constraint(db):
     """
     Fix UNIQUE constraint su telegram_id che causa errore 500
     Questo script si esegue automaticamente all'avvio
+    DROPPA LE COLONNE TELEGRAM COMPLETAMENTE
     """
     try:
-        # Prova a rimuovere il constraint UNIQUE problematico
+        # Prova a rimuovere TUTTO relativo a telegram
         with db.engine.connect() as conn:
-            # Drop constraint UNIQUE se esiste
-            conn.execute(text("""
-                ALTER TABLE user_profiles 
-                DROP CONSTRAINT IF EXISTS user_profiles_telegram_id_key
-            """))
-            conn.commit()
+            # 1. Drop constraint UNIQUE se esiste
+            try:
+                conn.execute(text("""
+                    ALTER TABLE user_profiles 
+                    DROP CONSTRAINT IF EXISTS user_profiles_telegram_id_key CASCADE
+                """))
+                conn.commit()
+                logger.info("✅ Database fix: Constraint UNIQUE rimosso")
+            except Exception as e:
+                logger.warning(f"⚠️ Constraint drop: {e}")
             
-            logger.info("✅ Database fix: Constraint UNIQUE rimosso da telegram_id")
+            # 2. Drop indici
+            try:
+                conn.execute(text("""
+                    DROP INDEX IF EXISTS ix_user_profiles_telegram_id CASCADE
+                """))
+                conn.commit()
+                logger.info("✅ Database fix: Indice rimosso")
+            except Exception as e:
+                logger.warning(f"⚠️ Index drop: {e}")
             
-            # Drop e ricrea indice come non-unique
-            conn.execute(text("""
-                DROP INDEX IF EXISTS ix_user_profiles_telegram_id
-            """))
-            conn.execute(text("""
-                CREATE INDEX IF NOT EXISTS ix_user_profiles_telegram_id 
-                ON user_profiles(telegram_id)
-            """))
-            conn.commit()
-            
-            logger.info("✅ Database fix: Indice telegram_id ricreato come non-unique")
+            # 3. DROP COLONNE TELEGRAM!
+            try:
+                conn.execute(text("""
+                    ALTER TABLE user_profiles 
+                    DROP COLUMN IF EXISTS telegram_id CASCADE
+                """))
+                conn.execute(text("""
+                    ALTER TABLE user_profiles 
+                    DROP COLUMN IF EXISTS telegram_username CASCADE
+                """))
+                conn.commit()
+                logger.info("✅ Database fix: Colonne telegram droppate!")
+            except Exception as e:
+                logger.warning(f"⚠️ Column drop: {e}")
             
     except Exception as e:
-        # Se fallisce, probabilmente il constraint non esiste (già fixato)
-        logger.warning(f"⚠️ Database fix: {e}")
-        # Non blocchiamo l'avvio dell'app se fallisce
+        # Se fallisce, log ma non bloccare
+        logger.error(f"❌ Database fix fallito: {e}")
+        # Non blocchiamo l'avvio dell'app
         pass
 
 

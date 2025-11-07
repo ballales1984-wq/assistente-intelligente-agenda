@@ -177,6 +177,13 @@ def create_app(config_class=Config):
     with app.app_context():
         db.create_all()
         app.logger.info("✅ Database tabelle create/verificate")
+        
+        # Auto-fix database issues (telegram constraint, etc.)
+        try:
+            from app.utils.database_fixer import auto_fix_database
+            auto_fix_database(app, db)
+        except Exception as e:
+            app.logger.warning(f"⚠️ Database auto-fix skipped: {e}")
 
     # ========================================
     # ERROR HANDLERS

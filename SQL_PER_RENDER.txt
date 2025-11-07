@@ -1,0 +1,16 @@
+-- COPIA E INCOLLA QUESTO SQL NELLA SHELL DI RENDER
+-- Dashboard → assistente-db → Shell
+
+-- Rimuovi constraint UNIQUE che causa errore 500
+ALTER TABLE user_profiles DROP CONSTRAINT IF EXISTS user_profiles_telegram_id_key;
+
+-- Verifica che sia stato rimosso
+SELECT conname 
+FROM pg_constraint 
+WHERE conrelid = 'user_profiles'::regclass 
+AND conname LIKE '%telegram%';
+
+-- Se vuoi anche rimuovere l'indice unique e ricrearlo come normale:
+DROP INDEX IF EXISTS ix_user_profiles_telegram_id;
+CREATE INDEX IF NOT EXISTS ix_user_profiles_telegram_id ON user_profiles(telegram_id);
+

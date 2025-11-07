@@ -30,7 +30,8 @@ class UserProfile(db.Model):
     livello_stress = db.Column(db.Integer, default=30)   # 0-100
     
     # TELEGRAM (DEPRECATED - Keep for DB compatibility, will be removed)
-    telegram_id = db.Column(db.String(50), unique=True, index=True, nullable=True)
+    # NOTA: NON usare unique=True qui - causa problemi con NULL!
+    telegram_id = db.Column(db.String(50), index=True, nullable=True)
     telegram_username = db.Column(db.String(100), nullable=True)
     
     # Relazioni

@@ -227,12 +227,20 @@ def chat():
     if not messaggio:
         return jsonify({"errore": get_message('empty_message', lang)}), 400
 
-    # Ottieni profilo utente
-    profilo = UserProfile.query.first()
-    if not profilo:
-        profilo = UserProfile(nome="Utente")
-        db.session.add(profilo)
-        db.session.commit()
+    # Ottieni profilo utente (safe mode per compatibilità DB)
+    try:
+        profilo = UserProfile.query.first()
+        if not profilo:
+            profilo = UserProfile(nome="Utente")
+            db.session.add(profilo)
+            db.session.commit()
+    except Exception as e:
+        # Fallback se query fallisce (es: colonne extra nel DB)
+        from app.utils.safe_db import get_user_profile_safely
+        profilo = get_user_profile_safely(db, UserProfile)
+        if not profilo:
+            current_app.logger.error(f"❌ Cannot get user profile: {e}")
+            return jsonify({"errore": "Database error"}), 500
 
     # ============================================
     # 🔗 SMART LINKS: Check se è una ricerca web

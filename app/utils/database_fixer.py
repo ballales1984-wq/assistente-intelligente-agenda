@@ -51,7 +51,38 @@ def fix_telegram_constraint(db):
                 conn.commit()
                 logger.info("✅ Database fix: Colonne telegram droppate!")
             except Exception as e:
-                logger.warning(f"⚠️ Column drop: {e}")
+                logger.warning(f"⚠️ Telegram column drop: {e}")
+            
+            # 4. DROP COLONNE AUTH EXTRA (non nel modello)
+            try:
+                conn.execute(text("""
+                    ALTER TABLE user_profiles 
+                    DROP COLUMN IF EXISTS token CASCADE
+                """))
+                conn.execute(text("""
+                    ALTER TABLE user_profiles 
+                    DROP COLUMN IF EXISTS fingerprint CASCADE
+                """))
+                conn.execute(text("""
+                    ALTER TABLE user_profiles 
+                    DROP COLUMN IF EXISTS ip_hash CASCADE
+                """))
+                conn.execute(text("""
+                    ALTER TABLE user_profiles 
+                    DROP COLUMN IF EXISTS recovery_code CASCADE
+                """))
+                conn.execute(text("""
+                    ALTER TABLE user_profiles 
+                    DROP COLUMN IF EXISTS device_info CASCADE
+                """))
+                conn.execute(text("""
+                    ALTER TABLE user_profiles 
+                    DROP COLUMN IF EXISTS first_seen CASCADE
+                """))
+                conn.commit()
+                logger.info("✅ Database fix: Colonne auth extra droppate!")
+            except Exception as e:
+                logger.warning(f"⚠️ Auth column drop: {e}")
             
     except Exception as e:
         # Se fallisce, log ma non bloccare

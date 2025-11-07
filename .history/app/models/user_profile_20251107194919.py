@@ -21,6 +21,18 @@ class UserProfile(db.Model):
     ora_fine_giornata = db.Column(db.Time, default=datetime.strptime('23:00', '%H:%M').time())
     ore_sonno_desiderate = db.Column(db.Integer, default=8)
     
+    # Livelli dinamici (per motore adattivo) - COMMENTATE perché non nel DB
+    # livello_energia = db.Column(db.Integer, default=80)  # 0-100
+    # livello_stress = db.Column(db.Integer, default=30)   # 0-100
+    
+    # Authentication fields (presenti nel DB Render)
+    token = db.Column(db.String(100), unique=True, index=True, nullable=True)
+    fingerprint = db.Column(db.String(100), unique=True, index=True, nullable=True)
+    ip_hash = db.Column(db.String(100), nullable=True)
+    recovery_code = db.Column(db.String(100), nullable=True)
+    device_info = db.Column(db.Text, nullable=True)
+    first_seen = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
+    
     # Relazioni
     obiettivi = db.relationship('Obiettivo', backref='utente', lazy='dynamic', cascade='all, delete-orphan')
     impegni = db.relationship('Impegno', backref='utente', lazy='dynamic', cascade='all, delete-orphan')

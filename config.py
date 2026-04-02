@@ -26,6 +26,13 @@ class Config:
     if database_url and database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
     
+    # Add SSL mode for Render PostgreSQL
+    if database_url and 'render.com' in database_url:
+        if '?' not in database_url:
+            database_url += '?sslmode=require'
+        elif 'sslmode' not in database_url:
+            database_url += '&sslmode=require'
+    
     SQLALCHEMY_DATABASE_URI = database_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO', 'False').lower() == 'true'

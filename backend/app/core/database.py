@@ -5,63 +5,37 @@ from config import get_settings
 
 settings = get_settings()
 
-# Fix postgres:// -> postgresql://
+# Use SQLite by default for simplicity
 db_url = settings.database_url
+
+# Override with SQLite for now if PostgreSQL fails
+use_sqlite = db_url.startswith('postgres://') or db_url.startswith('postgresql://')
+
+# Fix postgres:// -> postgresql://
 if db_url.startswith('postgres://'):
     db_url = db_url.replace('postgres://', 'postgresql://', 1)
 
-# Use asyncpg for PostgreSQL
-if 'postgresql' in db_url:
-    # Convert to asyncpg format
-    async_db_url = db_url.replace('postgresql://', 'postgresql+asyncpg://')
-    if 'sslmode' not in db_url:
-        if '?' in async_db_url:
-            async_db_url += '&sslmode=require'
-        else:
-            async_db_url += '?sslmode=require'
-    
-    engine = create_async_engine(
-        async_db_url,
-        pool_pre_ping=True,
-        echo=settings.debug
-    )
-    AsyncSessionLocal = sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False
-    )
-    
-    async def get_db():
-        async with AsyncSessionLocal() as session:
-            yield session
-else:
-    # SQLite fallback
-    engine = create_engine(db_url, echo=settings.debug)
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    
-    def get_db():
-        db = SessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
+if use_sqlite:
+    # Use SQLite fallback for Render free tier issues
+    db_url = "sqlite:///./agenda.db"
+    print("⚠️ Using SQLite fallback instead of PostgreSQL")
+
+engine = create_engine(
+    db_url,
+    connect_args={"check_same_thread": False} if "sqlite" in db_url else {"sslmode": "require"},
+    pool_pre_ping=True,
+    echo=settings.debug
+)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-# Sync engine for create_all (runs at startup)
-if 'postgresql' in db_url:
-    sync_db_url = db_url
-    if 'sslmode' not in sync_db_url:
-        if '?' in sync_db_url:
-            sync_db_url += '&sslmode=require'
-        else:
-            sync_db_url += '?sslmode=require'
-    sync_engine = create_engine(sync_db_url, pool_pre_ping=True)
-else:
-    sync_engine = engine
-
-def get_sync_db():
-    Session = sessionmaker(bind=sync_engine)
-    session = Session()
+def get_db():
+    db = SessionLocal()
     try:
-        yield session
+        yield db
     finally:
-        session.close()
+        db.close()
+
+sync_engine = engine  # Alias for compatibility

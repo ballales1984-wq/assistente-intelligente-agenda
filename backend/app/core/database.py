@@ -1,30 +1,29 @@
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
-from config import get_settings
 
-settings = get_settings()
-
-# Use SQLite by default for simplicity
-db_url = settings.database_url
-
-# Override with SQLite for now if PostgreSQL fails
-use_sqlite = db_url.startswith('postgres://') or db_url.startswith('postgresql://')
+# Get DATABASE_URL from environment
+database_url = os.environ.get('DATABASE_URL', 'sqlite:///./agenda.db')
 
 # Fix postgres:// -> postgresql://
-if db_url.startswith('postgres://'):
-    db_url = db_url.replace('postgres://', 'postgresql://', 1)
+if database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
-if use_sqlite:
-    # Use SQLite fallback for Render free tier issues
-    db_url = "sqlite:///./agenda.db"
-    print("⚠️ Using SQLite fallback instead of PostgreSQL")
+# Add SSL mode for Render PostgreSQL
+if 'render.com' in database_url:
+    if '?' in database_url:
+        if 'sslmode' not in database_url:
+            database_url += '&sslmode=require'
+    else:
+        database_url += '?sslmode=require'
+    print(f"🔗 Connecting to: {database_url[:50]}...")
 
 engine = create_engine(
-    db_url,
-    connect_args={"check_same_thread": False} if "sqlite" in db_url else {"sslmode": "require"},
+    database_url,
     pool_pre_ping=True,
-    echo=settings.debug
+    connect_args={"sslmode": "require"},
+    pool_size=1,
+    max_overflow=0
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -38,4 +37,4 @@ def get_db():
     finally:
         db.close()
 
-sync_engine = engine  # Alias for compatibility
+sync_engine = engine

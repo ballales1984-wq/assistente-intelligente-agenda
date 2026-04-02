@@ -1,26 +1,23 @@
+import os
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    # Database
-    database_url: str = "sqlite:///./agenda.db"
+    # Database - must be provided via environment
+    database_url: str = ""
     
-    # Fix Render PostgreSQL SSL
+    # Use SQLite if no DATABASE_URL provided
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        if self.database_url and 'render.com' in self.database_url:
-            if '?' in self.database_url:
-                if 'sslmode' not in self.database_url:
-                    self.database_url += '&sslmode=require'
-            else:
-                self.database_url += '?sslmode=require'
-            # Fix postgres:// -> postgresql://
-            if self.database_url.startswith('postgres://'):
-                self.database_url = self.database_url.replace('postgres://', 'postgresql://', 1)
+        if not self.database_url:
+            self.database_url = "sqlite:///./agenda.db"
+            print("⚠️ No DATABASE_URL - using SQLite")
+        elif self.database_url.startswith('postgres://'):
+            self.database_url = self.database_url.replace('postgres://', 'postgresql://', 1)
     
     # Ollama
-    ollama_host: str = "http://localhost:11434"
+    ollama_host: str = ""
     ollama_model: str = "llama3.2"
     
     # App
@@ -30,6 +27,7 @@ class Settings(BaseSettings):
     
     class Config:
         env_file = ".env"
+        extra = "ignore"
 
 
 @lru_cache()

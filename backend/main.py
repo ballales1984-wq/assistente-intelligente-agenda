@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from app.core.database import engine, Base, get_db
+from app.core.database import engine, sync_engine, Base, get_db
 from app.models.schemas import *
 from app.api.routes import router
 from config import get_settings
@@ -16,7 +16,7 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup: crea tabelle
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=sync_engine)
     print("✅ Database pronto")
     yield
     # Shutdown

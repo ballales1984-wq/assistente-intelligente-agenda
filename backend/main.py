@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from app.core.database import engine, sync_engine, Base, get_db
 from app.models.schemas import *
 from app.api.routes import router
+from app.api.legal import router as legal_router
 from config import get_settings
 
 settings = get_settings()
@@ -41,6 +42,7 @@ app.add_middleware(
 
 # Routes
 app.include_router(router, prefix="/api")
+app.include_router(legal_router)  # /privacy and /terms
 
 
 @app.get("/")
